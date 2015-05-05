@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,7 +28,7 @@ public class GameView implements Viewable {
     Context context;
 
     int screenWidth;
-    int screenheight;
+    int screenHeight;
 
     TableLayout layout;
 
@@ -42,14 +44,18 @@ public class GameView implements Viewable {
     private int randomIndex = 0;
 
     @Override
-    public void initializeView(Context context) {
+    public void initializeView(Context context , List<View> views) {
         setFrame();
         setDimension();
         setLayout();
         setDisplayLayout();
         setButtons();
         addCard(card);
-
+        card = (TextView) views.get(0);
+        firstChoice = (Button) views.get(1);
+        secondChoice = (Button) views.get(2);
+        thirdChoice = (Button) views.get(3);
+        forthChoice = (Button) views.get(4);
 
     }
 
@@ -80,7 +86,7 @@ public class GameView implements Viewable {
                 TableLayout.LayoutParams.WRAP_CONTENT,
                 TableLayout.LayoutParams.WRAP_CONTENT);
         displayParams.width = screenWidth;
-        displayParams.height = (int)(screenheight * 0.5);
+        displayParams.height = (int)(screenHeight * 0.5);
         displayLayout.setLayoutParams(displayParams);
         displayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
         card = new TextView(context);
@@ -95,7 +101,7 @@ public class GameView implements Viewable {
         Point size = new Point();
         screen.getSize(size);
         this.screenWidth = size.x;
-        this.screenheight = size.y;
+        this.screenHeight = size.y;
     }
 
     private void setButtons(){
@@ -147,11 +153,11 @@ public class GameView implements Viewable {
         AnimationSet dropAnimation = new AnimationSet(false);
 
         Animation rotateAnimation = new RotateAnimation(0.0f , degree , screenWidth/2 ,
-                screenheight/4);
+                screenHeight/4);
         rotateAnimation.setDuration(200);
 
         Animation scaleAnimation = new ScaleAnimation( (float)1.0 , (float)0.85 , (float)1 ,
-                (float)0.7 , screenWidth / 2 , screenheight / 2);
+                (float)0.7 , screenWidth / 2 , screenHeight / 2);
         scaleAnimation.setDuration(200);
 
         dropAnimation.addAnimation(rotateAnimation);
