@@ -20,6 +20,8 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Random;
 
+import io.zarda.elnerd.R;
+
 /**
  * Created by atef & emad on 4 May, 2015.
  * Implementing by magdy.
@@ -31,6 +33,9 @@ public class GameView implements Viewable {
     int screenHeight;
 
     TableLayout layout;
+
+    int [] colors = {R.drawable.display , R.drawable.display1 , R.drawable.display2 ,
+            R.drawable.display3};
 
     RelativeLayout displayLayout;
     TextView card;
@@ -45,17 +50,18 @@ public class GameView implements Viewable {
 
     @Override
     public void initializeView(Context context , List<View> views) {
+        this.context = context;
+        card = (TextView) views.get(0);
+        firstChoice = (Button) views.get(1);
+        secondChoice = (Button) views.get(2);
+        thirdChoice = (Button) views.get(3);
+        forthChoice = (Button) views.get(4);
         setFrame();
         setDimension();
         setLayout();
         setDisplayLayout();
         setButtons();
         addCard(card);
-        card = (TextView) views.get(0);
-        firstChoice = (Button) views.get(1);
-        secondChoice = (Button) views.get(2);
-        thirdChoice = (Button) views.get(3);
-        forthChoice = (Button) views.get(4);
 
     }
 
@@ -89,9 +95,7 @@ public class GameView implements Viewable {
         displayParams.height = (int)(screenHeight * 0.5);
         displayLayout.setLayoutParams(displayParams);
         displayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        card = new TextView(context);
         card.setWidth(screenWidth);
-        displayLayout.addView(card);
         layout.addView(displayLayout);
 
     }
@@ -105,11 +109,6 @@ public class GameView implements Viewable {
     }
 
     private void setButtons(){
-        firstChoice = new Button(context);
-        secondChoice = new Button(context);
-        thirdChoice = new Button(context);
-        forthChoice = new Button(context);
-
         TableLayout.LayoutParams params = new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.WRAP_CONTENT,
                 TableLayout.LayoutParams.WRAP_CONTENT);
@@ -121,6 +120,11 @@ public class GameView implements Viewable {
         thirdChoice.setLayoutParams(params);
         forthChoice.setLayoutParams(params);
 
+        firstChoice.setBackground(context.getDrawable(R.drawable.btn));
+        secondChoice.setBackground(context.getDrawable(R.drawable.btn));
+        thirdChoice.setBackground(context.getDrawable(R.drawable.btn));
+        forthChoice.setBackground(context.getDrawable(R.drawable.btn));
+
         layout.addView(firstChoice);
         layout.addView(secondChoice);
         layout.addView(thirdChoice);
@@ -128,37 +132,44 @@ public class GameView implements Viewable {
 
     }
 
-    private int getRandomIndex(int x){
+    private void getRandomIndex(int x){
         Random random = new Random();
         int randomValue = random.nextInt(x);
         while (randomValue == randomIndex){
             randomValue = random.nextInt(x);
         }
-        return randomValue;
+        randomIndex =  randomValue;
     }
 
-    private float getRandomDegree(float x){
+    private void getRandomDegree(float x){
         Random random = new Random();
         float randomDegree = random.nextFloat() * x - (x / 2);
         while(randomDegree == degree){
             randomDegree = random.nextFloat() * x - (x / 2);
         }
-        return randomDegree;
+        degree = randomDegree;
     }
 
     private void addCard(TextView card){
         getRandomIndex(3);
         getRandomDegree(10);
 
+        card.setBackground(context.getResources().getDrawable(colors[randomIndex]));
+        card.setGravity(Gravity.CENTER);
+        card.setWidth(screenWidth);
+        card.setHeight((int) (screenHeight * 0.5));
+        card.setTranslationX(new Random().nextFloat() * 20 - 10);
+        card.setTranslationY(new Random().nextFloat() * 20 - 10);
+
         AnimationSet dropAnimation = new AnimationSet(false);
 
         Animation rotateAnimation = new RotateAnimation(0.0f , degree , screenWidth/2 ,
                 screenHeight/4);
-        rotateAnimation.setDuration(200);
+        rotateAnimation.setDuration(1000);
 
-        Animation scaleAnimation = new ScaleAnimation( (float)1.0 , (float)0.85 , (float)1 ,
-                (float)0.7 , screenWidth / 2 , screenHeight / 2);
-        scaleAnimation.setDuration(200);
+        Animation scaleAnimation = new ScaleAnimation((float)1.0 , (float)0.85 , (float)1 ,
+                (float)0.7 , screenWidth / 2 , screenHeight / 4);
+        scaleAnimation.setDuration(1000);
 
         dropAnimation.addAnimation(rotateAnimation);
         dropAnimation.addAnimation(scaleAnimation);
