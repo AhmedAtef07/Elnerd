@@ -15,27 +15,39 @@ import java.util.ArrayList;
 
 public class QuestionsDB extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "elnerd.db";
+    private static final String DATABASE_NAME = "elnerd.db";
 
-    public static final String QUESTIONS_TABLE_NAME = "questionsTable";
-    public static final String CHOICES_TABLE_NAME = "choicesTable";
-    public static final String ANSWERS_TABLE_NAME = "answersTable";
+    private static final String QUESTIONS_TABLE_NAME = "questionsTable";
+    private static final String CHOICES_TABLE_NAME = "choicesTable";
+    private static final String ANSWERS_TABLE_NAME = "answersTable";
 
-    public static final String QUESTIONS_COLUMN_ID = "id";
-    public static final String QUESTIONS_COLUMN_HEADER = "header";
-    public static final String QUESTIONS_COLUMN_ANSWER_ID = "answer_id";
+    private static final String QUESTIONS_COLUMN_ID = "id";
+    private static final String QUESTIONS_COLUMN_HEADER = "header";
+    private static final String QUESTIONS_COLUMN_ANSWER_ID = "answer_id";
 
-    public static final String CHOICES_COLUMN_ID = "id";
-    public static final String CHOICES_COLUMN_CHOICE = "choice";
-    public static final String CHOICES_COLUMN_QUESTION_ID = "question_id";
+    private static final String CHOICES_COLUMN_ID = "id";
+    private static final String CHOICES_COLUMN_CHOICE = "choice";
+    private static final String CHOICES_COLUMN_QUESTION_ID = "question_id";
 
-    public static final String ANSWERS_COLUMN_ID = "id";
-    public static final String ANSWERS_COLUMN_CHOICE_ID = "choice_id";
-    public static final String ANSWERS_COLUMN_QUESTION_ID = "question_id";
+    private static final String ANSWERS_COLUMN_ID = "id";
+    private static final String ANSWERS_COLUMN_CHOICE_ID = "choice_id";
+    private static final String ANSWERS_COLUMN_QUESTION_ID = "question_id";
 
 
-    public QuestionsDB(Context context) {
+    private static QuestionsDB ourInstance;
+    private static Context context;
+
+    private QuestionsDB() {
         super(context, DATABASE_NAME, null, 1);
+    }
+
+    public static void initializeDB(Context context) {
+        QuestionsDB.context = context;
+        ourInstance = new QuestionsDB();
+    }
+
+    public static QuestionsDB getInstance() {
+        return ourInstance;
     }
 
     @Override
@@ -45,7 +57,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
                 "CREATE TABLE "
                         + QUESTIONS_TABLE_NAME + " ("
                         + QUESTIONS_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                        + QUESTIONS_COLUMN_HEADER + " TEXT, "
+                        + QUESTIONS_COLUMN_HEADER + " TEXT NOT NULL, "
                         + QUESTIONS_COLUMN_ANSWER_ID + " INTEGER)"
         );
 
@@ -53,16 +65,16 @@ public class QuestionsDB extends SQLiteOpenHelper {
                 "CREATE TABLE "
                         + CHOICES_TABLE_NAME + " ("
                         + CHOICES_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                        + CHOICES_COLUMN_CHOICE + " TEXT, "
-                        + CHOICES_COLUMN_QUESTION_ID + " INTEGER)"
+                        + CHOICES_COLUMN_CHOICE + " TEXT NOT NULL, "
+                        + CHOICES_COLUMN_QUESTION_ID + " INTEGER NOT NULL)"
         );
 
         db.execSQL(
                 "CREATE TABLE "
                         + ANSWERS_TABLE_NAME + " ("
                         + ANSWERS_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                        + ANSWERS_COLUMN_CHOICE_ID + " INTEGER, "
-                        + ANSWERS_COLUMN_QUESTION_ID + " INTEGER)"
+                        + ANSWERS_COLUMN_CHOICE_ID + " INTEGER NOT NULL, "
+                        + ANSWERS_COLUMN_QUESTION_ID + " INTEGER NOT NULL)"
         );
     }
 
