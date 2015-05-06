@@ -1,5 +1,7 @@
 package io.zarda.elnerd.src;
 
+import java.util.ArrayList;
+
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 
@@ -8,9 +10,17 @@ import io.zarda.elnerd.model.QuestionsDB;
  */
 public class QuestionsManager {
 
+    QuestionsDB questionsDB;
+
     public QuestionsManager() {
-        QuestionsDB questionsDB = QuestionsDB.getInstance();
+        questionsDB = QuestionsDB.getInstance();
+    }
 
+    public ArrayList<Question> getQuestions(){
+        return questionsDB.getQuestions();
+    }
 
+    public void addQuestion(Question question) {
+        questionsDB.addQuestion(question);
     }
 }

@@ -1,22 +1,43 @@
 package io.zarda.elnerd;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
+import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 import io.zarda.elnerd.src.QuestionsManager;
+import io.zarda.elnerd.src.ViewManager;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
         QuestionsDB.initializeDB(this);
+
+        ArrayList<String> choices = new ArrayList<>();
+        choices.add("Yes");
+        choices.add("No");
+        choices.add("May be");
+        choices.add("Never");
+
+        QuestionsManager questionsManager = new QuestionsManager();
+//        questionsManager.addQuestion(new Question("Is your name Ahmed?", choices, 0));
+        ArrayList<Question> questions = questionsManager.getQuestions();
+        ViewManager vm = new ViewManager(this);
+        for (int i = 0; i < questions.size(); ++i) {
+            System.out.println("DataBase: " + questions.get(0).getHeader() + questions.get(0).getChoices().get(0));
+        }
+        vm.showQuestion(questions.get(0));
+
     }
 
     @Override
