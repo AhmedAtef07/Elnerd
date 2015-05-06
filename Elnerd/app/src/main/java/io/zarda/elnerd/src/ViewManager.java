@@ -19,23 +19,28 @@ public class ViewManager {
 
     private final List<View> views;
 
+    GameView gameView;
+
     private Context context;
+
 
     public ViewManager(Context context) {
         this.context = context;
-        ArrayList<View> viewsList = new ArrayList<>();
 
+        ArrayList<View> viewsList = new ArrayList<>();
         viewsList.add(new TextView(context));
         for (int i = 0; i < 4; ++i) {
             viewsList.add(new Button(context));
         }
 
         views = Collections.unmodifiableList(viewsList);
+
+        gameView = new GameView();
+        gameView.initializeView(context, views);
     }
 
     public void showQuestion(Question question) {
-        GameView gameView = new GameView();
-        ((TextView)views.get(0)).setText(question.getHeader());
+        ((TextView) views.get(0)).setText(question.getHeader());
         for (int i = 0; i < 4; ++i) {
             ((Button)views.get(i + 1)).setText(question.getChoices().get(i));
             ((Button)views.get(i + 1)).setOnClickListener(new View.OnClickListener() {
@@ -52,7 +57,6 @@ public class ViewManager {
                 ((Button)views.get(i + 1)).setTag(false);
             }
         }
-        gameView.initializeView(context, views);
         gameView.startView();
     }
 

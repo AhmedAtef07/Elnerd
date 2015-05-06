@@ -32,10 +32,11 @@ public class MainActivity extends Activity {
         QuestionsManager questionsManager = new QuestionsManager();
 //        questionsManager.addQuestion(new Question("Is your name Ahmed?", choices, 0));
         ArrayList<Question> questions = questionsManager.getQuestions();
-        ViewManager vm = new ViewManager(this);
         for (int i = 0; i < questions.size(); ++i) {
             System.out.println("DataBase: " + questions.get(0).getHeader() + questions.get(0).getChoices().get(0));
         }
+
+        ViewManager vm = new ViewManager(this);
         vm.showQuestion(questions.get(0));
 
     }
