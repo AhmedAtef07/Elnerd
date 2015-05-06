@@ -26,7 +26,7 @@ import io.zarda.elnerd.R;
  * Created by atef & emad on 4 May, 2015.
  * Implementing by magdy.
  */
-public class GameView implements Viewable {
+public class GameView implements Viewable , Game{
     Context context;
 
     int screenWidth;
@@ -61,18 +61,34 @@ public class GameView implements Viewable {
         setLayout();
         setDisplayLayout();
         setButtons();
-        addCard(card);
-
     }
 
     @Override
     public void startView() {
         ((Activity) context).setContentView(layout);
+        addCard(card);
     }
 
     @Override
     public void endView() {
 
+    }
+
+    @Override
+    public void showSuccess(Button correctButton) {
+        correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
+        
+    }
+
+    @Override
+    public void showFailure(Button correctButton , Button wrongButton) {
+        correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
+        wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
+    }
+
+    @Override
+    public void showNextQuestion() {
+        addCard(card);
     }
 
     private void setFrame(){
@@ -120,10 +136,10 @@ public class GameView implements Viewable {
         thirdChoice.setLayoutParams(params);
         forthChoice.setLayoutParams(params);
 
-        firstChoice.setBackground(context.getDrawable(R.drawable.btn));
-        secondChoice.setBackground(context.getDrawable(R.drawable.btn));
-        thirdChoice.setBackground(context.getDrawable(R.drawable.btn));
-        forthChoice.setBackground(context.getDrawable(R.drawable.btn));
+        firstChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        secondChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        thirdChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        forthChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
 
         layout.addView(firstChoice);
         layout.addView(secondChoice);
@@ -179,5 +195,4 @@ public class GameView implements Viewable {
         card.startAnimation(dropAnimation);
 
     }
-
 }
