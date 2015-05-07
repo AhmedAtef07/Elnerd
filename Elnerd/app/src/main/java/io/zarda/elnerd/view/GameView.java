@@ -44,6 +44,10 @@ public class GameView implements Viewable , Game{
     TableLayout layout;
     Bitmap correctBitmap;
     Bitmap wrongBitmap;
+    ImageView correctImage;
+    ImageView wrongImage;
+
+    AnimationSet responseAnimation;
 
     int [] colors = {R.drawable.display , R.drawable.display1 , R.drawable.display2 ,
             R.drawable.display3};
@@ -81,7 +85,7 @@ public class GameView implements Viewable , Game{
         setLayout();
         setDisplayLayout();
         setButtons();
-        setBitmaps();
+        setBitmapsAndAnimation();
     }
 
     @Override
@@ -91,38 +95,16 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void endView() {
-
+        ((ViewGroup)mainFrame).removeAllViews();
     }
 
     @Override
     public void showSuccess(final Button correctButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
 
-        final ImageView correctImage = new ImageView(context);
-        correctImage.setImageBitmap(correctBitmap);
-        FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
-        imageParams.height = screenWidth;
-        imageParams.width = screenWidth;
-        correctImage.setLayoutParams(imageParams);
-
-        Animation correctFadeAnimation = new AlphaAnimation(0.9f , 0.0f);
-        correctFadeAnimation.setDuration(1000);
-
-        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f ,
-                screenWidth/2 , screenHeight/2);
-        correctScaleAnimation.setDuration(1000);
-
-        AnimationSet correctAnimation = new AnimationSet(false);
-        correctAnimation.addAnimation(correctFadeAnimation);
-        correctAnimation.addAnimation(correctScaleAnimation);
-        correctAnimation.setDuration(1000);
-        correctAnimation.setFillAfter(true);
-
-
         mainFrame.addView(correctImage);
-        correctImage.startAnimation(correctAnimation);
-        correctAnimation.setAnimationListener(new Animation.AnimationListener() {
+        correctImage.startAnimation(responseAnimation);
+        responseAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -146,31 +128,10 @@ public class GameView implements Viewable , Game{
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
 
-        final ImageView correctImage = new ImageView(context);
-        correctImage.setImageBitmap(wrongBitmap);
+        mainFrame.addView(wrongImage);
+        wrongImage.startAnimation(responseAnimation);
 
-        FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
-        imageParams.height = screenWidth;
-        imageParams.width = screenWidth;
-        correctImage.setLayoutParams(imageParams);
-
-        Animation correctFadeAnimation = new AlphaAnimation(0.9f , 0.0f);
-        correctFadeAnimation.setDuration(1000);
-
-        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f ,
-                screenWidth/2 , screenHeight/2);
-        correctScaleAnimation.setDuration(1000);
-
-        AnimationSet correctAnimation = new AnimationSet(false);
-        correctAnimation.addAnimation(correctFadeAnimation);
-        correctAnimation.addAnimation(correctScaleAnimation);
-        correctAnimation.setDuration(1000);
-        correctAnimation.setFillAfter(true);
-
-        mainFrame.addView(correctImage);
-        correctImage.startAnimation(correctAnimation);
-        correctAnimation.setAnimationListener(new Animation.AnimationListener() {
+        responseAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -194,9 +155,43 @@ public class GameView implements Viewable , Game{
         newQuestion();
     }
 
-    private void setBitmaps(){
+    private void setBitmapsAndAnimation(){
         correctBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.correct);
         wrongBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.wrong);
+
+        correctImage = new ImageView(context);
+        wrongImage = new ImageView(context);
+
+        correctImage.setImageBitmap(correctBitmap);
+        wrongImage.setImageBitmap(wrongBitmap)
+        ;
+        FrameLayout.LayoutParams correctParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        FrameLayout.LayoutParams wrongParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        correctParams.height = screenWidth;
+        correctParams.width = screenWidth;
+
+        wrongParams.height = screenWidth;
+        wrongParams.width = screenWidth;
+
+        correctImage.setLayoutParams(correctParams);
+        wrongImage.setLayoutParams(wrongParams);
+
+        Animation fadeAnimation = new AlphaAnimation(0.9f , 0.0f);
+        fadeAnimation.setDuration(1000);
+
+        Animation scaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f ,
+                screenWidth/2 , screenHeight/2);
+        scaleAnimation.setDuration(1000);
+
+        responseAnimation = new AnimationSet(false);
+        responseAnimation.addAnimation(fadeAnimation);
+        responseAnimation.addAnimation(scaleAnimation);
+        responseAnimation.setDuration(1000);
+        responseAnimation.setFillAfter(true);
     }
 
     private void setFrame(){
