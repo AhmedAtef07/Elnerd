@@ -15,10 +15,11 @@ public class GameViewNotifier {
     }
 
     public void notifyShowSuccessFinished() {
-         ma.setNextQuestion();
+         ma.setNewQuestion();
     }
 
     public void notifyShowFailureFinished() {
-        // TODO call vm with propare methods.
+        vm.endGameView();
+        vm.startHomeView();
     }
 }

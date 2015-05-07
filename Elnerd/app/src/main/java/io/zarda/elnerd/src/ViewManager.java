@@ -20,7 +20,8 @@ import io.zarda.elnerd.view.HomeView;
 
 public class ViewManager {
 
-    private final List<View> views;
+    private final List<View> gameViewsList;
+    private final List<View> homeViewsList;
 
     GameView gameView;
     GameViewNotifier gvn;
@@ -29,56 +30,81 @@ public class ViewManager {
 
     private Context context;
 
-    public ViewManager(Context context) {
+    public ViewManager(final Context context) {
         this.context = context;
 
-        ArrayList<View> viewsList = new ArrayList<>();
-        viewsList.add(new TextView(context));
+        // homeView
+        ArrayList<View> homeViewsArray = new ArrayList<>();
+        Button playButton = new Button(context);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).playClick(v);
+            }
+        });
+        playButton.setText("Play Now");
+        homeViewsArray.add(playButton);
+
+        homeViewsList = Collections.unmodifiableList(homeViewsArray);
+
+        // game View
+        ArrayList<View> gameViewsArray = new ArrayList<>();
+        gameViewsArray.add(new TextView(context));
         for (int i = 0; i < 4; ++i) {
-            viewsList.add(new Button(context));
+            Button btn = new Button(context);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity) context).answerClick(v);
+                }
+            });
+            btn.setTag(i);
+            gameViewsArray.add(btn);
         }
 
-        views = Collections.unmodifiableList(viewsList);
-
+        gameViewsList = Collections.unmodifiableList(gameViewsArray);
         gvn = new GameViewNotifier(this, (MainActivity)context);
 
         homeView = new HomeView();
+        homeView.initializeView(context, homeViewsList);
 
         gameView = new GameView(gvn);
-        gameView.initializeView(context, views);
+        gameView.initializeView(context, gameViewsList);
+    }
+
+    public void startGameView() {
         gameView.startView();
+        ((MainActivity)context).setNewQuestion();
+    }
+
+    public void endGameView() {
+        gameView.endView();
     }
 
     public void showQuestion(Question question) {
-        ((TextView) views.get(0)).setText(question.getHeader());
+        ((TextView) gameViewsList.get(0)).setText(question.getHeader());
         for (int i = 0; i < 4; ++i) {
-            ((Button)views.get(i + 1)).setText(question.getChoices().get(i));
-            ((Button)views.get(i + 1)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((MainActivity)context).click(v);
-                }
-            });
-
-            ((Button)views.get(i + 1)).setTag(i);
-
+            ((Button) gameViewsList.get(i + 1)).setText(question.getChoices().get(i));
         }
 
         gameView.showNextQuestion();
     }
 
     public void showSuccess(int correctButtonIndex) {
-        gameView.showSuccess((Button) views.get(correctButtonIndex + 1));
+        gameView.showSuccess((Button) gameViewsList.get(correctButtonIndex + 1));
     }
 
     public void showFailure(int correctButtonIndex, int clickedButtonIndex) {
-        gameView.showFailure((Button) views.get(correctButtonIndex + 1),
-                (Button) views.get(clickedButtonIndex + 1));
+        gameView.showFailure((Button) gameViewsList.get(correctButtonIndex + 1),
+                (Button) gameViewsList.get(clickedButtonIndex + 1));
     }
 
-    public void showHome() {
+    public void startHomeView() {
+        homeView.startView();
+    }
 
-//        homeView.initializeView(context, );
+    public void endHomeView() {
+        homeView.endView();
     }
 
 }
