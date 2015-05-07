@@ -98,7 +98,7 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void showNextQuestion() {
-        addCard();
+        newQuestion();
     }
 
     private void setFrame(){
