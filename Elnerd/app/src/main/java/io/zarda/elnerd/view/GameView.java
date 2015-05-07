@@ -2,6 +2,8 @@ package io.zarda.elnerd.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.Gravity;
@@ -40,6 +42,8 @@ public class GameView implements Viewable , Game{
 
     FrameLayout mainFrame;
     TableLayout layout;
+    Bitmap correctBitmap;
+    Bitmap wrongBitmap;
 
     int [] colors = {R.drawable.display , R.drawable.display1 , R.drawable.display2 ,
             R.drawable.display3};
@@ -71,16 +75,18 @@ public class GameView implements Viewable , Game{
         secondChoice = (Button) views.get(2);
         thirdChoice = (Button) views.get(3);
         forthChoice = (Button) views.get(4);
+
         setFrame();
         setDimension();
         setLayout();
         setDisplayLayout();
         setButtons();
+        setBitmaps();
     }
 
     @Override
     public void startView() {
-        ((Activity) context).setContentView(layout);
+        ((Activity) context).setContentView(mainFrame);
     }
 
     @Override
@@ -93,10 +99,9 @@ public class GameView implements Viewable , Game{
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
 
         final ImageView correctImage = new ImageView(context);
-        correctImage.setImageResource(R.drawable.correct);
-
-        FrameLayout.LayoutParams imageParams =
-                (FrameLayout.LayoutParams) correctImage.getLayoutParams();
+        correctImage.setImageBitmap(correctBitmap);
+        FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
         imageParams.height = screenWidth;
         imageParams.width = screenWidth;
         correctImage.setLayoutParams(imageParams);
@@ -104,7 +109,8 @@ public class GameView implements Viewable , Game{
         Animation correctFadeAnimation = new AlphaAnimation(0.9f , 0.0f);
         correctFadeAnimation.setDuration(1000);
 
-        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f);
+        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f ,
+                screenWidth/2 , screenHeight/2);
         correctScaleAnimation.setDuration(1000);
 
         AnimationSet correctAnimation = new AnimationSet(false);
@@ -112,6 +118,7 @@ public class GameView implements Viewable , Game{
         correctAnimation.addAnimation(correctScaleAnimation);
         correctAnimation.setDuration(1000);
         correctAnimation.setFillAfter(true);
+
 
         mainFrame.addView(correctImage);
         correctImage.startAnimation(correctAnimation);
@@ -123,13 +130,13 @@ public class GameView implements Viewable , Game{
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+                gvn.notifyShowSuccessFinished();
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
-                gvn.notifyShowSuccessFinished();
+
             }
         });
     }
@@ -140,10 +147,10 @@ public class GameView implements Viewable , Game{
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
 
         final ImageView correctImage = new ImageView(context);
-        correctImage.setImageResource(R.drawable.correct);
+        correctImage.setImageBitmap(wrongBitmap);
 
-        FrameLayout.LayoutParams imageParams =
-                (FrameLayout.LayoutParams) correctImage.getLayoutParams();
+        FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
         imageParams.height = screenWidth;
         imageParams.width = screenWidth;
         correctImage.setLayoutParams(imageParams);
@@ -151,7 +158,8 @@ public class GameView implements Viewable , Game{
         Animation correctFadeAnimation = new AlphaAnimation(0.9f , 0.0f);
         correctFadeAnimation.setDuration(1000);
 
-        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f);
+        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f ,
+                screenWidth/2 , screenHeight/2);
         correctScaleAnimation.setDuration(1000);
 
         AnimationSet correctAnimation = new AnimationSet(false);
@@ -184,6 +192,11 @@ public class GameView implements Viewable , Game{
     @Override
     public void showNextQuestion() {
         newQuestion();
+    }
+
+    private void setBitmaps(){
+        correctBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.correct);
+        wrongBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.wrong);
     }
 
     private void setFrame(){
