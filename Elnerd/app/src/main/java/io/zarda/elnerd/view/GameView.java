@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,12 +40,14 @@ public class GameView implements Viewable , Game{
             R.drawable.display3};
 
     RelativeLayout displayLayout;
-    TextView card;
+    TextView cardMain;
 
     Button firstChoice;
     Button secondChoice;
     Button thirdChoice;
     Button forthChoice;
+
+    ArrayList <TextView> cards = new ArrayList<TextView>();
 
     private float degree = 0;
     private int randomIndex = 0;
@@ -58,7 +61,7 @@ public class GameView implements Viewable , Game{
     @Override
     public void initializeView(Context context , List<View> views) {
         this.context = context;
-        card = (TextView) views.get(0);
+        cardMain = (TextView) views.get(0);
         firstChoice = (Button) views.get(1);
         secondChoice = (Button) views.get(2);
         thirdChoice = (Button) views.get(3);
@@ -73,7 +76,6 @@ public class GameView implements Viewable , Game{
     @Override
     public void startView() {
         ((Activity) context).setContentView(layout);
-        addCard(card);
     }
 
     @Override
@@ -96,7 +98,7 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void showNextQuestion() {
-        addCard(card);
+        addCard();
     }
 
     private void setFrame(){
@@ -119,9 +121,7 @@ public class GameView implements Viewable , Game{
         displayParams.height = (int)(screenHeight * 0.5);
         displayLayout.setLayoutParams(displayParams);
         displayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        card.setWidth(screenWidth);
         layout.addView(displayLayout);
-
     }
 
     private void setDimension(){
@@ -174,10 +174,17 @@ public class GameView implements Viewable , Game{
         degree = randomDegree;
     }
 
-    private void addCard(TextView card){
+    private void addCard(){
+        if(cards.size() == 10){
+            cards.remove(0);
+        }
+        TextView card = new Button(context);
+        cards.add(card);
+        card.setText(cardMain.getText());
         getRandomIndex(3);
         getRandomDegree(10);
 
+        card.setWidth(screenWidth);
         card.setBackground(context.getResources().getDrawable(colors[randomIndex]));
         card.setGravity(Gravity.CENTER);
         card.setWidth(screenWidth);
