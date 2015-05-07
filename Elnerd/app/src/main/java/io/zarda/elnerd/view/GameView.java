@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import io.zarda.elnerd.R;
+import io.zarda.elnerd.src.GameViewNotifier;
 
 /**
  * Created by atef & emad on 4 May, 2015.
@@ -47,6 +48,12 @@ public class GameView implements Viewable , Game{
 
     private float degree = 0;
     private int randomIndex = 0;
+
+    GameViewNotifier gvn;
+
+    public GameView(GameViewNotifier gvn){
+        this.gvn = gvn;
+    }
 
     @Override
     public void initializeView(Context context , List<View> views) {
@@ -77,13 +84,14 @@ public class GameView implements Viewable , Game{
     @Override
     public void showSuccess(Button correctButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
-        
+        gvn.notifyShowSuccessFinished();
     }
 
     @Override
     public void showFailure(Button correctButton , Button wrongButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
+        gvn.notifyShowFailureFinished();
     }
 
     @Override
