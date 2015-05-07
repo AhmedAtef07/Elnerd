@@ -28,8 +28,9 @@ public class HomeView implements Viewable {
     @Override
     public void initializeView(Context context , List<View> views) {
         this.context = context;
-
         play = (Button) (views.get(0));
+        setLayout();
+        setButtons();
     }
 
     @Override
