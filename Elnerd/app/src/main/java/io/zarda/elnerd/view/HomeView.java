@@ -6,10 +6,9 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TableLayout;
 
 import java.util.List;
 
@@ -24,6 +23,7 @@ public class HomeView implements Viewable {
     Context context;
 
     private FrameLayout mainLayout;
+    private TableLayout layout;
 
     private Button play;
 
@@ -31,7 +31,6 @@ public class HomeView implements Viewable {
     public void initializeView(Context context , List<View> views) {
         this.context = context;
         play = (Button) (views.get(0));
-        setFrame();
         setLayout();
         setButtons();
     }
@@ -46,20 +45,17 @@ public class HomeView implements Viewable {
         ((ViewGroup) mainLayout.getParent()).removeAllViews();
     }
 
-    private void setFrame(){
-        ((Activity) context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        ((Activity) context).requestWindowFeature(Window.FEATURE_NO_TITLE);
-    }
-
     private  void setLayout(){
         mainLayout = new FrameLayout(context);
+        layout = new TableLayout(context);
+        mainLayout.addView(layout);
+        layout.setGravity(Gravity.CENTER);
     }
 
     private void setButtons(){
         play.setBackground(context.getResources().getDrawable(R.drawable.display3));
         play.setTextColor(Color.parseColor("#ecf0f1"));
-        mainLayout.addView(play);
+        layout.addView(play);
         play.setGravity(Gravity.CENTER);
     }
 }

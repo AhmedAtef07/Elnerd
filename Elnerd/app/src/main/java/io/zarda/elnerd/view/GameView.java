@@ -9,8 +9,6 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -80,7 +78,6 @@ public class GameView implements Viewable , Game{
         thirdChoice = (Button) views.get(3);
         forthChoice = (Button) views.get(4);
 
-//        setFrame();
         setDimension();
         setLayout();
         setDisplayLayout();
@@ -192,12 +189,6 @@ public class GameView implements Viewable , Game{
         responseAnimation.addAnimation(scaleAnimation);
         responseAnimation.setDuration(1000);
         responseAnimation.setFillAfter(true);
-    }
-
-    private void setFrame(){
-        ((Activity) context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        ((Activity) context).requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     private void setLayout(){
