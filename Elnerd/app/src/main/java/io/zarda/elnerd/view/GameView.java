@@ -144,10 +144,7 @@ public class GameView implements Viewable , Game{
         thirdChoice.setLayoutParams(params);
         forthChoice.setLayoutParams(params);
 
-        firstChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
-        secondChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
-        thirdChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
-        forthChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        setButtonsDefaultColor();
 
         layout.addView(firstChoice);
         layout.addView(secondChoice);
@@ -155,6 +152,14 @@ public class GameView implements Viewable , Game{
         layout.addView(forthChoice);
 
     }
+
+    private void setButtonsDefaultColor(){
+        firstChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        secondChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        thirdChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        forthChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+    }
+
 
     private void getRandomIndex(int x){
         Random random = new Random();
@@ -208,6 +213,10 @@ public class GameView implements Viewable , Game{
 
         displayLayout.addView(card);
         card.startAnimation(dropAnimation);
+    }
 
+    private void newQuestion(){
+        addCard();
+        setButtonsDefaultColor();
     }
 }
