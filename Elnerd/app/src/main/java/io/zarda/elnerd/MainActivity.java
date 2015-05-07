@@ -66,10 +66,8 @@ public class MainActivity extends Activity {
                     questions.get(i).getChoices().get(questions.get(i).getCorrectIndex()));
         }
 
-        vm = new ViewManager(this);
-
         lastQuestion = 0;
-        vm.startHomeView();
+
 
         sharedpreferences = getSharedPreferences(MyPrefrrencesKEY, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
@@ -88,11 +86,14 @@ public class MainActivity extends Activity {
             lastLongestPlayed = 0;
         }
 
-
-
+        System.out.println("last Best: " + lastLongestPlayed);
         System.out.println("last All: " + lastAllPlayed);
         currentLongestPlayed = 0;
         currentAllPlayed = 0;
+
+        vm = new ViewManager(this);
+        vm.setScores(lastLongestPlayed, lastAllPlayed);
+        vm.startHomeView();
     }
 
     @Override
@@ -136,8 +137,6 @@ public class MainActivity extends Activity {
             ++lastQuestion;
         }
         else {
-            vm.endGameView();
-            vm.startHomeView();
             if(currentLongestPlayed > lastLongestPlayed) {
                 editor.putInt(LongestPlayedKEY, currentLongestPlayed);
             }
@@ -145,6 +144,10 @@ public class MainActivity extends Activity {
             editor.commit();
             System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
             System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
+            vm.endGameView();
+            vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
+                    sharedpreferences.getInt(AllPlayedKEY, 0));
+            vm.startHomeView();
         }
     }
 
@@ -166,6 +169,8 @@ public class MainActivity extends Activity {
             currentLongestPlayed = 0;
             System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
             System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
+            vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
+                    sharedpreferences.getInt(AllPlayedKEY, 0));
         }
     }
 
@@ -173,14 +178,6 @@ public class MainActivity extends Activity {
         currentLongestPlayed = 0;
         vm.endHomeView();
         vm.startGameView();
-        if(currentLongestPlayed > lastLongestPlayed) {
-            editor.putInt(LongestPlayedKEY, currentLongestPlayed);
-        }
-        editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
-        editor.commit();
-        currentLongestPlayed = 0;
-        System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
-        System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
     }
 
 }

@@ -28,6 +28,9 @@ public class ViewManager {
 
     HomeView homeView;
 
+    int bestPlayed;
+    int allPlayed;
+
     private Context context;
 
     public ViewManager(final Context context) {
@@ -44,6 +47,8 @@ public class ViewManager {
         });
         playButton.setText("Play Now");
         homeViewsArray.add(playButton);
+        homeViewsArray.add(new TextView(context));
+        homeViewsArray.add(new TextView(context));
 
         homeViewsList = Collections.unmodifiableList(homeViewsArray);
 
@@ -100,11 +105,18 @@ public class ViewManager {
     }
 
     public void startHomeView() {
+        ((TextView)homeViewsList.get(1)).setText("Best: " + bestPlayed);
+        ((TextView)homeViewsList.get(2)).setText("All: " + allPlayed);
         homeView.startView();
     }
 
     public void endHomeView() {
         homeView.endView();
+    }
+
+    public void setScores(int best, int all) {
+        bestPlayed = best;
+        allPlayed = all;
     }
 
 }
