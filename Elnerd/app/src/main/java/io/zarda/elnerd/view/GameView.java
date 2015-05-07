@@ -129,10 +129,9 @@ public class GameView implements Viewable , Game{
             @Override
             public void onAnimationRepeat(Animation animation) {
                 ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+                gvn.notifyShowSuccessFinished();
             }
         });
-
-        gvn.notifyShowSuccessFinished();
     }
 
     @Override
@@ -177,10 +176,9 @@ public class GameView implements Viewable , Game{
             @Override
             public void onAnimationRepeat(Animation animation) {
                 ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+                gvn.notifyShowSuccessFinished();
             }
         });
-
-        gvn.notifyShowFailureFinished();
     }
 
     @Override
