@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.zarda.elnerd.MainActivity;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.view.GameView;
 
@@ -20,9 +21,9 @@ public class ViewManager {
     private final List<View> views;
 
     GameView gameView;
+    GameViewNotifier vmn;
 
     private Context context;
-
 
     public ViewManager(Context context) {
         this.context = context;
@@ -35,7 +36,9 @@ public class ViewManager {
 
         views = Collections.unmodifiableList(viewsList);
 
-        gameView = new GameView();
+        vmn = new GameViewNotifier(this);
+
+        gameView = new GameView(vmn);
         gameView.initializeView(context, views);
     }
 
@@ -46,7 +49,7 @@ public class ViewManager {
             ((Button)views.get(i + 1)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    click(v);
+                    ((MainActivity)context).click(v);
                 }
             });
 
@@ -58,16 +61,6 @@ public class ViewManager {
             }
         }
         gameView.startView();
-    }
-
-    public void click(View v) {
-        if ((boolean)v.getTag()) {
-            System.out.println("True answer Clicked");
-        }
-        else {
-            System.out.println("False answer Clicked");
-
-        }
     }
 
 }

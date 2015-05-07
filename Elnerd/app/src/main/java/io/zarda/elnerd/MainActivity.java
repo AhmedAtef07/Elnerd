@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -61,5 +62,15 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void click(View v) {
+        if ((boolean)v.getTag()) {
+            System.out.println("True answer Clicked");
+        }
+        else {
+            System.out.println("False answer Clicked");
+
+        }
     }
 }

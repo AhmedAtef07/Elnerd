@@ -23,4 +23,5 @@ public class QuestionsManager {
     public void addQuestion(Question question) {
         questionsDB.addQuestion(question);
     }
+
 }

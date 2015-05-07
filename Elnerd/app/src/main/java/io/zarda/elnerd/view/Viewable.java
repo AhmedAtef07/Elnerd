@@ -12,5 +12,4 @@ public interface Viewable {
     void initializeView(Context context , List<View> views);
     void startView();
     void endView();
-
 }
