@@ -79,73 +79,82 @@ public class GameView implements Viewable , Game{
         forthChoice = (Button) views.get(4);
 
         setDimension();
-        setLayout();
-        setDisplayLayout();
-        setButtons();
-        setBitmapsAndAnimation();
     }
 
     @Override
     public void startView() {
+//        mainFrame.addView(layout);
+
+        setLayout();
+        setDisplayLayout();
+        setButtons();
+
+        setBitmapsAndAnimation();
         ((Activity) context).setContentView(mainFrame);
     }
 
     @Override
     public void endView() {
-        ((ViewGroup)mainFrame).removeAllViews();
+        layout.removeAllViews();
+        mainFrame.removeAllViews();
     }
 
     @Override
     public void showSuccess(final Button correctButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
 
-        mainFrame.addView(correctImage);
-        correctImage.startAnimation(responseAnimation);
-        responseAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        // mainFrame.
+        if (!correctImage.isShown() && !wrongImage.isShown()) {
+            mainFrame.addView(correctImage);
+            correctImage.startAnimation(responseAnimation);
 
-            }
+            responseAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
-                gvn.notifyShowSuccessFinished();
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+                    gvn.notifyShowSuccessFinished();
+                }
 
-            }
-        });
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        }
     }
 
     @Override
-    public void showFailure(Button correctButton , Button wrongButton) {
+    public void showFailure(Button correctButton , final Button wrongButton) {
 
-        correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
 
-        mainFrame.addView(wrongImage);
-        wrongImage.startAnimation(responseAnimation);
+        if (!wrongImage.isShown() && !correctImage.isShown()) {
+            mainFrame.addView(wrongImage);
+            wrongImage.startAnimation(responseAnimation);
 
-        responseAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+            responseAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    ((ViewGroup) (wrongImage.getParent())).removeView(wrongImage);
+                    gvn.notifyShowFailureFinished();
+                }
 
-            }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
-                gvn.notifyShowFailureFinished();
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override

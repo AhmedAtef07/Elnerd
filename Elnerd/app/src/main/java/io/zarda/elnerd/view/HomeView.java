@@ -37,6 +37,7 @@ public class HomeView implements Viewable {
 
     @Override
     public void startView() {
+//        mainLayout.addView(layout);
         ((Activity)context).setContentView(mainLayout);
     }
 
