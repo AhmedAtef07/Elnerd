@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -29,6 +31,7 @@ public class HomeView implements Viewable {
     public void initializeView(Context context , List<View> views) {
         this.context = context;
         play = (Button) (views.get(0));
+        setFrame();
         setLayout();
         setButtons();
     }
@@ -40,7 +43,13 @@ public class HomeView implements Viewable {
 
     @Override
     public void endView() {
-        ((ViewGroup) mainLayout).removeAllViews();
+        ((ViewGroup) mainLayout.getParent()).removeAllViews();
+    }
+
+    private void setFrame(){
+        ((Activity) context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ((Activity) context).requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     private  void setLayout(){
