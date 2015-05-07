@@ -80,7 +80,7 @@ public class GameView implements Viewable , Game{
         thirdChoice = (Button) views.get(3);
         forthChoice = (Button) views.get(4);
 
-        setFrame();
+//        setFrame();
         setDimension();
         setLayout();
         setDisplayLayout();
