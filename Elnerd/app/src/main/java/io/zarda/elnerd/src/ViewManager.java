@@ -12,16 +12,20 @@ import java.util.List;
 import io.zarda.elnerd.MainActivity;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.view.GameView;
+import io.zarda.elnerd.view.HomeView;
 
 /**
  * Created by atef & emad on 4 May, 2015.
  */
+
 public class ViewManager {
 
     private final List<View> views;
 
     GameView gameView;
-    GameViewNotifier vmn;
+    GameViewNotifier gvn;
+
+    HomeView homeView;
 
     private Context context;
 
@@ -36,10 +40,13 @@ public class ViewManager {
 
         views = Collections.unmodifiableList(viewsList);
 
-        vmn = new GameViewNotifier(this);
+        gvn = new GameViewNotifier(this, (MainActivity)context);
 
-        gameView = new GameView(vmn);
+        homeView = new HomeView();
+
+        gameView = new GameView(gvn);
         gameView.initializeView(context, views);
+        gameView.startView();
     }
 
     public void showQuestion(Question question) {
@@ -53,14 +60,25 @@ public class ViewManager {
                 }
             });
 
-            if (i == question.getCorrectIndex()) {
-                ((Button)views.get(i + 1)).setTag(true);
-            }
-            else {
-                ((Button)views.get(i + 1)).setTag(false);
-            }
+            ((Button)views.get(i + 1)).setTag(i);
+
         }
-        gameView.startView();
+
+        gameView.showNextQuestion();
+    }
+
+    public void showSuccess(int correctButtonIndex) {
+        gameView.showSuccess((Button) views.get(correctButtonIndex + 1));
+    }
+
+    public void showFailure(int correctButtonIndex, int clickedButtonIndex) {
+        gameView.showFailure((Button) views.get(correctButtonIndex + 1),
+                (Button) views.get(clickedButtonIndex + 1));
+    }
+
+    public void showHome() {
+
+//        homeView.initializeView(context, );
     }
 
 }
