@@ -122,6 +122,7 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void showFailure(Button correctButton , Button wrongButton) {
+
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
 
@@ -142,7 +143,7 @@ public class GameView implements Viewable , Game{
             @Override
             public void onAnimationRepeat(Animation animation) {
                 ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
-                gvn.notifyShowSuccessFinished();
+                gvn.notifyShowFailureFinished();
             }
         });
     }
