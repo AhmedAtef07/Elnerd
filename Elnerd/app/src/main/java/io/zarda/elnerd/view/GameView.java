@@ -6,13 +6,17 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ public class GameView implements Viewable , Game{
     int screenWidth;
     int screenHeight;
 
+    FrameLayout mainFrame;
     TableLayout layout;
 
     int [] colors = {R.drawable.display , R.drawable.display1 , R.drawable.display2 ,
@@ -84,8 +89,49 @@ public class GameView implements Viewable , Game{
     }
 
     @Override
-    public void showSuccess(Button correctButton) {
+    public void showSuccess(final Button correctButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
+
+        final ImageView correctImage = new ImageView(context);
+        correctImage.setImageResource(R.drawable.correct);
+
+        FrameLayout.LayoutParams imageParams =
+                (FrameLayout.LayoutParams) correctImage.getLayoutParams();
+        imageParams.height = screenWidth;
+        imageParams.width = screenWidth;
+        correctImage.setLayoutParams(imageParams);
+
+        Animation correctFadeAnimation = new AlphaAnimation(0.9f , 0.0f);
+        correctFadeAnimation.setDuration(1000);
+
+        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f);
+        correctScaleAnimation.setDuration(1000);
+
+        AnimationSet correctAnimation = new AnimationSet(false);
+        correctAnimation.addAnimation(correctFadeAnimation);
+        correctAnimation.addAnimation(correctScaleAnimation);
+        correctAnimation.setDuration(1000);
+        correctAnimation.setFillAfter(true);
+
+        mainFrame.addView(correctImage);
+        correctImage.startAnimation(correctAnimation);
+        correctAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+            }
+        });
+
         gvn.notifyShowSuccessFinished();
     }
 
@@ -93,6 +139,47 @@ public class GameView implements Viewable , Game{
     public void showFailure(Button correctButton , Button wrongButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
+
+        final ImageView correctImage = new ImageView(context);
+        correctImage.setImageResource(R.drawable.correct);
+
+        FrameLayout.LayoutParams imageParams =
+                (FrameLayout.LayoutParams) correctImage.getLayoutParams();
+        imageParams.height = screenWidth;
+        imageParams.width = screenWidth;
+        correctImage.setLayoutParams(imageParams);
+
+        Animation correctFadeAnimation = new AlphaAnimation(0.9f , 0.0f);
+        correctFadeAnimation.setDuration(1000);
+
+        Animation correctScaleAnimation = new ScaleAnimation(0.25f , 1f , 0.25f , 1f);
+        correctScaleAnimation.setDuration(1000);
+
+        AnimationSet correctAnimation = new AnimationSet(false);
+        correctAnimation.addAnimation(correctFadeAnimation);
+        correctAnimation.addAnimation(correctScaleAnimation);
+        correctAnimation.setDuration(1000);
+        correctAnimation.setFillAfter(true);
+
+        mainFrame.addView(correctImage);
+        correctImage.startAnimation(correctAnimation);
+        correctAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+            }
+        });
+
         gvn.notifyShowFailureFinished();
     }
 
@@ -110,6 +197,9 @@ public class GameView implements Viewable , Game{
     private void setLayout(){
         layout = new TableLayout(context);
         layout.setGravity(Gravity.CENTER);
+
+        mainFrame = new FrameLayout(context);
+        mainFrame.addView(layout);
     }
 
     private void setDisplayLayout(){
@@ -203,8 +293,8 @@ public class GameView implements Viewable , Game{
                 screenHeight/4);
         rotateAnimation.setDuration(1000);
 
-        Animation scaleAnimation = new ScaleAnimation((float)1.0 , (float)0.85 , (float)1 ,
-                (float)0.7 , screenWidth / 2 , screenHeight / 4);
+        Animation scaleAnimation = new ScaleAnimation(1.0f , 0.85f , 1f , 0.7f , screenWidth / 2 ,
+                screenHeight / 4);
         scaleAnimation.setDuration(1000);
 
         dropAnimation.addAnimation(rotateAnimation);
