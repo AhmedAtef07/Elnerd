@@ -147,6 +147,7 @@ public class MainActivity extends Activity {
             vm.endGameView();
             vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
                     sharedpreferences.getInt(AllPlayedKEY, 0));
+            currentAllPlayed = 0;
             vm.startHomeView();
         }
     }
@@ -157,8 +158,7 @@ public class MainActivity extends Activity {
             System.out.println("True answer Clicked");
             vm.showSuccess(correctIndex);
             ++currentLongestPlayed;
-        }
-        else {
+        } else {
             System.out.println("False answer Clicked");
             vm.showFailure(correctIndex, (int) v.getTag());
             if(currentLongestPlayed > lastLongestPlayed) {
@@ -171,6 +171,7 @@ public class MainActivity extends Activity {
             System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
             vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
                     sharedpreferences.getInt(AllPlayedKEY, 0));
+            currentAllPlayed = 0;
         }
     }
 
