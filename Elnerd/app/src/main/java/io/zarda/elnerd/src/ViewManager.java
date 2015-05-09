@@ -105,6 +105,7 @@ public class ViewManager {
     }
 
     public void startHomeView() {
+        ((MainActivity)context).updatePreferences();
         ((TextView)homeViewsList.get(1)).setText("Best: " + bestPlayed);
         ((TextView)homeViewsList.get(2)).setText("All: " + allPlayed);
         homeView.startView();
