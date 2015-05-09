@@ -21,11 +21,9 @@ import io.zarda.elnerd.src.ViewManager;
 public class MainActivity extends Activity {
 
     private ViewManager vm;
-    private int correctIndex;
-    private int questionsSize;
-    private int lastQuestion;
+    QuestionsManager questionsManager;
 
-    ArrayList<Question> questions;
+    private int correctIndex;
 
     public static final String MyPrefrrencesKEY = "Score" ;
     public static final String LongestPlayedKEY = "LongestPlayed";
@@ -48,24 +46,19 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         QuestionsDB.initializeDB(this);
 
-        QuestionsManager questionsManager = new QuestionsManager();
+        questionsManager = new QuestionsManager(50);
 
         ArrayList<String> choices = new ArrayList<>();
-        choices.add("Not your business");
-        choices.add("Again Not your business");
-        choices.add("Why do you ask?");
-        choices.add("May be yes and may be no");
-//        questionsManager.addQuestion(new Question("Are you Magdy?", choices, 0));
+        choices.add("Choice  0");
+        choices.add("Choice  1");
+        choices.add("Choice  2");
+        choices.add("Choice  3");
 
-        questions = questionsManager.getQuestions();
-        questionsSize = questions.size();
+//        for (int i = 1; i < 50; ++i)
+//            questionsManager.addQuestion(new Question("Question number " + i + "?", choices, i % 4));
 
-        for (int i = 0; i < questionsSize; ++i) {
-            System.out.println("DataBase: " + questions.get(i).getHeader() +
-                    questions.get(i).getChoices().get(questions.get(i).getCorrectIndex()));
-        }
-
-        lastQuestion = 0;
+        int questionsSize = questionsManager.getRandomQuestions().size();
+        System.out.println("Size: " + questionsSize);
 
         sharedpreferences = getSharedPreferences(MyPrefrrencesKEY, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
@@ -115,10 +108,10 @@ public class MainActivity extends Activity {
     }
 
     public void setNewQuestion() {
-        if(lastQuestion < questionsSize) {
-            vm.showQuestion(questions.get(lastQuestion));
-            correctIndex = questions.get(lastQuestion).getCorrectIndex();
-            ++lastQuestion;
+        Question question = questionsManager.getRandomQuestion();
+        if (question != null) {
+            vm.showQuestion(question);
+            correctIndex = question.getCorrectIndex();
         }
         else {
             vm.endGameView();
@@ -133,7 +126,6 @@ public class MainActivity extends Activity {
             ++currentLongestPlayed;
         } else {
             vm.showFailure(correctIndex, (int) v.getTag());
-            currentLongestPlayed = 0;
         }
     }
 
@@ -144,7 +136,7 @@ public class MainActivity extends Activity {
     }
 
     public void updatePreferences() {
-        if(currentLongestPlayed > lastLongestPlayed) {
+        if (currentLongestPlayed > lastLongestPlayed) {
             editor.putInt(LongestPlayedKEY, currentLongestPlayed);
         }
         editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
@@ -156,6 +148,7 @@ public class MainActivity extends Activity {
                 sharedpreferences.getInt(AllPlayedKEY, 0));
         lastAllPlayed += currentAllPlayed;
         currentAllPlayed = 0;
+        currentLongestPlayed = 0;
     }
 
 }
