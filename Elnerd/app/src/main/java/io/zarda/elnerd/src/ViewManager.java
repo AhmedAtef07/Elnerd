@@ -45,7 +45,6 @@ public class ViewManager {
                 ((MainActivity) context).playClick(v);
             }
         });
-        playButton.setText("Play Now");
         homeViewsArray.add(playButton);
         homeViewsArray.add(new TextView(context));
         homeViewsArray.add(new TextView(context));

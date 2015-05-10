@@ -55,4 +55,12 @@ public class QuestionsManager {
         return null;
     }
 
+    public boolean containsQuestion() {
+        return questionArrayList.size() > 0;
+    }
+
+    public int questionsSize() {
+        return questionArrayList.size();
+    }
+
 }

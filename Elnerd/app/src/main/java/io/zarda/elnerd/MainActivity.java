@@ -54,10 +54,10 @@ public class MainActivity extends Activity {
         choices.add("Choice  2");
         choices.add("Choice  3");
 
-//        for (int i = 1; i < 50; ++i)
+//        for (int i = 1; i <= 50; ++i)
 //            questionsManager.addQuestion(new Question("Question number " + i + "?", choices, i % 4));
 
-        int questionsSize = questionsManager.getRandomQuestions().size();
+        int questionsSize = questionsManager.questionsSize();
         System.out.println("Size: " + questionsSize);
 
         sharedpreferences = getSharedPreferences(MyPrefrrencesKEY, Context.MODE_PRIVATE);
@@ -108,8 +108,8 @@ public class MainActivity extends Activity {
     }
 
     public void setNewQuestion() {
-        Question question = questionsManager.getRandomQuestion();
-        if (question != null) {
+        if (questionsManager.containsQuestion()) {
+            Question question = questionsManager.getRandomQuestion();
             vm.showQuestion(question);
             correctIndex = question.getCorrectIndex();
         }
