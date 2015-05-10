@@ -70,7 +70,7 @@ public class ViewManager {
         }
 
         gameViewsList = Collections.unmodifiableList(gameViewsArray);
-        gvn = new GameViewNotifier(this, (MainActivity)context);
+        gvn = new GameViewNotifier(this, (MainActivity) context);
 
         homeView = new HomeView();
         homeView.initializeView(context, homeViewsList);
@@ -81,7 +81,7 @@ public class ViewManager {
 
     public void startGameView() {
         gameView.startView();
-        ((MainActivity)context).setNewQuestion();
+        ((MainActivity) context).setNewQuestion();
         currentView = gameView;
     }
 
@@ -109,9 +109,9 @@ public class ViewManager {
     }
 
     public void startHomeView() {
-        ((MainActivity)context).updatePreferences();
-        ((TextView)homeViewsList.get(1)).setText("Best: " + bestPlayed);
-        ((TextView)homeViewsList.get(2)).setText("All: " + allPlayed);
+        ((MainActivity) context).updatePreferences();
+        ((TextView) homeViewsList.get(1)).setText("Best: " + bestPlayed);
+        ((TextView) homeViewsList.get(2)).setText("All: " + allPlayed);
         homeView.startView();
         currentView = homeView;
     }

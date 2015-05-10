@@ -4,6 +4,10 @@ android {
     compileSdkVersion 21
     buildToolsVersion "22.0.1"
 
+    repositories {
+        mavenCentral()
+    }
+
     defaultConfig {
         applicationId "io.zarda.elnerd"
         minSdkVersion 17
@@ -19,7 +23,13 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.google.android.gms:play-services:7.3.0'
 }

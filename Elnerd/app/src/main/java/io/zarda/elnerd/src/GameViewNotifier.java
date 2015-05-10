@@ -15,7 +15,7 @@ public class GameViewNotifier {
     }
 
     public void notifyShowSuccessFinished() {
-         ma.setNewQuestion();
+        ma.setNewQuestion();
     }
 
     public void notifyShowFailureFinished() {

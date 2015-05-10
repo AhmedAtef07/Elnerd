@@ -1,17 +1,20 @@
 package io.zarda.elnerd;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+
+import com.facebook.FacebookSdk;
 
 import java.util.ArrayList;
 
@@ -19,33 +22,34 @@ import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 import io.zarda.elnerd.src.QuestionsManager;
 import io.zarda.elnerd.src.ViewManager;
+import io.zarda.elnerd.view.FragmentSimpleLoginButton;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
-    private ViewManager vm;
-    QuestionsManager questionsManager;
-
-    CountDownTimer timer;
-
-    private int correctIndex;
-
-    public static final String MyPreferencesKEY = "Score" ;
+    public static final String MyPreferencesKEY = "Score";
     public static final String LongestPlayedKEY = "LongestPlayed";
     public static final String AllPlayedKEY = "AllPlayed";
-
-    private int lastLongestPlayed;
-    private int lastAllPlayed;
-
-    private int currentLongestPlayed;
-    private int currentAllPlayed;
-
+    QuestionsManager questionsManager;
+    CountDownTimer timer;
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
+    private ViewManager vm;
+    private int correctIndex;
+    private int lastLongestPlayed;
+    private int lastAllPlayed;
+    private int currentLongestPlayed;
+    private int currentAllPlayed;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mFragmentManager = getSupportFragmentManager();
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -113,27 +117,28 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (Integer.parseInt(android.os.Build.VERSION.SDK) < 5
-                && keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            System.out.println("onKeyDown Called");
-            onBackPressed();
+    public void onBackPressed() {
+        backPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            backPressed();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    public void onBackPressed() {
+    public void backPressed() {
         System.out.println("onBackPressed Called");
-        if(!vm.inHome()) {
+        if (!vm.inHome()) {
             vm.endGameView();
             vm.startHomeView();
+        } else {
+//            Toast.makeText(this, "You are currently in home :)", Toast.LENGTH_SHORT).show();
+            finish();
         }
-        else {
-            Toast.makeText(this, "You are currently in home :)",
-                    Toast.LENGTH_SHORT).show();
-        }
-        return;
     }
 
     public void setNewQuestion() {
@@ -157,8 +162,7 @@ public class MainActivity extends Activity {
             };
 
             timer.start();
-        }
-        else {
+        } else {
             vm.endGameView();
             vm.startHomeView();
         }
@@ -166,7 +170,7 @@ public class MainActivity extends Activity {
 
     public void answerClick(View v) {
         timer.cancel();
-        if ((int)v.getTag() == correctIndex) {
+        if ((int) v.getTag() == correctIndex) {
             vm.showSuccess(correctIndex);
             ++currentLongestPlayed;
         } else {
@@ -178,6 +182,12 @@ public class MainActivity extends Activity {
         currentLongestPlayed = 0;
         vm.endHomeView();
         vm.startGameView();
+    }
+
+    public void loginClick(View v) {
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(android.R.id.content, new FragmentSimpleLoginButton());
+        transaction.commit();
     }
 
     public void updatePreferences() {

@@ -9,6 +9,7 @@ import io.zarda.elnerd.model.QuestionsDB;
 /**
  * Created by atef & emad on 4 May, 2015.
  */
+
 public class QuestionsManager {
 
     QuestionsDB questionsDB;
@@ -23,12 +24,12 @@ public class QuestionsManager {
         getRandomQuestions();
     }
 
-    public ArrayList<Question> getQuestions(){
+    public ArrayList<Question> getQuestions() {
         questionArrayList = questionsDB.getQuestions();
         return questionArrayList;
     }
 
-    public ArrayList<Question> getRandomQuestions(){
+    public ArrayList<Question> getRandomQuestions() {
         if (questionArrayList.size() <= requestSize / 2) {
             questionArrayList.addAll(questionsDB.getRandomQuestions(requestSize));
         }
