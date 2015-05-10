@@ -13,6 +13,7 @@ import io.zarda.elnerd.MainActivity;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.view.GameView;
 import io.zarda.elnerd.view.HomeView;
+import io.zarda.elnerd.view.Viewable;
 
 /**
  * Created by atef & emad on 4 May, 2015.
@@ -27,6 +28,8 @@ public class ViewManager {
     GameViewNotifier gvn;
 
     HomeView homeView;
+
+    Viewable currentView;
 
     int bestPlayed;
     int allPlayed;
@@ -79,16 +82,18 @@ public class ViewManager {
     public void startGameView() {
         gameView.startView();
         ((MainActivity)context).setNewQuestion();
+        currentView = gameView;
     }
 
     public void endGameView() {
         gameView.endView();
+        currentView = null;
     }
 
     public void showQuestion(Question question) {
         ((TextView) gameViewsList.get(0)).setText(question.getHeader());
-        for (int i = 0; i < 4; ++i) {
-            ((Button) gameViewsList.get(i + 1)).setText(question.getChoices().get(i));
+        for (int i = 1; i < gameViewsList.size(); ++i) {
+            ((Button) gameViewsList.get(i)).setText(question.getChoices().get(i - 1));
         }
 
         gameView.showNextQuestion();
@@ -108,15 +113,21 @@ public class ViewManager {
         ((TextView)homeViewsList.get(1)).setText("Best: " + bestPlayed);
         ((TextView)homeViewsList.get(2)).setText("All: " + allPlayed);
         homeView.startView();
+        currentView = homeView;
     }
 
     public void endHomeView() {
         homeView.endView();
+        currentView = null;
     }
 
     public void setScores(int best, int all) {
         bestPlayed = best;
         allPlayed = all;
+    }
+
+    public boolean inHome() {
+        return currentView == homeView;
     }
 
 }

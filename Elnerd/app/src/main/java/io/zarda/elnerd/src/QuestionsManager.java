@@ -29,7 +29,7 @@ public class QuestionsManager {
     }
 
     public ArrayList<Question> getRandomQuestions(){
-        if (questionArrayList.size() < requestSize / 2) {
+        if (questionArrayList.size() <= requestSize / 2) {
             questionArrayList.addAll(questionsDB.getRandomQuestions(requestSize));
         }
         return questionArrayList;
@@ -41,7 +41,7 @@ public class QuestionsManager {
 
     public Question getRandomQuestion() {
         if (questionArrayList.size() > 0) {
-            if (questionArrayList.size() < requestSize / 2) {
+            if (questionArrayList.size() <= requestSize / 2) {
                 getRandomQuestions();
             }
             Random rand = new Random();

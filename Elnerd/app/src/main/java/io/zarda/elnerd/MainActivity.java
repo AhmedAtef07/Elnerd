@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,9 +26,11 @@ public class MainActivity extends Activity {
     private ViewManager vm;
     QuestionsManager questionsManager;
 
+    CountDownTimer timer;
+
     private int correctIndex;
 
-    public static final String MyPrefrrencesKEY = "Score" ;
+    public static final String MyPreferencesKEY = "Score" ;
     public static final String LongestPlayedKEY = "LongestPlayed";
     public static final String AllPlayedKEY = "AllPlayed";
 
@@ -46,7 +51,7 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         QuestionsDB.initializeDB(this);
 
-        questionsManager = new QuestionsManager(50);
+        questionsManager = new QuestionsManager(2);
 
         ArrayList<String> choices = new ArrayList<>();
         choices.add("Choice  0");
@@ -60,7 +65,7 @@ public class MainActivity extends Activity {
         int questionsSize = questionsManager.questionsSize();
         System.out.println("Size: " + questionsSize);
 
-        sharedpreferences = getSharedPreferences(MyPrefrrencesKEY, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(MyPreferencesKEY, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
 
         lastAllPlayed = sharedpreferences.getInt(AllPlayedKEY, 0);
@@ -107,11 +112,51 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) < 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            System.out.println("onKeyDown Called");
+            onBackPressed();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void onBackPressed() {
+        System.out.println("onBackPressed Called");
+        if(!vm.inHome()) {
+            vm.endGameView();
+            vm.startHomeView();
+        }
+        else {
+            Toast.makeText(this, "You are currently in home :)",
+                    Toast.LENGTH_SHORT).show();
+        }
+        return;
+    }
+
     public void setNewQuestion() {
         if (questionsManager.containsQuestion()) {
+            ++currentAllPlayed;
             Question question = questionsManager.getRandomQuestion();
             vm.showQuestion(question);
             correctIndex = question.getCorrectIndex();
+            timer = new CountDownTimer(6000, 500) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);
+                }
+
+                @Override
+                public void onFinish() {
+                    System.out.println("done!");
+                    vm.endGameView();
+                    vm.startHomeView();
+                }
+            };
+
+            timer.start();
         }
         else {
             vm.endGameView();
@@ -120,7 +165,7 @@ public class MainActivity extends Activity {
     }
 
     public void answerClick(View v) {
-        ++currentAllPlayed;
+        timer.cancel();
         if ((int)v.getTag() == correctIndex) {
             vm.showSuccess(correctIndex);
             ++currentLongestPlayed;
