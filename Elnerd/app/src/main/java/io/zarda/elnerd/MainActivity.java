@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,13 +24,13 @@ import io.zarda.elnerd.src.ViewManager;
 public class MainActivity extends Activity {
 
     private ViewManager vm;
+    QuestionsManager questionsManager;
+
+    CountDownTimer timer;
+
     private int correctIndex;
-    private int questionsSize;
-    private int lastQuestion;
 
-    ArrayList<Question> questions;
-
-    public static final String MyPrefrrencesKEY = "Score" ;
+    public static final String MyPreferencesKEY = "Score" ;
     public static final String LongestPlayedKEY = "LongestPlayed";
     public static final String AllPlayedKEY = "AllPlayed";
 
@@ -46,66 +49,45 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        setContentView(R.layout.activity_main);
         QuestionsDB.initializeDB(this);
 
-        QuestionsManager questionsManager = new QuestionsManager();
+        questionsManager = new QuestionsManager(2);
 
         ArrayList<String> choices = new ArrayList<>();
-        choices.add("Not your business");
-        choices.add("Again Not your business");
-        choices.add("Why do you ask?");
-        choices.add("May be yes and may be no");
-//        questionsManager.addQuestion(new Question("Are you Magdy?", choices, 3));
+        choices.add("Choice  0");
+        choices.add("Choice  1");
+        choices.add("Choice  2");
+        choices.add("Choice  3");
 
-        questions = questionsManager.getQuestions();
-        questionsSize = questions.size();
+//        for (int i = 1; i <= 50; ++i)
+//            questionsManager.addQuestion(new Question("Question number " + i + "?", choices, i % 4));
 
-        for (int i = 0; i < questionsSize; ++i) {
-            System.out.println("DataBase: " + questions.get(i).getHeader() +
-                    questions.get(i).getChoices().get(questions.get(i).getCorrectIndex()));
-        }
+        int questionsSize = questionsManager.questionsSize();
+        System.out.println("Size: " + questionsSize);
 
-        lastQuestion = 0;
-
-
-        sharedpreferences = getSharedPreferences(MyPrefrrencesKEY, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(MyPreferencesKEY, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
 
-        if (sharedpreferences.contains(AllPlayedKEY)) {
-            lastAllPlayed = sharedpreferences.getInt(AllPlayedKEY, 0);
-        }
-        else {
-            lastAllPlayed = 0;
-        }
+        lastAllPlayed = sharedpreferences.getInt(AllPlayedKEY, 0);
+        lastLongestPlayed = sharedpreferences.getInt(LongestPlayedKEY, 0);
 
-        if (sharedpreferences.contains(LongestPlayedKEY)) {
-            lastLongestPlayed = sharedpreferences.getInt(LongestPlayedKEY, 0);
-        }
-        else {
-            lastLongestPlayed = 0;
-        }
-
-        System.out.println("last Best: " + lastLongestPlayed);
-        System.out.println("last All: " + lastAllPlayed);
         currentLongestPlayed = 0;
         currentAllPlayed = 0;
 
         vm = new ViewManager(this);
-        vm.setScores(lastLongestPlayed, lastAllPlayed);
         vm.startHomeView();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(currentLongestPlayed > lastLongestPlayed) {
-            editor.putInt(LongestPlayedKEY, currentLongestPlayed);
-        }
-        editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
-        editor.commit();
-        System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
-        System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
+        updatePreferences();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        updatePreferences();
     }
 
     @Override
@@ -130,48 +112,65 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setNewQuestion() {
-        if(lastQuestion < questionsSize) {
-            vm.showQuestion(questions.get(lastQuestion));
-            correctIndex = questions.get(lastQuestion).getCorrectIndex();
-            ++lastQuestion;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) < 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            System.out.println("onKeyDown Called");
+            onBackPressed();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void onBackPressed() {
+        System.out.println("onBackPressed Called");
+        if(!vm.inHome()) {
+            vm.endGameView();
+            vm.startHomeView();
         }
         else {
-            if(currentLongestPlayed > lastLongestPlayed) {
-                editor.putInt(LongestPlayedKEY, currentLongestPlayed);
-            }
-            editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
-            editor.commit();
-            System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
-            System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
+            Toast.makeText(this, "You are currently in home :)",
+                    Toast.LENGTH_SHORT).show();
+        }
+        return;
+    }
+
+    public void setNewQuestion() {
+        if (questionsManager.containsQuestion()) {
+            ++currentAllPlayed;
+            Question question = questionsManager.getRandomQuestion();
+            vm.showQuestion(question);
+            correctIndex = question.getCorrectIndex();
+            timer = new CountDownTimer(6000, 500) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);
+                }
+
+                @Override
+                public void onFinish() {
+                    System.out.println("done!");
+                    vm.endGameView();
+                    vm.startHomeView();
+                }
+            };
+
+            timer.start();
+        }
+        else {
             vm.endGameView();
-            vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
-                    sharedpreferences.getInt(AllPlayedKEY, 0));
-            currentAllPlayed = 0;
             vm.startHomeView();
         }
     }
 
     public void answerClick(View v) {
-        ++currentAllPlayed;
+        timer.cancel();
         if ((int)v.getTag() == correctIndex) {
-            System.out.println("True answer Clicked");
             vm.showSuccess(correctIndex);
             ++currentLongestPlayed;
         } else {
-            System.out.println("False answer Clicked");
             vm.showFailure(correctIndex, (int) v.getTag());
-            if(currentLongestPlayed > lastLongestPlayed) {
-                editor.putInt(LongestPlayedKEY, currentLongestPlayed);
-            }
-            editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
-            editor.commit();
-            currentLongestPlayed = 0;
-            System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
-            System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
-            vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
-                    sharedpreferences.getInt(AllPlayedKEY, 0));
-            currentAllPlayed = 0;
         }
     }
 
@@ -179,6 +178,22 @@ public class MainActivity extends Activity {
         currentLongestPlayed = 0;
         vm.endHomeView();
         vm.startGameView();
+    }
+
+    public void updatePreferences() {
+        if (currentLongestPlayed > lastLongestPlayed) {
+            editor.putInt(LongestPlayedKEY, currentLongestPlayed);
+        }
+        editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
+        editor.commit();
+        currentLongestPlayed = 0;
+        System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
+        System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
+        vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
+                sharedpreferences.getInt(AllPlayedKEY, 0));
+        lastAllPlayed += currentAllPlayed;
+        currentAllPlayed = 0;
+        currentLongestPlayed = 0;
     }
 
 }
