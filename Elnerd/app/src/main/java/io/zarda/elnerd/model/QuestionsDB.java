@@ -204,7 +204,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
                     }
                     choices.add(correctIndex, correctChoice);
 
-                    Question question = new Question(header, choices, correctIndex, id);
+                    Question question = new Question(header, choices, correctIndex, id, 0, 0);
                     questions.add(question);
 
                     questionsCursor.moveToNext();
