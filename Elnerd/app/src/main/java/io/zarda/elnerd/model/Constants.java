@@ -5,10 +5,11 @@ package io.zarda.elnerd.model;
  */
 public class Constants {
     public static final int DB_REQUEST_COUNT = 2;
+    public static final String API_URL = "http://elnerd.zarda.io/api";
 
     public enum SharedMemory {
-        NAME ("shared_memory"),
-        LAST_SYNC_TIMESTAMP ("last_sync_timestamp");
+        NAME("shared_memory"),
+        LAST_SYNC_TIMESTAMP("last_sync_timestamp");
 
         private String name;
 
