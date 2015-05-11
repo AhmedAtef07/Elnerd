@@ -1,6 +1,7 @@
 package io.zarda.elnerd;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,7 +15,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 
@@ -42,6 +50,31 @@ public class MainActivity extends FragmentActivity {
     private int currentAllPlayed;
     private FragmentManager mFragmentManager;
 
+    private CallbackManager mCallbackManager;
+    private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            System.out.println("onSuccess");
+            AccessToken accessToken = loginResult.getAccessToken();
+            Profile profile = Profile.getCurrentProfile();
+            String msg = "Welcome ";
+            if (profile != null) {
+                msg += profile.getName();
+            }
+            System.out.println(msg);
+        }
+
+        @Override
+        public void onCancel() {
+            System.out.println("onCancel");
+        }
+
+        @Override
+        public void onError(FacebookException e) {
+            System.out.println("onError");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +82,7 @@ public class MainActivity extends FragmentActivity {
         mFragmentManager = getSupportFragmentManager();
 
         FacebookSdk.sdkInitialize(getApplicationContext());
+        mCallbackManager = CallbackManager.Factory.create();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -92,6 +126,16 @@ public class MainActivity extends FragmentActivity {
     public void onPause() {
         super.onPause();
         updatePreferences();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (vm.inHome()) {
+            LoginButton mButtonLogin = (LoginButton) findViewById(R.id.login_button);
+            mButtonLogin.setReadPermissions("user_friends");
+            mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);
+        }
     }
 
     @Override
@@ -204,6 +248,12 @@ public class MainActivity extends FragmentActivity {
         lastAllPlayed += currentAllPlayed;
         currentAllPlayed = 0;
         currentLongestPlayed = 0;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
 }

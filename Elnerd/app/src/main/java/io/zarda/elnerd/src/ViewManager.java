@@ -5,11 +5,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.login.widget.LoginButton;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.zarda.elnerd.MainActivity;
+import io.zarda.elnerd.R;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.view.GameView;
 import io.zarda.elnerd.view.HomeView;
@@ -51,6 +54,11 @@ public class ViewManager {
         homeViewsArray.add(playButton);
         homeViewsArray.add(new TextView(context));
         homeViewsArray.add(new TextView(context));
+
+        LoginButton mButtonLogin = new LoginButton(context);
+        mButtonLogin.setId(R.id.login_button);
+        homeViewsArray.add(mButtonLogin);
+
 
         homeViewsList = Collections.unmodifiableList(homeViewsArray);
 
