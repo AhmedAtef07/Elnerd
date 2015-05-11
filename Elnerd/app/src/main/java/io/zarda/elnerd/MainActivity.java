@@ -27,6 +27,7 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 
+import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 import io.zarda.elnerd.src.QuestionsManager;
@@ -36,13 +37,13 @@ import io.zarda.elnerd.view.FragmentSimpleLoginButton;
 
 public class MainActivity extends FragmentActivity {
 
-    public static final String MyPreferencesKEY = "Score";
-    public static final String LongestPlayedKEY = "LongestPlayed";
-    public static final String AllPlayedKEY = "AllPlayed";
-    QuestionsManager questionsManager;
-    CountDownTimer timer;
-    SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editor;
+    public static final String MyPreferencesKEY = Constants.SharedMemory.NAME.toString();
+    public static final String LongestPlayedKEY = Constants.SharedMemory.Score.LONGEST_PLAYED.toString();
+    public static final String AllPlayedKEY = Constants.SharedMemory.Score.ALL_PLAYED.toString();
+    private QuestionsManager questionsManager;
+    private CountDownTimer timer;
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
     private ViewManager vm;
     private int correctIndex;
     private int lastLongestPlayed;
@@ -100,8 +101,11 @@ public class MainActivity extends FragmentActivity {
         choices.add("Choice  2");
         choices.add("Choice  3");
 
-//        for (int i = 1; i <= 50; ++i)
-//            questionsManager.addQuestion(new Question("Question number " + i + "?", choices, i % 4));
+        if (questionsManager.getQuestions().size() == 0) {
+            for (int i = 1; i <= 20; ++i)
+                questionsManager.addQuestion(
+                        new Question("Question number " + i + "?", choices, i % 4));
+        }
 
         int questionsSize = questionsManager.questionsSize();
         System.out.println("Size: " + questionsSize);
