@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -67,6 +68,8 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onCancel() {
             System.out.println("onCancel");
+            Toast.makeText(getApplicationContext(), "No Internet Connection",
+                    Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -131,10 +134,24 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("OnResume");
         if (vm.inHome()) {
             LoginButton mButtonLogin = (LoginButton) findViewById(R.id.login_button);
             mButtonLogin.setReadPermissions("user_friends");
             mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            if (accessToken == null) {
+                System.out.println(">>>" + "Signed Out");
+//                mButtonLogin.callOnClick();
+            } else {
+                System.out.println(">>>" + "Signed In");
+                Profile profile = Profile.getCurrentProfile();
+                String msg = "Welcome ";
+                if (profile != null) {
+                    msg += profile.getName();
+                }
+                System.out.println(msg);
+            }
         }
     }
 
