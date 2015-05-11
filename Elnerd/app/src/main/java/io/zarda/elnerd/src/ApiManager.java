@@ -96,7 +96,7 @@ public class ApiManager {
             choices.add(choicesArray.getString(i));
         }
 
-        return new Question(header, choices, ansIndex, id);
+        return new Question(header, choices, ansIndex, id, 0, 0);
     }
 
     private String getRequestUrl(CollectionType collectionType, long sinceTimeStamp, int count,
