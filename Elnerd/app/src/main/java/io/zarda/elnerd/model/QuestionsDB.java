@@ -10,30 +10,33 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.Random;
 
+import io.zarda.elnerd.model.Constants.DB;
+
 /**
  * Created by atef & emad on 4 May, 2015.
  */
 
 public class QuestionsDB extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "elnerd.db";
+    private static final String DATABASE_NAME = DB.NAME.toString();
 
-    private static final String QUESTIONS_TABLE_NAME = "questionsTable";
-    private static final String CHOICES_TABLE_NAME = "choicesTable";
+    private static final String QUESTIONS_TABLE_NAME = DB.Questions.NAME.toString();
+    private static final String QUESTIONS_ID = DB.Questions.ID.toString();
+    private static final String QUESTIONS_HEADER = DB.Questions.HEADER.toString();
+    private static final String QUESTIONS_VIEW_COUNTER = DB.Questions.VIEW_COUNTER.toString();
+    private static final String QUESTIONS_ANSWER_ID = DB.Questions.ANSWER_ID.toString();
+
+    private static final String CHOICES_TABLE_NAME = DB.Choices.NAME.toString();
+    private static final String CHOICES_ID = DB.Choices.ID.toString();
+    private static final String CHOICES_HEADER = DB.Choices.HEADER.toString();
+    private static final String CHOICES_QUESTION_ID = DB.Choices.QUESTION_ID.toString();
+    
+
+    // Deprecated.
     private static final String ANSWERS_TABLE_NAME = "answersTable";
-
-    private static final String QUESTIONS_COLUMN_ID = "id";
-    private static final String QUESTIONS_COLUMN_HEADER = "header";
-    private static final String QUESTIONS_COLUMN_ANSWER_ID = "answer_id";
-    private static final String QUESTIONS_COLUMN_VIEW_COUNTER = "view_counter";
-
-    private static final String CHOICES_COLUMN_ID = "id";
-    private static final String CHOICES_COLUMN_CHOICE = "choice";
-    private static final String CHOICES_COLUMN_QUESTION_ID = "question_id";
-
-    private static final String ANSWERS_COLUMN_ID = "id";
-    private static final String ANSWERS_COLUMN_CHOICE_ID = "choice_id";
-    private static final String ANSWERS_COLUMN_QUESTION_ID = "question_id";
+    private static final String ANSWERS_ID = "id";
+    private static final String ANSWERS_CHOICE_ID = "choice_id";
+    private static final String ANSWERS_QUESTION_ID = "question_id";
     private static QuestionsDB ourInstance;
     private static Context context;
     private int currentViewCounter;
@@ -56,26 +59,26 @@ public class QuestionsDB extends SQLiteOpenHelper {
         db.execSQL(
                 "CREATE TABLE "
                         + QUESTIONS_TABLE_NAME + " ("
-                        + QUESTIONS_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                        + QUESTIONS_COLUMN_HEADER + " TEXT NOT NULL, "
-                        + QUESTIONS_COLUMN_ANSWER_ID + " INTEGER, "
-                        + QUESTIONS_COLUMN_VIEW_COUNTER + " INTEGER)"
+                        + QUESTIONS_ID + " INTEGER PRIMARY KEY, "
+                        + QUESTIONS_HEADER + " TEXT NOT NULL, "
+                        + QUESTIONS_ANSWER_ID + " INTEGER, "
+                        + QUESTIONS_VIEW_COUNTER + " INTEGER)"
         );
 
         db.execSQL(
                 "CREATE TABLE "
                         + CHOICES_TABLE_NAME + " ("
-                        + CHOICES_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                        + CHOICES_COLUMN_CHOICE + " TEXT NOT NULL, "
-                        + CHOICES_COLUMN_QUESTION_ID + " INTEGER NOT NULL)"
+                        + CHOICES_ID + " INTEGER PRIMARY KEY, "
+                        + CHOICES_HEADER + " TEXT NOT NULL, "
+                        + CHOICES_QUESTION_ID + " INTEGER NOT NULL)"
         );
 
         db.execSQL(
                 "CREATE TABLE "
                         + ANSWERS_TABLE_NAME + " ("
-                        + ANSWERS_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                        + ANSWERS_COLUMN_CHOICE_ID + " INTEGER NOT NULL, "
-                        + ANSWERS_COLUMN_QUESTION_ID + " INTEGER NOT NULL)"
+                        + ANSWERS_ID + " INTEGER PRIMARY KEY, "
+                        + ANSWERS_CHOICE_ID + " INTEGER NOT NULL, "
+                        + ANSWERS_QUESTION_ID + " INTEGER NOT NULL)"
         );
     }
 
@@ -91,8 +94,8 @@ public class QuestionsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(QUESTIONS_COLUMN_HEADER, question.getHeader());
-        contentValues.put(QUESTIONS_COLUMN_VIEW_COUNTER, 0);
+        contentValues.put(QUESTIONS_HEADER, question.getHeader());
+        contentValues.put(QUESTIONS_VIEW_COUNTER, 0);
 
         int questionId = (int) db.insert(QUESTIONS_TABLE_NAME, null, contentValues);
 
@@ -107,8 +110,8 @@ public class QuestionsDB extends SQLiteOpenHelper {
             }
         }
 
-        contentValues.put(QUESTIONS_COLUMN_ANSWER_ID, answerId);
-        db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_COLUMN_ID + " = ? ",
+        contentValues.put(QUESTIONS_ANSWER_ID, answerId);
+        db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_ID + " = ? ",
                 new String[]{Integer.toString(questionId)});
     }
 
@@ -116,8 +119,8 @@ public class QuestionsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(CHOICES_COLUMN_CHOICE, choice);
-        contentValues.put(CHOICES_COLUMN_QUESTION_ID, questionId);
+        contentValues.put(CHOICES_HEADER, choice);
+        contentValues.put(CHOICES_QUESTION_ID, questionId);
 
         return (int) db.insert(CHOICES_TABLE_NAME, null, contentValues);
     }
@@ -126,8 +129,8 @@ public class QuestionsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ANSWERS_COLUMN_CHOICE_ID, choiceId);
-        contentValues.put(ANSWERS_COLUMN_QUESTION_ID, questionId);
+        contentValues.put(ANSWERS_CHOICE_ID, choiceId);
+        contentValues.put(ANSWERS_QUESTION_ID, questionId);
 
         return (int) db.insert(ANSWERS_TABLE_NAME, null, contentValues);
     }
@@ -135,7 +138,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
 //    public Cursor getData(int id) {
 //        SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res =  db.rawQuery( "SELECT * FROM " + QUESTIONS_TABLE_NAME + " WHERE "
-//        + QUESTIONS_COLUMN_ID + " = " + id, null );
+//        + QUESTIONS_ID + " = " + id, null );
 //        return res;
 //    }
 
@@ -149,9 +152,9 @@ public class QuestionsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(QUESTIONS_COLUMN_HEADER, question.getHeader());
+        contentValues.put(QUESTIONS_HEADER, question.getHeader());
 
-        db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_COLUMN_ID + " = ? ",
+        db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_ID + " = ? ",
                 new String[]{Integer.toString(question.getId())});
         return true;
     }
@@ -164,11 +167,11 @@ public class QuestionsDB extends SQLiteOpenHelper {
         questionsCursor.moveToFirst();
 
         int viewCounter = questionsCursor.getInt(questionsCursor.getColumnIndex(
-                QUESTIONS_COLUMN_VIEW_COUNTER));
+                QUESTIONS_VIEW_COUNTER));
 
-        contentValues.put(QUESTIONS_COLUMN_VIEW_COUNTER, ++viewCounter);
+        contentValues.put(QUESTIONS_VIEW_COUNTER, ++viewCounter);
 
-        db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_COLUMN_ID + " = ? ",
+        db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_ID + " = ? ",
                 new String[]{Integer.toString(question.getId())});
         return true;
     }
@@ -180,30 +183,30 @@ public class QuestionsDB extends SQLiteOpenHelper {
         Cursor questionsCursor = db.rawQuery("SELECT * FROM " + QUESTIONS_TABLE_NAME, null);
         questionsCursor.moveToFirst();
         while (!questionsCursor.isAfterLast()) {
-            int id = questionsCursor.getInt(questionsCursor.getColumnIndex(QUESTIONS_COLUMN_ID));
+            int id = questionsCursor.getInt(questionsCursor.getColumnIndex(QUESTIONS_ID));
             String header = questionsCursor.getString(questionsCursor.getColumnIndex(
-                    QUESTIONS_COLUMN_HEADER));
+                    QUESTIONS_HEADER));
 
             int correctChoiceId = 0;
             Cursor answersCursor = db.rawQuery("SELECT * FROM " + ANSWERS_TABLE_NAME + " WHERE "
-                    + ANSWERS_COLUMN_QUESTION_ID + " = " + id, null);
+                    + ANSWERS_QUESTION_ID + " = " + id, null);
             answersCursor.moveToFirst();
             while (!answersCursor.isAfterLast()) {
                 correctChoiceId = answersCursor.getInt(answersCursor.getColumnIndex(
-                        ANSWERS_COLUMN_CHOICE_ID));
+                        ANSWERS_CHOICE_ID));
                 answersCursor.moveToNext();
             }
 
             ArrayList<String> choices = new ArrayList<>();
             int correctIndex = 0, counter = 0;
             Cursor choicesCursor = db.rawQuery("SELECT * FROM " + CHOICES_TABLE_NAME + " WHERE "
-                    + CHOICES_COLUMN_QUESTION_ID + " = " + id, null);
+                    + CHOICES_QUESTION_ID + " = " + id, null);
             choicesCursor.moveToFirst();
             while (!choicesCursor.isAfterLast()) {
                 choices.add(choicesCursor.getString(choicesCursor.getColumnIndex(
-                        CHOICES_COLUMN_CHOICE)));
+                        CHOICES_HEADER)));
                 if (choicesCursor.getInt(choicesCursor.getColumnIndex(
-                        CHOICES_COLUMN_ID)) == correctChoiceId) {
+                        CHOICES_ID)) == correctChoiceId) {
                     correctIndex = counter;
                 }
                 ++counter;
@@ -226,7 +229,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
 
         while (limit > 0) {
             Cursor questionsCursor = db.rawQuery("SELECT * FROM " + QUESTIONS_TABLE_NAME + " WHERE "
-                    + QUESTIONS_COLUMN_VIEW_COUNTER + " = " + currentViewCounter
+                    + QUESTIONS_VIEW_COUNTER + " = " + currentViewCounter
                     + " ORDER BY RANDOM() LIMIT " + limit, null);
             if (questionsCursor.getCount() < limit) {
                 ++currentViewCounter;
@@ -234,38 +237,38 @@ public class QuestionsDB extends SQLiteOpenHelper {
 
             questionsCursor.moveToFirst();
             while (!questionsCursor.isAfterLast()) {
-                int id = questionsCursor.getInt(questionsCursor.getColumnIndex(QUESTIONS_COLUMN_ID));
+                int id = questionsCursor.getInt(questionsCursor.getColumnIndex(QUESTIONS_ID));
                 String header = questionsCursor.getString(questionsCursor.getColumnIndex(
-                        QUESTIONS_COLUMN_HEADER));
+                        QUESTIONS_HEADER));
 
                 Cursor answersCursor = db.rawQuery("SELECT * FROM " + ANSWERS_TABLE_NAME + " WHERE "
-                        + ANSWERS_COLUMN_QUESTION_ID + " = " + id, null);
+                        + ANSWERS_QUESTION_ID + " = " + id, null);
                 answersCursor.moveToFirst();
                 int correctChoiceId = answersCursor.getInt(answersCursor.getColumnIndex(
-                        ANSWERS_COLUMN_CHOICE_ID));
+                        ANSWERS_CHOICE_ID));
 
                 Cursor CorrectChoiceCursor = db.rawQuery("SELECT * FROM " + CHOICES_TABLE_NAME +
-                        " WHERE " + CHOICES_COLUMN_ID + " = " + correctChoiceId, null);
+                        " WHERE " + CHOICES_ID + " = " + correctChoiceId, null);
                 CorrectChoiceCursor.moveToFirst();
                 String correctChoice = CorrectChoiceCursor.getString(
-                        CorrectChoiceCursor.getColumnIndex(CHOICES_COLUMN_CHOICE));
+                        CorrectChoiceCursor.getColumnIndex(CHOICES_HEADER));
 
                 ArrayList<String> choices = new ArrayList<>();
                 Random rand = new Random();
                 int correctIndex = rand.nextInt(4), counter = 0;
                 Cursor choicesCursor = db.rawQuery("SELECT * FROM " + CHOICES_TABLE_NAME + " WHERE "
-                                + CHOICES_COLUMN_QUESTION_ID + " = " + id
+                                + CHOICES_QUESTION_ID + " = " + id
                                 + " ORDER BY RANDOM() LIMIT " + 4,
                         null);
                 choicesCursor.moveToFirst();
                 while (!choicesCursor.isAfterLast()) {
                     if (choicesCursor.getInt(choicesCursor.getColumnIndex(
-                            CHOICES_COLUMN_ID)) == correctChoiceId) {
+                            CHOICES_ID)) == correctChoiceId) {
                         choicesCursor.moveToNext();
                         continue;
                     }
                     choices.add(choicesCursor.getString(choicesCursor.getColumnIndex(
-                            CHOICES_COLUMN_CHOICE)));
+                            CHOICES_HEADER)));
                     ++counter;
                     choicesCursor.moveToNext();
                 }

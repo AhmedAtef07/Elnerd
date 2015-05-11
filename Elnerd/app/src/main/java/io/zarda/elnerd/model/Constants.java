@@ -31,4 +31,56 @@ public class Constants {
             }
         }
     }
+
+    public enum DB {
+        NAME("elnerd.db");
+
+        private String name;
+
+        private DB(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public enum Questions {
+            NAME("questions"),
+            ID("id"),
+            HEADER("header"),
+            ANSWER_ID("answer_id"),
+            VIEW_COUNTER("view_counter");
+
+            private String name;
+
+            private Questions(String name) {
+                this.name = name;
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        }
+
+        public enum Choices {
+            NAME("choices"),
+            ID("id"),
+            HEADER("header"),
+            QUESTION_ID("question_id");
+
+            private String name;
+
+            private Choices(String name) {
+                this.name = name;
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        }
+    }
 }
