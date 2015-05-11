@@ -3,17 +3,18 @@ package io.zarda.elnerd.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -38,14 +39,17 @@ public class GameView implements Viewable , Game{
     int screenWidth;
     int screenHeight;
 
-    FrameLayout mainFrame;
+    boolean isFirst = true;
+
+    FrameLayout mainLayout;
     TableLayout layout;
     Bitmap correctBitmap;
     Bitmap wrongBitmap;
     ImageView correctImage;
     ImageView wrongImage;
+    Drawable background;
 
-    AnimationSet responseAnimation;
+    AnimationSet reponseAnimation;
 
     int [] colors = {R.drawable.display , R.drawable.display1 , R.drawable.display2 ,
             R.drawable.display3};
@@ -83,78 +87,86 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void startView() {
-//        mainFrame.addView(layout);
+//        mainLayout.addView(layout);
 
         setLayout();
         setDisplayLayout();
         setButtons();
 
         setBitmapsAndAnimation();
-        ((Activity) context).setContentView(mainFrame);
+        ((Activity) context).setContentView(mainLayout);
+        buttonsInAnimation(0);
     }
 
     @Override
     public void endView() {
         layout.removeAllViews();
-        mainFrame.removeAllViews();
+        mainLayout.removeAllViews();
     }
 
     @Override
     public void showSuccess(final Button correctButton) {
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
+        buttonsOutAnimation(true);
+        correctImage.startAnimation(reponseAnimation);
 
-        // mainFrame.
-        if (!correctImage.isShown() && !wrongImage.isShown()) {
-            mainFrame.addView(correctImage);
-            correctImage.startAnimation(responseAnimation);
-
-            responseAnimation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
-                    gvn.notifyShowSuccessFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        }
+        // mainLayout.
+//        if (!correctImage.isShown() && !wrongImage.isShown()) {
+//            correctImage.startAnimation(reponseAnimation);
+//            mainLayout.addView(correctImage);
+//
+////            correctImage.startAnimation(reponseAnimation);
+//            System.out.println("frames 2 " + SystemClock.currentThreadTimeMillis());
+//
+//            reponseAnimation.setAnimationListener(new Animation.AnimationListener() {
+//                @Override
+//                public void onAnimationStart(Animation animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//                    ((ViewGroup) (correctImage.getParent())).removeView(correctImage);
+//                    buttonsOutAnimation();
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animation animation) {
+//
+//                }
+//            });
+//        }
     }
 
     @Override
-    public void showFailure(Button correctButton , final Button wrongButton) {
+    public void showFailure(Button correctButton , Button wrongButton) {
 
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
+//        buttonsOutAnimation(false);
+//        gvn.notifyShowFailureFinished();
 
-        if (!wrongImage.isShown() && !correctImage.isShown()) {
-            mainFrame.addView(wrongImage);
-            wrongImage.startAnimation(responseAnimation);
-
-            responseAnimation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    ((ViewGroup) (wrongImage.getParent())).removeView(wrongImage);
-                    gvn.notifyShowFailureFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        }
+//        if (!wrongImage.isShown() && !correctImage.isShown()) {
+//            mainLayout.addView(wrongImage);
+//            wrongImage.startAnimation(reponseAnimationFail);
+//
+//            reponseAnimationFail.setAnimationListener(new Animation.AnimationListener() {
+//                @Override
+//                public void onAnimationStart(Animation animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//                    ((ViewGroup) (wrongImage.getParent())).removeView(wrongImage);
+//                    gvn.notifyShowFailureFinished();
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animation animation) {
+//
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -163,29 +175,33 @@ public class GameView implements Viewable , Game{
     }
 
     private void setBitmapsAndAnimation(){
-        correctBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.correct);
-        wrongBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.wrong);
+//        correctBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.correct);
+//        wrongBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.wrong);
 
         correctImage = new ImageView(context);
-        wrongImage = new ImageView(context);
+//        wrongImage = new ImageView(context);
+        mainLayout.addView(correctImage);
+//        mainLayout.addView(wrongImage);
+        Animation setAnimation = new ScaleAnimation(0 ,0 ,0 ,0);
+        setAnimation.setFillAfter(true);
+        correctImage.startAnimation(setAnimation);
+//        wrongImage.startAnimation(setAnimation);
+
+        correctImage.setLayerType(View.LAYER_TYPE_HARDWARE , null);
+//        wrongImage.setLayerType(View.LAYER_TYPE_HARDWARE , null);
 
         correctImage.setImageBitmap(correctBitmap);
-        wrongImage.setImageBitmap(wrongBitmap)
-        ;
+//        wrongImage.setImageBitmap(wrongBitmap);
         FrameLayout.LayoutParams correctParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
 
-        FrameLayout.LayoutParams wrongParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
 
         correctParams.height = screenWidth;
         correctParams.width = screenWidth;
 
-        wrongParams.height = screenWidth;
-        wrongParams.width = screenWidth;
-
         correctImage.setLayoutParams(correctParams);
-        wrongImage.setLayoutParams(wrongParams);
+//        wrongImage.setLayoutParams(correctParams);
+
 
         Animation fadeAnimation = new AlphaAnimation(0.9f , 0.0f);
         fadeAnimation.setDuration(1000);
@@ -194,19 +210,22 @@ public class GameView implements Viewable , Game{
                 screenWidth/2 , screenHeight/2);
         scaleAnimation.setDuration(1000);
 
-        responseAnimation = new AnimationSet(false);
-        responseAnimation.addAnimation(fadeAnimation);
-        responseAnimation.addAnimation(scaleAnimation);
-        responseAnimation.setDuration(1000);
-        responseAnimation.setFillAfter(true);
+        reponseAnimation = new AnimationSet(false);
+        reponseAnimation.addAnimation(fadeAnimation);
+        reponseAnimation.addAnimation(scaleAnimation);
+        reponseAnimation.setDuration(1000);
+        reponseAnimation.setFillAfter(true);
     }
 
     private void setLayout(){
+        background = context.getResources().getDrawable(R.drawable.bg);
         layout = new TableLayout(context);
         layout.setGravity(Gravity.CENTER);
+        layout.setBackground(context.getResources().getDrawable(R.drawable.gpbg));
 
-        mainFrame = new FrameLayout(context);
-        mainFrame.addView(layout);
+        mainLayout = new FrameLayout(context);
+//        mainLayout.setBackground(context.getResources().getDrawable(R.drawable.gmbg));
+        mainLayout.addView(layout);
     }
 
     private void setDisplayLayout(){
@@ -241,7 +260,8 @@ public class GameView implements Viewable , Game{
         thirdChoice.setLayoutParams(params);
         forthChoice.setLayoutParams(params);
 
-        setButtonsDefaultColor();
+        setButtonsDefaultColorAndTextColor();
+
 
         layout.addView(firstChoice);
         layout.addView(secondChoice);
@@ -250,13 +270,70 @@ public class GameView implements Viewable , Game{
 
     }
 
-    private void setButtonsDefaultColor(){
+    private void setButtonsDefaultColorAndTextColor(){
         firstChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
         secondChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
         thirdChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
         forthChoice.setBackground(context.getResources().getDrawable(R.drawable.btn));
+        firstChoice.setTextColor(Color.parseColor("#ecf0f1"));
+        secondChoice.setTextColor(Color.parseColor("#ecf0f1"));
+        thirdChoice.setTextColor(Color.parseColor("#ecf0f1"));
+        forthChoice.setTextColor(Color.parseColor("#ecf0f1"));
     }
 
+    private void buttonsInAnimation(int delay){
+        firstChoice.startAnimation(fromRight(0 + delay));
+        secondChoice.startAnimation(fromRight(75 + delay));
+        thirdChoice.startAnimation(fromRight(150 + delay));
+        forthChoice.startAnimation(fromRight(225 + delay));
+    }
+
+    private void buttonsOutAnimation(final boolean answer){
+        if(!answer){
+            reponseAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    gvn.notifyShowFailureFinished();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            return;
+        }
+        forthChoice.startAnimation(toLeft(0));
+        thirdChoice.startAnimation(toLeft(75));
+        secondChoice.startAnimation(toLeft(150));
+        firstChoice.startAnimation(toLeft(225));
+
+        firstChoice.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                buttonsInAnimation(0);
+                if(answer){
+                    gvn.notifyShowSuccessFinished();
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
 
     private void getRandomIndex(int x){
         Random random = new Random();
@@ -277,9 +354,11 @@ public class GameView implements Viewable , Game{
     }
 
     private void addCard(){
-        if(cards.size() == 10){
+        if(cards.size() == 5){
+            displayLayout.removeView(cards.get(0));
             cards.remove(0);
         }
+        System.out.println("cards no : "+ cards.size());
         TextView card = new Button(context);
         cards.add(card);
         card.setText(cardMain.getText());
@@ -298,15 +377,17 @@ public class GameView implements Viewable , Game{
 
         Animation rotateAnimation = new RotateAnimation(0.0f , degree , screenWidth/2 ,
                 screenHeight/4);
-        rotateAnimation.setDuration(1000);
+        rotateAnimation.setDuration(100);
 
         Animation scaleAnimation = new ScaleAnimation(1.0f , 0.85f , 1f , 0.7f , screenWidth / 2 ,
                 screenHeight / 4);
-        scaleAnimation.setDuration(1000);
+        scaleAnimation.setDuration(100);
 
         dropAnimation.addAnimation(rotateAnimation);
         dropAnimation.addAnimation(scaleAnimation);
         dropAnimation.setFillAfter(true);
+
+//        buttonsInAnimation(0);
 
         displayLayout.addView(card);
         card.startAnimation(dropAnimation);
@@ -314,6 +395,23 @@ public class GameView implements Viewable , Game{
 
     private void newQuestion(){
         addCard();
-        setButtonsDefaultColor();
+        setButtonsDefaultColorAndTextColor();
+    }
+
+    private Animation fromRight(int delay){
+        Animation fromRight = new TranslateAnimation(screenWidth , 10 , 0 , 0);
+        fromRight.setDuration(100);
+        fromRight.setStartOffset(delay);
+
+        return fromRight;
+    }
+
+    private Animation toLeft(int delay){
+        Animation toLeft = new TranslateAnimation(0 , -2*screenWidth - 20 , 0 , 0);
+        toLeft.setDuration(100);
+        toLeft.setStartOffset(delay);
+        toLeft.setFillAfter(true);
+
+        return toLeft;
     }
 }
