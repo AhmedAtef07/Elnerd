@@ -42,7 +42,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, 1);
     }
 
-    public static void initializeDB(Context context) {
+    public static void initialize(Context context) {
         QuestionsDB.context = context;
         ourInstance = new QuestionsDB();
     }

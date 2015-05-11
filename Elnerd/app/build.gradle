@@ -28,8 +28,9 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.google.android.gms:play-services:7.3.0'
+    compile files('src/main/java/io/zarda/elnerd/lib/volley.jar')
 }

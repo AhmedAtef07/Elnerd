@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
+import io.zarda.elnerd.src.ApiManager;
 import io.zarda.elnerd.src.QuestionsManager;
 import io.zarda.elnerd.src.ViewManager;
 import io.zarda.elnerd.view.FragmentSimpleLoginButton;
@@ -91,9 +92,11 @@ public class MainActivity extends FragmentActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        QuestionsDB.initializeDB(this);
 
-        questionsManager = new QuestionsManager(2);
+        ApiManager.initialize(this);
+        QuestionsDB.initialize(this);
+
+        questionsManager = new QuestionsManager(this);
 
         ArrayList<String> choices = new ArrayList<>();
         choices.add("Choice  0");
@@ -113,6 +116,9 @@ public class MainActivity extends FragmentActivity {
         sharedpreferences = getSharedPreferences(MyPreferencesKEY, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
 
+        editor.putLong(Constants.SharedMemory.LAST_SYNC_TIMESTAMP.toString(), 0L);
+        editor.commit();
+
         lastAllPlayed = sharedpreferences.getInt(AllPlayedKEY, 0);
         lastLongestPlayed = sharedpreferences.getInt(LongestPlayedKEY, 0);
 
@@ -121,6 +127,8 @@ public class MainActivity extends FragmentActivity {
 
         vm = new ViewManager(this);
         vm.startHomeView();
+
+        questionsManager.downloadQuestions(2);
     }
 
     @Override
