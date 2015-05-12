@@ -30,7 +30,7 @@ public class WebViewActivity extends Activity {
         myWebView = (WebView) findViewById(R.id.webview);
         myWebView.setWebViewClient(new myWebClient());
         myWebView.getSettings().setJavaScriptEnabled(true);
-        myWebView.loadUrl("http://www.google.com");
+        myWebView.loadUrl("http://elnerd.zarda.io:2017/admin");
     }
 
     public class myWebClient extends WebViewClient

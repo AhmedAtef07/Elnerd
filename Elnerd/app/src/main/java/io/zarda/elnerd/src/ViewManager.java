@@ -153,12 +153,11 @@ public class ViewManager {
     }
 
     public void startQuoteView() {
-        System.out.println("HHHH");
         quoteView.startView();
         ((MainActivity) context).setNewQuote();
         currentView = quoteView;
-        quoteView.setTime(7000);
-        CountDownTimer timer = new CountDownTimer(6000, 1000) {
+        quoteView.setTime(9000);
+        CountDownTimer timer = new CountDownTimer(9000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);

@@ -230,6 +230,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void answerClick(View v) {
+        timer.cancel();
         if ((int) v.getTag() == correctIndex) {
             vm.showSuccess(correctIndex);
             ++currentLongestPlayed;
