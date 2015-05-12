@@ -14,15 +14,16 @@ public class Question {
     private int id;
     private int quoteId;
     private int modeId;
+    private String mode;
 
     public Question(String header, ArrayList<String> choices, int correctIndex, int id,
-                    int quoteId, int modeId) {
+                    int quoteId, String mode) {
         this.header = header;
         this.choices = choices;
         this.correctIndex = correctIndex;
         this.id = id;
         this.quoteId = quoteId;
-        this.modeId = modeId;
+        this.mode = mode;
     }
 
     public Question(String header, ArrayList<String> choices, int correctIndex) {

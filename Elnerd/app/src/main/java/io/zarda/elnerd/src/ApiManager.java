@@ -18,11 +18,16 @@ import java.util.ArrayList;
 
 import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Question;
+import io.zarda.elnerd.model.Quote;
 
 /**
  * Created by Ahmed Atef on 11 May, 2015.
  */
 public class ApiManager {
+    private enum CollectionType {
+        QUESTION,
+    }
+
     private static final String apiUrl = Constants.API_URL;
     private static ApiManager ourInstance;
     private static Context context;
@@ -47,7 +52,7 @@ public class ApiManager {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            waitable.receiveResponse(parseQuestionsFromResponse(response));
+                            waitable.receiveResponse(parseQuotesFromResponse(response));
                             Log.e("Api Manager", "Response parsed successfully");
 
                         } catch (JSONException e) {
@@ -68,36 +73,37 @@ public class ApiManager {
         Log.e("Api Manager", "sent to queue");
     }
 
-    private ArrayList<Question> parseQuestionsFromResponse(String response) throws JSONException {
+private ArrayList<Quote> parseQuotesFromResponse(String response) throws JSONException {
         JSONArray jsonArray = new JSONArray(response);
-        ArrayList<Question> questionList = new ArrayList<>();
+        ArrayList<Quote> quotesList = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); ++i) {
-            questionList.add(makeQuestion(jsonArray.getJSONObject(i)));
+            quotesList.add(makeQuote(jsonArray.getJSONObject(i)));
         }
-        return questionList;
+        return quotesList;
     }
 
-    private Question makeQuestion(JSONObject jsonObject) throws JSONException {
+    private Quote makeQuote(JSONObject jsonObject) throws JSONException {
         int id = jsonObject.getInt("id");
         String header = jsonObject.getString("header");
         int ansIndex = jsonObject.getInt("answer_index");
+        String content = jsonObject.getString("quote");
+        String book = jsonObject.getString("book");
+        int tta = jsonObject.getInt("tta");
+        long timeStamp = jsonObject.getLong("timestamp");
+        String userFullName = jsonObject.getString("user_full_name");
+        String mode = jsonObject.getString("mode");
 
         JSONArray choicesArray = jsonObject.getJSONArray("choices");
         ArrayList<String> choices = new ArrayList<>();
         for (int i = 0; i < choicesArray.length(); ++i) {
             choices.add(choicesArray.getString(i));
         }
-
-        return new Question(header, choices, ansIndex, id, 0, 0);
+        return new Quote(content, new Question(header, choices, ansIndex, id, 0, mode), book);
     }
 
     private String getRequestUrl(CollectionType collectionType, long sinceTimeStamp, int count,
                                  int level) {
-        return String.format("%s/%s?timestamp=%d&offset=%d&level=%d", ApiManager.apiUrl,
-                collectionType.toString().toLowerCase(), sinceTimeStamp, count, level);
-    }
-
-    private enum CollectionType {
-        QUESTION,
+        return String.format("%s/%s?timestamp=%d&count=%d", ApiManager.apiUrl,
+                collectionType.toString().toLowerCase(), sinceTimeStamp, count);
     }
 }

@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
  */
 public class Constants {
     public static final int DB_REQUEST_COUNT = 2;
-    public static final String API_URL = "http://elnerd.zarda.io/api";
+    public static final String API_URL = "http://elnerd.zarda.io:2017/api";
     public static final String SHARED_MEMORY_NAME = "shared_memory";
 
 
@@ -108,7 +108,7 @@ public class Constants {
             ID("id"),
             CONTENT("content"),
             BOOK("book"),
-            USER_ID("user_id");
+            USER_NAME("user_full_name");
 
             private String name;
 
