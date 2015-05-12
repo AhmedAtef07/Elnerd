@@ -21,11 +21,11 @@ public class Quote {
         this.categoryId = categoryId;
     }
 
-    public Quote(String content, Question question, String book) {
+    public Quote(String content, Question question, String book, String userName) {
         this.content = content;
         this.question = question;
         this.book = book;
-        this.userName = "";
+        this.userName = userName;
         this.id = 0;
         this.categoryId = 0;
     }
