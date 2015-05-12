@@ -1,13 +1,10 @@
 package io.zarda.elnerd;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,15 +33,12 @@ import io.zarda.elnerd.src.ViewManager;
 
 public class MainActivity extends FragmentActivity {
 
+    Question preparedQuestion;
     private QuestionsManager questionsManager;
     private SharedPreferencesManager sharedPreferencesManager;
-
     private CountDownTimer timer;
     private CallbackManager mCallbackManager;
     private ViewManager vm;
-
-    Question preparedQuestion;
-
     private int correctIndex;
     private int lastLongestPlayed;
     private int lastAllPlayed;
@@ -111,6 +105,7 @@ public class MainActivity extends FragmentActivity {
 
 //        int questionsSize = questionsManager.getQuestionsSize();
 //        System.out.println("Size: " + questionsSize);
+
         questionsManager.downloadQuestions(3);
 
 //        questionsManager.getRandomQuotes();
@@ -164,28 +159,6 @@ public class MainActivity extends FragmentActivity {
                 System.out.println(msg);
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -270,8 +243,8 @@ public class MainActivity extends FragmentActivity {
         vm.endHomeView();
 //        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
 //        startActivity(browserIntent);
-//        vm.startGameView();
-
+//        Intent browserIntent = new Intent(this, WebViewActivity.class);
+//        startActivity(browserIntent);
     }
 
 //    public void loginClick(View v) {
