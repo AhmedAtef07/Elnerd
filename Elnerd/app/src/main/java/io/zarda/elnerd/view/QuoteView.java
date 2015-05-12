@@ -103,7 +103,7 @@ public class QuoteView implements Viewable , Game{
 
     @Override
     public void showSuccess(Button correctButton) {
-        
+
     }
 
     @Override
@@ -142,7 +142,7 @@ public class QuoteView implements Viewable , Game{
         layout.addView(displayLayout);
     }
 
-    public void addQuote(){
+    public void showQuote(){
         getRandomIndex(3);
         getRandomDegree(10);
 
