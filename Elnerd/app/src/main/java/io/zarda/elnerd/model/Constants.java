@@ -52,6 +52,8 @@ public class Constants {
             ID("id"),
             HEADER("header"),
             ANSWER_ID("answer_id"),
+            QUOTE_ID("quote_id"),
+            MODE_ID("mode_id"),
             VIEW_COUNTER("view_counter");
 
             private String name;
@@ -75,6 +77,42 @@ public class Constants {
             private String name;
 
             private Choices(String name) {
+                this.name = name;
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        }
+
+        public enum Modes {
+            NAME("modes"),
+            ID("id"),
+            TITLE("title");
+
+            private String name;
+
+            private Modes(String name) {
+                this.name = name;
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        }
+
+        public enum Quotes {
+            NAME("quotes"),
+            ID("id"),
+            CONTENT("content"),
+            BOOK("book"),
+            USER_ID("user_id");
+
+            private String name;
+
+            private Quotes(String name) {
                 this.name = name;
             }
 

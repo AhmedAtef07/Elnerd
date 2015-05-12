@@ -24,12 +24,24 @@ public class QuestionsDB extends SQLiteOpenHelper {
     private static final String QUESTIONS_ID = DB.Questions.ID.toString();
     private static final String QUESTIONS_HEADER = DB.Questions.HEADER.toString();
     private static final String QUESTIONS_VIEW_COUNTER = DB.Questions.VIEW_COUNTER.toString();
+    private static final String QUESTIONS_QUOTE_ID = DB.Questions.QUOTE_ID.toString();
+    private static final String QUESTIONS_MODE_ID = DB.Questions.MODE_ID.toString();
     private static final String QUESTIONS_ANSWER_ID = DB.Questions.ANSWER_ID.toString();
 
     private static final String CHOICES_TABLE_NAME = DB.Choices.NAME.toString();
     private static final String CHOICES_ID = DB.Choices.ID.toString();
     private static final String CHOICES_HEADER = DB.Choices.HEADER.toString();
     private static final String CHOICES_QUESTION_ID = DB.Choices.QUESTION_ID.toString();
+
+    private static final String MODES_TABLE_NAME = DB.Modes.NAME.toString();
+    private static final String MODES_ID = DB.Modes.ID.toString();
+    private static final String MODES_TITLE = DB.Modes.TITLE.toString();
+
+    private static final String QUOTES_TABLE_NAME = DB.Quotes.NAME.toString();
+    private static final String QUOTES_ID = DB.Quotes.ID.toString();
+    private static final String QUOTES_CONTENT = DB.Quotes.CONTENT.toString();
+    private static final String QUOTES_BOOK = DB.Quotes.BOOK.toString();
+    private static final String QUOTES_USER_ID = DB.Quotes.USER_ID.toString();
 
     private static QuestionsDB ourInstance;
     private static Context context;
@@ -56,6 +68,8 @@ public class QuestionsDB extends SQLiteOpenHelper {
                         + QUESTIONS_ID + " INTEGER PRIMARY KEY, "
                         + QUESTIONS_HEADER + " TEXT NOT NULL, "
                         + QUESTIONS_ANSWER_ID + " INTEGER, "
+                        + QUESTIONS_QUOTE_ID + " INTEGER, "
+                        + QUESTIONS_MODE_ID + " INTEGER, "
                         + QUESTIONS_VIEW_COUNTER + " INTEGER)"
         );
 
@@ -67,20 +81,52 @@ public class QuestionsDB extends SQLiteOpenHelper {
                         + CHOICES_QUESTION_ID + " INTEGER NOT NULL)"
         );
 
+        db.execSQL(
+                "CREATE TABLE "
+                        + MODES_TABLE_NAME + " ("
+                        + MODES_ID + " INTEGER PRIMARY KEY, "
+                        + MODES_TITLE + " TEXT NOT NULL)"
+        );
+
+        db.execSQL(
+                "CREATE TABLE "
+                        + QUOTES_TABLE_NAME + " ("
+                        + QUOTES_ID + " INTEGER PRIMARY KEY, "
+                        + QUOTES_CONTENT + " TEXT NOT NULL, "
+                        + QUOTES_BOOK + " TEXT NOT NULL, "
+                        + QUOTES_USER_ID + " INTEGER NOT NULL)"
+        );
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + QUESTIONS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CHOICES_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MODES_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + QUOTES_TABLE_NAME);
         onCreate(db);
     }
 
-    public void addQuestion(Question question) {
+    public void addQuote(Quote quote) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(QUOTES_CONTENT, quote.getContent());
+        contentValues.put(QUOTES_BOOK, quote.getBook());
+        contentValues.put(QUOTES_USER_ID, quote.getUserId());
+
+        int quoteId = (int) db.insert(QUOTES_TABLE_NAME, null, contentValues);
+        addQuestion(quote.getQuestion(), quoteId);
+    }
+
+    public int addQuestion(Question question, int quoteId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(QUESTIONS_HEADER, question.getHeader());
+        contentValues.put(QUESTIONS_QUOTE_ID, quoteId);
+        contentValues.put(QUESTIONS_MODE_ID, question.getModeId());
         contentValues.put(QUESTIONS_VIEW_COUNTER, 0);
 
         int questionId = (int) db.insert(QUESTIONS_TABLE_NAME, null, contentValues);
@@ -98,6 +144,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
         contentValues.put(QUESTIONS_ANSWER_ID, answerId);
         db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_ID + " = ? ",
                 new String[]{Integer.toString(questionId)});
+        return questionId;
     }
 
     private int addChoice(String choice, int questionId) {
@@ -118,6 +165,22 @@ public class QuestionsDB extends SQLiteOpenHelper {
 
         db.update(QUESTIONS_TABLE_NAME, contentValues, QUESTIONS_ID + " = ? ",
                 new String[]{Integer.toString(questionId)});
+    }
+
+    private int addMode(String title) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor modesCursor = db.rawQuery("SELECT * FROM " + MODES_TABLE_NAME + " WHERE "
+                + MODES_TITLE + " = " + title, null);
+
+        if (modesCursor.getCount() == 0) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MODES_TITLE, title);
+            return (int) db.insert(MODES_TABLE_NAME, null, contentValues);
+        } else {
+            modesCursor.moveToFirst();
+            return modesCursor.getInt(modesCursor.getColumnIndex(MODES_ID));
+        }
     }
 
     public int getNumberOfQuestions() {
@@ -155,7 +218,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
     }
 
     public ArrayList getRandomQuestions(int limit) {
-        ArrayList<Question> questions = new ArrayList<>();
+        ArrayList<Quote> quotes = new ArrayList<>();
 
         if (getNumberOfQuestions() > 0) {
             SQLiteDatabase db = this.getReadableDatabase();
@@ -171,7 +234,13 @@ public class QuestionsDB extends SQLiteOpenHelper {
 
                 questionsCursor.moveToFirst();
                 while (!questionsCursor.isAfterLast()) {
-                    int id = questionsCursor.getInt(questionsCursor.getColumnIndex(QUESTIONS_ID));
+                    int id = questionsCursor.getInt(questionsCursor.getColumnIndex(
+                            QUESTIONS_ID));
+                    int quoteId = questionsCursor.getInt(questionsCursor.getColumnIndex(
+                            QUESTIONS_QUOTE_ID));
+                    int modeId = questionsCursor.getInt(questionsCursor.getColumnIndex(
+                            QUESTIONS_MODE_ID));
+
                     int correctChoiceId = questionsCursor.getInt(questionsCursor.getColumnIndex(
                             QUESTIONS_ANSWER_ID));
                     String header = questionsCursor.getString(questionsCursor.getColumnIndex(
@@ -204,8 +273,20 @@ public class QuestionsDB extends SQLiteOpenHelper {
                     }
                     choices.add(correctIndex, correctChoice);
 
-                    Question question = new Question(header, choices, correctIndex, id, 0, 0);
-                    questions.add(question);
+                    Question question = new Question(
+                            header, choices, correctIndex, id, quoteId, modeId);
+
+                    Cursor quotesCursor = db.rawQuery("SELECT * FROM " + QUOTES_TABLE_NAME + " WHERE "
+                            + QUOTES_ID + " = " + quoteId, null);
+                    String content = quotesCursor.getString(questionsCursor.getColumnIndex(
+                            QUOTES_CONTENT));
+                    String book = quotesCursor.getString(questionsCursor.getColumnIndex(
+                            QUOTES_BOOK));
+                    int userId = questionsCursor.getInt(questionsCursor.getColumnIndex(
+                            QUOTES_USER_ID));
+
+                    Quote quote = new Quote(content, question, book, quoteId, userId, 0);
+                    quotes.add(quote);
 
                     questionsCursor.moveToNext();
                 }
@@ -214,7 +295,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
             }
         }
 
-        return questions;
+        return quotes;
     }
 
 }
