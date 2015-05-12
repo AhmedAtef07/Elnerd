@@ -257,7 +257,7 @@ public class MainActivity extends FragmentActivity {
     public void playClick(View v) {
         currentLongestPlayed = 0;
         vm.endHomeView();
-        vm.startGameView();
+//        vm.startGameView();
     }
 
     public void loginClick(View v) {

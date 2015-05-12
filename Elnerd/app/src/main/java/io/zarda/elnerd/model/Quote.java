@@ -8,16 +8,16 @@ public class Quote {
     private Question question;
     private String book;
     private int id;
-    private int userId;
+    private String userName;
     private int categoryId;
 
-    public Quote(String content, Question question, String book, int id, int userId,
+    public Quote(String content, Question question, String book, String userName, int id,
                  int categoryId) {
         this.content = content;
         this.question = question;
         this.book = book;
+        this.userName = userName;
         this.id = id;
-        this.userId = userId;
         this.categoryId = categoryId;
     }
 
@@ -25,8 +25,8 @@ public class Quote {
         this.content = content;
         this.question = question;
         this.book = book;
+        this.userName = "";
         this.id = 0;
-        this.userId = 0;
         this.categoryId = 0;
     }
 
@@ -38,12 +38,12 @@ public class Quote {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getCategoryId() {

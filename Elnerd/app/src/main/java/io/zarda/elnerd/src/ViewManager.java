@@ -29,6 +29,7 @@ public class ViewManager {
 
     GameView gameView;
     GameViewNotifier gvn;
+    HomeViewNotifier hvn;
 
     HomeView homeView;
 
@@ -79,8 +80,9 @@ public class ViewManager {
 
         gameViewsList = Collections.unmodifiableList(gameViewsArray);
         gvn = new GameViewNotifier(this, (MainActivity) context);
+        hvn = new HomeViewNotifier(this);
 
-        homeView = new HomeView();
+        homeView = new HomeView(hvn);
         homeView.initializeView(context, homeViewsList);
 
         gameView = new GameView(gvn);

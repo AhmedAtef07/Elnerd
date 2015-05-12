@@ -41,7 +41,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
     private static final String QUOTES_ID = DB.Quotes.ID.toString();
     private static final String QUOTES_CONTENT = DB.Quotes.CONTENT.toString();
     private static final String QUOTES_BOOK = DB.Quotes.BOOK.toString();
-    private static final String QUOTES_USER_ID = DB.Quotes.USER_ID.toString();
+    private static final String QUOTES_USER_NAME = DB.Quotes.USER_NAME.toString();
 
     private static QuestionsDB ourInstance;
     private static Context context;
@@ -94,7 +94,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
                         + QUOTES_ID + " INTEGER PRIMARY KEY, "
                         + QUOTES_CONTENT + " TEXT NOT NULL, "
                         + QUOTES_BOOK + " TEXT NOT NULL, "
-                        + QUOTES_USER_ID + " INTEGER NOT NULL)"
+                        + QUOTES_USER_NAME + " TEXT)"
         );
 
     }
@@ -114,7 +114,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
 
         contentValues.put(QUOTES_CONTENT, quote.getContent());
         contentValues.put(QUOTES_BOOK, quote.getBook());
-        contentValues.put(QUOTES_USER_ID, quote.getUserId());
+        contentValues.put(QUOTES_USER_NAME, quote.getUserName());
 
         int quoteId = (int) db.insert(QUOTES_TABLE_NAME, null, contentValues);
         addQuestion(quote.getQuestion(), quoteId);
@@ -282,10 +282,10 @@ public class QuestionsDB extends SQLiteOpenHelper {
                             QUOTES_CONTENT));
                     String book = quotesCursor.getString(questionsCursor.getColumnIndex(
                             QUOTES_BOOK));
-                    int userId = questionsCursor.getInt(questionsCursor.getColumnIndex(
-                            QUOTES_USER_ID));
+                    String userName = questionsCursor.getString(questionsCursor.getColumnIndex(
+                            QUOTES_USER_NAME));
 
-                    Quote quote = new Quote(content, question, book, quoteId, userId, 0);
+                    Quote quote = new Quote(content, question, book, userName, quoteId, 0);
                     quotes.add(quote);
 
                     questionsCursor.moveToNext();
