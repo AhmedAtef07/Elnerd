@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -44,7 +45,7 @@ public class QuoteView implements Viewable{
 
     private TextView quote;
     private TextView bookName;
-    private int time;
+    private int time = 6000;
 
     private int screenWidth;
     private int screenHeight;
@@ -91,7 +92,7 @@ public class QuoteView implements Viewable{
     public void startView() {
         mainLayout.addView(layout);
         setMainLayout();
-        loadBitmap(R.drawable.gpbg , bitmap);
+        loadBitmap(R.drawable.gpbg, bitmap);
     }
 
     @Override
@@ -133,6 +134,8 @@ public class QuoteView implements Viewable{
         quote.setTextDirection(View.TEXT_DIRECTION_RTL);
         quote.setBackground(context.getResources().getDrawable(colors[randomIndex]));
         quote.setGravity(Gravity.CENTER);
+        quote.setTypeface(Typeface.createFromAsset(
+                context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
         quote.setLayoutParams(params);
@@ -166,6 +169,8 @@ public class QuoteView implements Viewable{
         bookName.setLayoutParams(paramsBook);
         bookName.setTranslationX(new Random().nextFloat() * 20 - 10);
         bookName.setTranslationY(new Random().nextFloat() * 20 - 10);
+        bookName.setTypeface(Typeface.createFromAsset(
+                context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
         layout.addView(bookName);
     }
 
