@@ -45,6 +45,7 @@ public class GameView implements Viewable , Game{
 
     int screenWidth;
     int screenHeight;
+    int time;
 
     boolean isFirst = true;
 
@@ -124,6 +125,11 @@ public class GameView implements Viewable , Game{
         setBitmapsAndAnimation();
 //        ((Activity) context).setContentView(mainLayout);
         buttonsInAnimation(0);
+    }
+
+    @Override
+    public void setTime(int time){
+        this.time = time;
     }
 
     @Override
@@ -382,7 +388,7 @@ public class GameView implements Viewable , Game{
 
     private void timeAnimation(){
         Animation move = new TranslateAnimation(0 , -screenWidth , 0 , 0);
-        move.setDuration(6000);
+        move.setDuration(time);
         bar.startAnimation(move);
     }
 

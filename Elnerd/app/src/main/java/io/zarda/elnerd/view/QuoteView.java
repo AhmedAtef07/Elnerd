@@ -20,6 +20,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -34,7 +35,7 @@ import io.zarda.elnerd.R;
 /**
  * Created by ahmed on 5/12/2015.
  */
-public class QuoteView implements Viewable{
+public class QuoteView implements Viewable , Game{
     Context context;
 
     Bitmap bitmap;
@@ -100,10 +101,25 @@ public class QuoteView implements Viewable{
         mainLayout.removeAllViews();
     }
 
-//    public QuoteView(){
+    @Override
+    public void showSuccess(Button correctButton) {
+        
+    }
+
+    @Override
+    public void showFailure(Button correctButton, Button wrongButton) {
+
+    }
+
+    @Override
+    public void showNextQuestion() {
+
+    }
+
+    //    public QuoteView(){
 //
 //    }
-
+    @Override
     public void setTime(int time){
         this.time = time;
     }
@@ -126,7 +142,7 @@ public class QuoteView implements Viewable{
         layout.addView(displayLayout);
     }
 
-    private void addQuote(){
+    public void addQuote(){
         getRandomIndex(3);
         getRandomDegree(10);
 
