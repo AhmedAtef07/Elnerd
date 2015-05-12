@@ -24,6 +24,7 @@ import io.zarda.elnerd.model.Quote;
  * Created by Ahmed Atef on 11 May, 2015.
  */
 public class ApiManager {
+
     private enum CollectionType {
         QUESTION,
     }
@@ -31,6 +32,8 @@ public class ApiManager {
     private static final String apiUrl = Constants.API_URL;
     private static ApiManager ourInstance;
     private static Context context;
+
+    private long maxTimeStamp = 0;
 
     public static void initialize(Context context) {
         ApiManager.context = context;
@@ -68,6 +71,10 @@ public class ApiManager {
                     }
                 }
         );
+
+        SharedPreferencesManager.getInstance().setKey(Constants.SharedMemory.LAST_SYNC_TIMESTAMP,
+                maxTimeStamp);
+
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
         Log.e("Api Manager", "sent to queue");
@@ -88,8 +95,7 @@ private ArrayList<Quote> parseQuotesFromResponse(String response) throws JSONExc
         int ansIndex = jsonObject.getInt("answer_index");
         String content = jsonObject.getString("quote");
         String book = jsonObject.getString("book");
-        int tta = jsonObject.getInt("tta");
-        long timeStamp = jsonObject.getLong("timestamp");
+        // int tta = jsonObject.getInt("tta");
         String userFullName = jsonObject.getString("user_full_name");
         String mode = jsonObject.getString("mode");
 
@@ -98,7 +104,12 @@ private ArrayList<Quote> parseQuotesFromResponse(String response) throws JSONExc
         for (int i = 0; i < choicesArray.length(); ++i) {
             choices.add(choicesArray.getString(i));
         }
-        return new Quote(content, new Question(header, choices, ansIndex, id, 0, mode), book);
+
+        long timeStamp = jsonObject.getLong("timestamp");
+        maxTimeStamp = Math.max(maxTimeStamp, timeStamp);
+
+        return new Quote(content, new Question(header, choices, ansIndex, id, 0, mode), book,
+                userFullName);
     }
 
     private String getRequestUrl(CollectionType collectionType, long sinceTimeStamp, int count,
