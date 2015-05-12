@@ -72,9 +72,6 @@ public class ApiManager {
                 }
         );
 
-        SharedPreferencesManager.getInstance().setKey(Constants.SharedMemory.LAST_SYNC_TIMESTAMP,
-                maxTimeStamp);
-
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
         Log.e("Api Manager", "sent to queue");
@@ -86,6 +83,11 @@ private ArrayList<Quote> parseQuotesFromResponse(String response) throws JSONExc
         for (int i = 0; i < jsonArray.length(); ++i) {
             quotesList.add(makeQuote(jsonArray.getJSONObject(i)));
         }
+
+        // Add last sync time into the shared memory.
+        SharedPreferencesManager.getInstance().setKey(Constants.SharedMemory.LAST_SYNC_TIMESTAMP,
+            maxTimeStamp);
+
         return quotesList;
     }
 
