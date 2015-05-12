@@ -2,13 +2,18 @@ package io.zarda.elnerd.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -22,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,12 +48,17 @@ public class GameView implements Viewable , Game{
     boolean isFirst = true;
 
     FrameLayout mainLayout;
+    RelativeLayout barLayout;
+    Bitmap bitmap;
     TableLayout layout;
     Bitmap correctBitmap;
     Bitmap wrongBitmap;
     ImageView correctImage;
     ImageView wrongImage;
     Drawable background;
+
+    View bar;
+    View barBackground;
 
     AnimationSet reponseAnimation;
 
@@ -63,11 +74,9 @@ public class GameView implements Viewable , Game{
     Button forthChoice;
 
     ArrayList <TextView> cards = new ArrayList<TextView>();
-
+    GameViewNotifier gvn;
     private float degree = 0;
     private int randomIndex = 0;
-
-    GameViewNotifier gvn;
 
     public GameView(GameViewNotifier gvn){
         this.gvn = gvn;
@@ -82,7 +91,22 @@ public class GameView implements Viewable , Game{
         thirdChoice = (Button) views.get(3);
         forthChoice = (Button) views.get(4);
 
+        bar = new View(context);
+        barBackground = new View(context);
+
+        barLayout = new RelativeLayout(context);
+        barBackground.setBackgroundColor(Color.DKGRAY);
+        barBackground.setMinimumWidth(screenWidth);
+        bar.setBackgroundColor(Color.GRAY);
+        bar.setMinimumWidth(screenWidth);
+        barLayout.addView(barBackground);
+        barLayout.addView(bar);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
         setDimension();
+        params.height = 50;
+        params.width = screenWidth;
+        barLayout.setLayoutParams(params);
     }
 
     @Override
@@ -93,15 +117,18 @@ public class GameView implements Viewable , Game{
         setDisplayLayout();
         setButtons();
 
+        timeAnimation();
+
+
         setBitmapsAndAnimation();
-        ((Activity) context).setContentView(mainLayout);
+//        ((Activity) context).setContentView(mainLayout);
         buttonsInAnimation(0);
     }
 
     @Override
     public void endView() {
         layout.removeAllViews();
-        mainLayout.removeAllViews();
+        ((ViewGroup) mainLayout.getParent()).removeAllViews();;
     }
 
     @Override
@@ -109,6 +136,7 @@ public class GameView implements Viewable , Game{
         correctButton.setBackground(context.getResources().getDrawable(R.drawable.correctbtn));
         buttonsOutAnimation(true);
         correctImage.startAnimation(reponseAnimation);
+        gvn.notifyShowSuccessFinished();
 
         // mainLayout.
 //        if (!correctImage.isShown() && !wrongImage.isShown()) {
@@ -139,34 +167,10 @@ public class GameView implements Viewable , Game{
     }
 
     @Override
-    public void showFailure(Button correctButton , Button wrongButton) {
+    public void showFailure(Button correctButton, Button wrongButton) {
 
         wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrongbtn));
-//        buttonsOutAnimation(false);
-//        gvn.notifyShowFailureFinished();
-
-//        if (!wrongImage.isShown() && !correctImage.isShown()) {
-//            mainLayout.addView(wrongImage);
-//            wrongImage.startAnimation(reponseAnimationFail);
-//
-//            reponseAnimationFail.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    ((ViewGroup) (wrongImage.getParent())).removeView(wrongImage);
-//                    gvn.notifyShowFailureFinished();
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//        }
+        gvn.notifyShowFailureFinished();
     }
 
     @Override
@@ -175,23 +179,13 @@ public class GameView implements Viewable , Game{
     }
 
     private void setBitmapsAndAnimation(){
-//        correctBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.correct);
-//        wrongBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.wrong);
-
         correctImage = new ImageView(context);
-//        wrongImage = new ImageView(context);
         mainLayout.addView(correctImage);
-//        mainLayout.addView(wrongImage);
         Animation setAnimation = new ScaleAnimation(0 ,0 ,0 ,0);
         setAnimation.setFillAfter(true);
         correctImage.startAnimation(setAnimation);
-//        wrongImage.startAnimation(setAnimation);
-
         correctImage.setLayerType(View.LAYER_TYPE_HARDWARE , null);
-//        wrongImage.setLayerType(View.LAYER_TYPE_HARDWARE , null);
-
         correctImage.setImageBitmap(correctBitmap);
-//        wrongImage.setImageBitmap(wrongBitmap);
         FrameLayout.LayoutParams correctParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT , FrameLayout.LayoutParams.WRAP_CONTENT);
 
@@ -200,9 +194,6 @@ public class GameView implements Viewable , Game{
         correctParams.width = screenWidth;
 
         correctImage.setLayoutParams(correctParams);
-//        wrongImage.setLayoutParams(correctParams);
-
-
         Animation fadeAnimation = new AlphaAnimation(0.9f , 0.0f);
         fadeAnimation.setDuration(1000);
 
@@ -218,13 +209,13 @@ public class GameView implements Viewable , Game{
     }
 
     private void setLayout(){
-        background = context.getResources().getDrawable(R.drawable.bg);
         layout = new TableLayout(context);
+        layout.addView(barLayout);
+
         layout.setGravity(Gravity.CENTER);
-        layout.setBackground(context.getResources().getDrawable(R.drawable.gpbg));
+        loadBitmap(R.drawable.gpbg, bitmap);
 
         mainLayout = new FrameLayout(context);
-//        mainLayout.setBackground(context.getResources().getDrawable(R.drawable.gmbg));
         mainLayout.addView(layout);
     }
 
@@ -289,50 +280,10 @@ public class GameView implements Viewable , Game{
     }
 
     private void buttonsOutAnimation(final boolean answer){
-        if(!answer){
-            reponseAnimation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    gvn.notifyShowFailureFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            return;
-        }
         forthChoice.startAnimation(toLeft(0));
         thirdChoice.startAnimation(toLeft(75));
         secondChoice.startAnimation(toLeft(150));
         firstChoice.startAnimation(toLeft(225));
-
-        firstChoice.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                buttonsInAnimation(0);
-                if(answer){
-                    gvn.notifyShowSuccessFinished();
-                }
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
     private void getRandomIndex(int x){
@@ -366,6 +317,7 @@ public class GameView implements Viewable , Game{
         getRandomDegree(10);
 
         card.setWidth(screenWidth);
+        card.setTextDirection(View.TEXT_DIRECTION_RTL);
         card.setBackground(context.getResources().getDrawable(colors[randomIndex]));
         card.setGravity(Gravity.CENTER);
         card.setWidth(screenWidth);
@@ -387,10 +339,11 @@ public class GameView implements Viewable , Game{
         dropAnimation.addAnimation(scaleAnimation);
         dropAnimation.setFillAfter(true);
 
-//        buttonsInAnimation(0);
+        buttonsInAnimation(0);
 
         displayLayout.addView(card);
         card.startAnimation(dropAnimation);
+        timeAnimation();
     }
 
     private void newQuestion(){
@@ -413,5 +366,86 @@ public class GameView implements Viewable , Game{
         toLeft.setFillAfter(true);
 
         return toLeft;
+    }
+
+    private void timeAnimation(){
+        Animation move = new TranslateAnimation(0 , -screenWidth , 0 , 0);
+        move.setDuration(6000);
+        bar.startAnimation(move);
+    }
+
+    private Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                   int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    private int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public void loadBitmap(int resId, Bitmap bitmap) {
+        BitmapWorkerTask task = new BitmapWorkerTask(bitmap);
+        task.execute(resId);
+    }
+
+    class BitmapWorkerTask extends AsyncTask<Integer, Void, Bitmap> {
+        private final WeakReference<Bitmap> imageViewReference;
+        private int data = 0;
+        private Bitmap bitmap;
+
+        public BitmapWorkerTask(Bitmap bitmap) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<Bitmap>(bitmap);
+            this.bitmap = bitmap;
+        }
+
+        // Decode image in nd.
+        @Override
+        protected Bitmap doInBackground(Integer... params) {
+            data = params[0];
+            return decodeSampledBitmapFromResource(context.getResources(), data, 500,
+                    500);
+        }
+
+        // Once complete, see if ImageView is still around and set bitmap.
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap != null) {
+                Drawable drawable = new BitmapDrawable(bitmap);
+                mainLayout.setBackground(drawable);
+                ((Activity) context).setContentView(mainLayout);
+//                System.out.println("thread ! : " + backgroundBitmap);
+            }
+        }
     }
 }
