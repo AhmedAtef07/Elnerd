@@ -9,4 +9,5 @@ public interface Game {
     void showSuccess(Button correctButton);
     void showFailure(Button correctButton, Button wrongButton);
     void showNextQuestion();
+    void setTime(int msTime);
 }

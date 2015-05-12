@@ -23,7 +23,18 @@ public class Question {
         this.correctIndex = correctIndex;
         this.id = id;
         this.quoteId = quoteId;
+        this.modeId = 0;
         this.mode = mode;
+    }
+
+    public Question(String header, ArrayList<String> choices, int correctIndex, int id,
+                    int quoteId, int modeId) {
+        this.header = header;
+        this.choices = choices;
+        this.correctIndex = correctIndex;
+        this.id = id;
+        this.quoteId = quoteId;
+        this.modeId = modeId;
     }
 
     public Question(String header, ArrayList<String> choices, int correctIndex) {
@@ -64,5 +75,13 @@ public class Question {
 
     public void setModeId(int modeId) {
         this.modeId = modeId;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

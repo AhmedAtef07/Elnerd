@@ -23,7 +23,4 @@ public class GameViewNotifier {
         vm.startHomeView();
     }
 
-    public void notifyHomeAnimationFinished() {
-        vm.startGameView();
-    }
 }
