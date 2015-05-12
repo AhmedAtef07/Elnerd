@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +23,6 @@ import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
 
-import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
@@ -34,23 +31,18 @@ import io.zarda.elnerd.src.ApiManager;
 import io.zarda.elnerd.src.QuestionsManager;
 import io.zarda.elnerd.src.SharedPreferencesManager;
 import io.zarda.elnerd.src.ViewManager;
-import io.zarda.elnerd.view.FragmentSimpleLoginButton;
 
 
 public class MainActivity extends FragmentActivity {
-
-    public static final String MyPreferencesKEY = Constants.SHARED_MEMORY_NAME;
-    public static final String LongestPlayedKEY = SharedMemory.LONGEST_PLAYED.toString();
-    public static final String AllPlayedKEY = SharedMemory.ALL_PLAYED.toString();
 
     private QuestionsManager questionsManager;
     private SharedPreferencesManager sharedPreferencesManager;
 
     private CountDownTimer timer;
-    private FragmentManager mFragmentManager;
     private CallbackManager mCallbackManager;
     private ViewManager vm;
 
+    Question preparedQuestion;
 
     private int correctIndex;
     private int lastLongestPlayed;
@@ -88,8 +80,6 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mFragmentManager = getSupportFragmentManager();
-
         FacebookSdk.sdkInitialize(getApplicationContext());
         mCallbackManager = CallbackManager.Factory.create();
 
@@ -110,13 +100,13 @@ public class MainActivity extends FragmentActivity {
         choices.add("Choice  2");
         choices.add("Choice  3");
 
-        if (questionsManager.getQuotesSize() == 0) {
+//        if (questionsManager.getQuotesSize() == 0) {
 //            System.out.println("Getting Data");
 //            for (int i = 1; i <= 20; ++i)
 //                questionsManager.addQuestion(
 //                        new Question("Question number " + i + "?", choices, i % 4));
 //            questionsManager.getRandomQuestions();
-        }
+//        }
 
 //        int questionsSize = questionsManager.getQuestionsSize();
 //        System.out.println("Size: " + questionsSize);
@@ -211,20 +201,37 @@ public class MainActivity extends FragmentActivity {
     public void backPressed() {
         System.out.println("onBackPressed Called");
         if (!vm.inHome()) {
-            vm.endGameView();
-            vm.startHomeView();
+            if (vm.inQuote()) {
+                vm.endQuoteView();
+                vm.startHomeView();
+            } else {
+                vm.endGameView();
+                vm.startHomeView();
+            }
         } else {
 //            Toast.makeText(this, "You are currently in home :)", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
 
-    public void setNewQuestion() {
+    public void setNewQuote() {
         if (questionsManager.containsQuote()) {
             ++currentAllPlayed;
             Quote quote = questionsManager.getRandomQuote();
-            vm.showQuestion(quote.getQuestion());
-            correctIndex = quote.getQuestion().getCorrectIndex();
+            vm.showQuote(quote);
+            preparedQuestion = quote.getQuestion();
+        } else {
+            vm.endQuoteView();
+            vm.startHomeView();
+        }
+
+    }
+
+    public void setNewQuestion() {
+        if (preparedQuestion != null) {
+            vm.showQuestion(preparedQuestion);
+            correctIndex = preparedQuestion.getCorrectIndex();
+
             timer = new CountDownTimer(6000, 500) {
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -237,7 +244,6 @@ public class MainActivity extends FragmentActivity {
                     vm.startHomeView();
                 }
             };
-
             timer.start();
         } else {
             vm.endGameView();
