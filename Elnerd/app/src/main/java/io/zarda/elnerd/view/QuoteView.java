@@ -99,6 +99,7 @@ public class QuoteView implements Viewable , Game{
     @Override
     public void endView() {
         mainLayout.removeAllViews();
+        displayLayout.removeAllViews();
     }
 
     @Override
@@ -162,11 +163,11 @@ public class QuoteView implements Viewable , Game{
 
         Animation rotateAnimation = new RotateAnimation(0.0f , degree , screenWidth/2 ,
                 screenHeight/4);
-        rotateAnimation.setDuration(100);
+        rotateAnimation.setDuration(500);
 
         Animation scaleAnimation = new ScaleAnimation(1.0f , 0.85f , 1f , 0.7f , screenWidth / 2 ,
                 screenHeight / 2);
-        scaleAnimation.setDuration(100);
+        scaleAnimation.setDuration(500);
 
         dropAnimation.addAnimation(rotateAnimation);
         dropAnimation.addAnimation(scaleAnimation);
@@ -182,9 +183,10 @@ public class QuoteView implements Viewable , Game{
         bookName.setGravity(Gravity.CENTER);
         RelativeLayout.LayoutParams paramsBook = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
+        paramsBook.setMargins(0 , 200 ,0 ,0);
         bookName.setLayoutParams(paramsBook);
-        bookName.setTranslationX(new Random().nextFloat() * 20 - 10);
-        bookName.setTranslationY(new Random().nextFloat() * 20 - 10);
+//        bookName.setTranslationX(new Random().nextFloat() * 20 - 10);
+//        bookName.setTranslationY(new Random().nextFloat() * 20 - 10);
         bookName.setTypeface(Typeface.createFromAsset(
                 context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
         layout.addView(bookName);

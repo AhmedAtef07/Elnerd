@@ -134,7 +134,7 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void endView() {
-        layout.removeAllViews();
+//        layout.removeAllViews();
         ((ViewGroup) mainLayout.getParent()).removeAllViews();;
     }
 
