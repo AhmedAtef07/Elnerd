@@ -85,13 +85,12 @@ public class QuoteView implements Viewable , Game{
         params.height = 50;
         params.width = screenWidth;
         barLayout.setLayoutParams(params);
-        layout.addView(barLayout);
     }
 
 
     @Override
     public void startView() {
-        mainLayout.addView(layout);
+            mainLayout.addView(layout);
         setMainLayout();
         loadBitmap(R.drawable.gpbg, bitmap);
     }
@@ -100,6 +99,7 @@ public class QuoteView implements Viewable , Game{
     public void endView() {
         mainLayout.removeAllViews();
         displayLayout.removeAllViews();
+        layout.removeAllViews();
     }
 
     @Override
@@ -140,14 +140,19 @@ public class QuoteView implements Viewable , Game{
                 TableLayout.LayoutParams.WRAP_CONTENT);
         displayLayout.setLayoutParams(displayParams);
         displayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        layout.addView(displayLayout);
+        if(!barLayout.isShown()){
+            layout.addView(barLayout);
+        }
+        if(!displayLayout.isShown()) {
+            layout.addView(displayLayout);
+        }
     }
 
     public void showQuote(){
         getRandomIndex(3);
         getRandomDegree(10);
 
-        quote.setWidth(screenWidth);
+//        quote.setWidth(screenWidth);
         quote.setTextDirection(View.TEXT_DIRECTION_RTL);
         quote.setBackground(context.getResources().getDrawable(colors[randomIndex]));
         quote.setGravity(Gravity.CENTER);
@@ -174,7 +179,7 @@ public class QuoteView implements Viewable , Game{
         dropAnimation.setFillAfter(true);
 
         displayLayout.addView(quote);
-        quote.startAnimation(dropAnimation);
+//        quote.startAnimation(dropAnimation);
         timeAnimation();
 
         bookName.setWidth(screenWidth);
@@ -183,10 +188,9 @@ public class QuoteView implements Viewable , Game{
         bookName.setGravity(Gravity.CENTER);
         RelativeLayout.LayoutParams paramsBook = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
-        paramsBook.setMargins(0 , 200 ,0 ,0);
+//        paramsBook
+        params.setMargins(0 , 200 , 0 , 0);
         bookName.setLayoutParams(paramsBook);
-//        bookName.setTranslationX(new Random().nextFloat() * 20 - 10);
-//        bookName.setTranslationY(new Random().nextFloat() * 20 - 10);
         bookName.setTypeface(Typeface.createFromAsset(
                 context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
         layout.addView(bookName);

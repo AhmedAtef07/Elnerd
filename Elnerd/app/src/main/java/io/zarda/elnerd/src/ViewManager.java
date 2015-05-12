@@ -140,6 +140,8 @@ public class ViewManager {
             ((Button) gameViewsList.get(i)).setText(question.getChoices().get(i - 1));
         }
 
+        gameView.setTime(6000);
+
         gameView.showNextQuestion();
     }
 
@@ -154,9 +156,9 @@ public class ViewManager {
 
     public void startQuoteView() {
         quoteView.startView();
+        quoteView.setTime(9000);
         ((MainActivity) context).setNewQuote();
         currentView = quoteView;
-        quoteView.setTime(9000);
         CountDownTimer timer = new CountDownTimer(9000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {

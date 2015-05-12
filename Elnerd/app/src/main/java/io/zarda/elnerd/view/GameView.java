@@ -135,7 +135,9 @@ public class GameView implements Viewable , Game{
     @Override
     public void endView() {
 //        layout.removeAllViews();
-        ((ViewGroup) mainLayout.getParent()).removeAllViews();;
+//        ((ViewGroup) mainLayout.getParent()).removeAllViews();
+        layout.removeAllViews();
+        mainLayout.removeAllViews();
     }
 
     @Override
@@ -217,13 +219,19 @@ public class GameView implements Viewable , Game{
 
     private void setLayout(){
         layout = new TableLayout(context);
-        layout.addView(barLayout);
+        if(!barLayout.isShown()){
+
+            layout.addView(barLayout);
+        }
 
         layout.setGravity(Gravity.CENTER);
         loadBitmap(R.drawable.gpbg, bitmap);
 
         mainLayout = new FrameLayout(context);
-        mainLayout.addView(layout);
+        if(!layout.isShown()){
+
+            mainLayout.addView(layout);
+        }
     }
 
     private void setDisplayLayout(){
