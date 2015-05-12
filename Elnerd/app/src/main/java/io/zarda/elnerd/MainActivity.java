@@ -1,8 +1,6 @@
 package io.zarda.elnerd;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
@@ -28,6 +26,7 @@ import com.facebook.login.widget.LoginButton;
 import java.util.ArrayList;
 
 import io.zarda.elnerd.model.Constants;
+import io.zarda.elnerd.model.Constants.SharedMemory;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 import io.zarda.elnerd.src.ApiManager;
@@ -40,21 +39,24 @@ import io.zarda.elnerd.view.FragmentSimpleLoginButton;
 public class MainActivity extends FragmentActivity {
 
     public static final String MyPreferencesKEY = Constants.SHARED_MEMORY_NAME;
-    public static final String LongestPlayedKEY = Constants.SharedMemory.LONGEST_PLAYED.toString();
-    public static final String AllPlayedKEY = Constants.SharedMemory.ALL_PLAYED.toString();
+    public static final String LongestPlayedKEY = SharedMemory.LONGEST_PLAYED.toString();
+    public static final String AllPlayedKEY = SharedMemory.ALL_PLAYED.toString();
+
     private QuestionsManager questionsManager;
+    private SharedPreferencesManager sharedPreferencesManager;
+
     private CountDownTimer timer;
-    private SharedPreferences sharedpreferences;
-    private SharedPreferences.Editor editor;
+    private FragmentManager mFragmentManager;
+    private CallbackManager mCallbackManager;
     private ViewManager vm;
+
+
     private int correctIndex;
     private int lastLongestPlayed;
     private int lastAllPlayed;
     private int currentLongestPlayed;
     private int currentAllPlayed;
-    private FragmentManager mFragmentManager;
 
-    private CallbackManager mCallbackManager;
     private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -99,6 +101,7 @@ public class MainActivity extends FragmentActivity {
         SharedPreferencesManager.initialize(this);
 
         questionsManager = new QuestionsManager(this);
+        sharedPreferencesManager = sharedPreferencesManager.getInstance();
 
         ArrayList<String> choices = new ArrayList<>();
         choices.add("Choice  0");
@@ -117,14 +120,11 @@ public class MainActivity extends FragmentActivity {
         int questionsSize = questionsManager.getQuestionsSize();
         System.out.println("Size: " + questionsSize);
 
-        sharedpreferences = getSharedPreferences(MyPreferencesKEY, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
+        sharedPreferencesManager.setKey(SharedMemory.LAST_SYNC_TIMESTAMP, 0L);
 
-        editor.putLong(Constants.SharedMemory.LAST_SYNC_TIMESTAMP.toString(), 0L);
-        editor.commit();
 
-        lastAllPlayed = sharedpreferences.getInt(AllPlayedKEY, 0);
-        lastLongestPlayed = sharedpreferences.getInt(LongestPlayedKEY, 0);
+        lastAllPlayed = (int) sharedPreferencesManager.getKey(SharedMemory.ALL_PLAYED, 0);
+        lastLongestPlayed = (int) sharedPreferencesManager.getKey(SharedMemory.LONGEST_PLAYED, 0);
 
         currentLongestPlayed = 0;
         currentAllPlayed = 0;
@@ -268,15 +268,18 @@ public class MainActivity extends FragmentActivity {
 
     public void updatePreferences() {
         if (currentLongestPlayed > lastLongestPlayed) {
-            editor.putInt(LongestPlayedKEY, currentLongestPlayed);
+            sharedPreferencesManager.setKey(SharedMemory.LONGEST_PLAYED, currentLongestPlayed);
         }
-        editor.putInt(AllPlayedKEY, lastAllPlayed + currentAllPlayed);
-        editor.commit();
+        sharedPreferencesManager.setKey(SharedMemory.ALL_PLAYED, lastAllPlayed + currentAllPlayed);
+
         currentLongestPlayed = 0;
-        System.out.println("Best: " + sharedpreferences.getInt(LongestPlayedKEY, 0));
-        System.out.println("All: " + sharedpreferences.getInt(AllPlayedKEY, 0));
-        vm.setScores(sharedpreferences.getInt(LongestPlayedKEY, 0),
-                sharedpreferences.getInt(AllPlayedKEY, 0));
+        System.out.println("Best: " + (int) sharedPreferencesManager.getKey(
+                SharedMemory.LONGEST_PLAYED, 0));
+        System.out.println("All: " + (int) sharedPreferencesManager.getKey(
+                SharedMemory.LONGEST_PLAYED, 0));
+        vm.setScores(
+                (int) sharedPreferencesManager.getKey(SharedMemory.LONGEST_PLAYED, 0),
+                (int) sharedPreferencesManager.getKey(SharedMemory.ALL_PLAYED, 0));
         lastAllPlayed += currentAllPlayed;
         currentAllPlayed = 0;
         currentLongestPlayed = 0;

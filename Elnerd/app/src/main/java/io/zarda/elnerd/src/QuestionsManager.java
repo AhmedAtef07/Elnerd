@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -73,22 +74,18 @@ public class QuestionsManager implements Waitable {
      * @param count number of questions to be downloaded.
      */
     public void downloadQuestions(int count) {
+        long lastSyncTimeStamp = (long) SharedPreferencesManager.getInstance().getKey(
+                SharedMemory.LAST_SYNC_TIMESTAMP, 0);
 
-        Log.e("downloadQuestions", "HERE");
-        SharedPreferences sharedpreferences = context.getSharedPreferences(
-                Constants.SHARED_MEMORY_NAME, Context.MODE_PRIVATE);
-        long lastSyncTimeStamp = sharedpreferences.getLong(
-                SharedMemory.LAST_SYNC_TIMESTAMP.toString(), 0);
         apiManager.downloadQuestions(lastSyncTimeStamp, count, this);
     }
 
     @Override
     public void receiveResponse(Object response) {
-        Log.e("API MANAGER", "HERE");
         ArrayList<Question> questionsDownloaded = (ArrayList<Question>) response;
         for (Question question : questionsDownloaded) {
 //            addQuestion(question);
-            System.out.println(question.getHeader());
+            Log.e("Question Added", question.getHeader());
         }
     }
 }
