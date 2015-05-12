@@ -77,7 +77,7 @@ public class QuestionsManager implements Waitable {
      */
     public void downloadQuestions(int count) {
         long lastSyncTimeStamp = (long) SharedPreferencesManager.getInstance().getKey(
-                SharedMemory.LAST_SYNC_TIMESTAMP, 0);
+                SharedMemory.LAST_SYNC_TIMESTAMP, 0L);
 
         apiManager.downloadQuestions(lastSyncTimeStamp, count, this);
     }

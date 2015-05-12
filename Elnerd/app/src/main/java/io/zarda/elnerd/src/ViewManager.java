@@ -1,6 +1,7 @@
 package io.zarda.elnerd.src;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import java.util.List;
 import io.zarda.elnerd.MainActivity;
 import io.zarda.elnerd.R;
 import io.zarda.elnerd.model.Question;
+import io.zarda.elnerd.model.Quote;
 import io.zarda.elnerd.view.GameView;
 import io.zarda.elnerd.view.HomeView;
 import io.zarda.elnerd.view.QuoteView;
@@ -67,11 +69,10 @@ public class ViewManager {
         homeViewsList = Collections.unmodifiableList(homeViewsArray);
 
 
-
         // quoteView
         ArrayList<View> quoteViewsArray = new ArrayList<>();
-        homeViewsArray.add(new TextView(context));
-        homeViewsArray.add(new TextView(context));
+        quoteViewsArray.add(new TextView(context));
+        quoteViewsArray.add(new TextView(context));
 
         quoteViewsList = Collections.unmodifiableList(quoteViewsArray);
 
@@ -104,9 +105,26 @@ public class ViewManager {
         quoteView.initializeView(context, quoteViewsList);
     }
 
+    public void startHomeView() {
+        ((MainActivity) context).updatePreferences();
+        ((TextView) homeViewsList.get(1)).setText("" + bestPlayed);
+        ((TextView) homeViewsList.get(2)).setText("" + allPlayed);
+        homeView.startView();
+        currentView = homeView;
+    }
+
+    public void endHomeView() {
+        homeView.endView();
+        currentView = null;
+    }
+
+    public void setScores(int best, int all) {
+        bestPlayed = best;
+        allPlayed = all;
+    }
+
     public void startGameView() {
         gameView.startView();
-        ((MainActivity) context).setNewQuestion();
         currentView = gameView;
     }
 
@@ -133,28 +151,25 @@ public class ViewManager {
                 (Button) gameViewsList.get(clickedButtonIndex + 1));
     }
 
-    public void startHomeView() {
-        ((MainActivity) context).updatePreferences();
-        ((TextView) homeViewsList.get(1)).setText("" + bestPlayed);
-        ((TextView) homeViewsList.get(2)).setText("" + allPlayed);
-        homeView.startView();
-        currentView = homeView;
-    }
-
-    public void endHomeView() {
-        homeView.endView();
-        currentView = null;
-    }
-
-    public void setScores(int best, int all) {
-        bestPlayed = best;
-        allPlayed = all;
-    }
-
     public void startQuoteView() {
+        System.out.println("HHHH");
+        ((MainActivity) context).setNewQuote();
         quoteView.startView();
         currentView = quoteView;
         quoteView.setTime(7000);
+        CountDownTimer timer = new CountDownTimer(6000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);
+            }
+
+            @Override
+            public void onFinish() {
+                endQuoteView();
+                startGameView();
+            }
+        };
+        timer.start();
     }
 
     public void endQuoteView() {
@@ -162,9 +177,17 @@ public class ViewManager {
         currentView = null;
     }
 
+    public void showQuote(Quote quote) {
+        quoteView.showQuote();
+    }
+
 
     public boolean inHome() {
         return currentView == homeView;
+    }
+
+    public boolean inQuote() {
+        return currentView == quoteView;
     }
 
 }
