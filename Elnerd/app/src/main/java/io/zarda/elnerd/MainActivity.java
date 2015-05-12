@@ -178,12 +178,10 @@ public class MainActivity extends FragmentActivity {
     public void backPressed() {
         System.out.println("onBackPressed Called");
         if (!vm.inHome()) {
-
             if (vm.inQuote()) {
                 vm.endQuoteView();
                 vm.startHomeView();
             } else {
-                timer.cancel();
                 vm.endGameView();
                 vm.startHomeView();
             }

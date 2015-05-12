@@ -90,16 +90,16 @@ public class QuoteView implements Viewable , Game{
 
     @Override
     public void startView() {
-            mainLayout.addView(layout);
+        mainLayout.addView(layout);
         setMainLayout();
         loadBitmap(R.drawable.gpbg, bitmap);
     }
 
     @Override
     public void endView() {
-        mainLayout.removeAllViews();
         displayLayout.removeAllViews();
         layout.removeAllViews();
+        mainLayout.removeAllViews();
     }
 
     @Override
