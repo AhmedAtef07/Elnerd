@@ -104,13 +104,15 @@ public class MainActivity extends FragmentActivity {
         choices.add("Choice  2");
         choices.add("Choice  3");
 
-        if (questionsManager.getQuestions().size() == 0) {
+        if (questionsManager.getQuestionsSize() == 0) {
+            System.out.println("Getting Data");
             for (int i = 1; i <= 20; ++i)
                 questionsManager.addQuestion(
                         new Question("Question number " + i + "?", choices, i % 4));
+            questionsManager.getRandomQuestions();
         }
 
-        int questionsSize = questionsManager.questionsSize();
+        int questionsSize = questionsManager.getQuestionsSize();
         System.out.println("Size: " + questionsSize);
 
         sharedpreferences = getSharedPreferences(MyPreferencesKEY, Context.MODE_PRIVATE);
@@ -228,7 +230,6 @@ public class MainActivity extends FragmentActivity {
 
                 @Override
                 public void onFinish() {
-                    System.out.println("done!");
                     vm.endGameView();
                     vm.startHomeView();
                 }

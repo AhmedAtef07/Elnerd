@@ -12,12 +12,17 @@ public class Question {
     private ArrayList<String> choices;
     private int correctIndex;
     private int id;
+    private int quoteId;
+    private int modeId;
 
-    public Question(String header, ArrayList<String> choices, int correctIndex, int id) {
+    public Question(String header, ArrayList<String> choices, int correctIndex, int id,
+                    int quoteId, int modeId) {
         this.header = header;
         this.choices = choices;
         this.correctIndex = correctIndex;
         this.id = id;
+        this.quoteId = quoteId;
+        this.modeId = modeId;
     }
 
     public Question(String header, ArrayList<String> choices, int correctIndex) {
@@ -25,6 +30,8 @@ public class Question {
         this.choices = choices;
         this.correctIndex = correctIndex;
         this.id = 0;
+        this.quoteId = 0;
+        this.modeId = 0;
     }
 
     public String getHeader() {
@@ -42,4 +49,19 @@ public class Question {
         return id;
     }
 
+    public int getQuoteId() {
+        return quoteId;
+    }
+
+    public void setQuoteId(int quoteId) {
+        this.quoteId = quoteId;
+    }
+
+    public int getModeId() {
+        return modeId;
+    }
+
+    public void setModeId(int modeId) {
+        this.modeId = modeId;
+    }
 }

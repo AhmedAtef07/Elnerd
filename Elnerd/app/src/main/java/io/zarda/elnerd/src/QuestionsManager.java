@@ -29,15 +29,10 @@ public class QuestionsManager implements Waitable {
         this.context = context;
         questionArrayList = new ArrayList<>();
         this.requestSize = Constants.DB_REQUEST_COUNT;
-//        getRandomQuestions();
+        getRandomQuestions();
     }
 
-    public ArrayList<Question> getQuestions(){
-        questionArrayList = questionsDB.getQuestions();
-        return questionArrayList;
-    }
-
-    public ArrayList<Question> getRandomQuestions(){
+    public ArrayList<Question> getRandomQuestions() {
         if (questionArrayList.size() <= requestSize / 2) {
             questionArrayList.addAll(questionsDB.getRandomQuestions(requestSize));
         }
@@ -49,10 +44,10 @@ public class QuestionsManager implements Waitable {
     }
 
     public Question getRandomQuestion() {
+        if (questionArrayList.size() <= requestSize / 2) {
+            getRandomQuestions();
+        }
         if (questionArrayList.size() > 0) {
-            if (questionArrayList.size() <= requestSize / 2) {
-                getRandomQuestions();
-            }
             Random rand = new Random();
             int randomIndex = rand.nextInt(questionArrayList.size());
             Question question = questionArrayList.get(randomIndex);
@@ -68,12 +63,13 @@ public class QuestionsManager implements Waitable {
         return questionArrayList.size() > 0;
     }
 
-    public int questionsSize() {
+    public int getQuestionsSize() {
         return questionArrayList.size();
     }
 
     /**
      * After this method be called the result will be send to receiveResponse as an object.
+     *
      * @param count number of questions to be downloaded.
      */
     public void downloadQuestions(int count) {
