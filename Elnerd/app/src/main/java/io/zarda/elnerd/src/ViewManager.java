@@ -16,6 +16,7 @@ import io.zarda.elnerd.R;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.view.GameView;
 import io.zarda.elnerd.view.HomeView;
+import io.zarda.elnerd.view.QuoteView;
 import io.zarda.elnerd.view.Viewable;
 
 /**
@@ -26,12 +27,14 @@ public class ViewManager {
 
     private final List<View> gameViewsList;
     private final List<View> homeViewsList;
+    private final List<View> quoteViewsList;
 
-    GameView gameView;
     GameViewNotifier gvn;
     HomeViewNotifier hvn;
 
     HomeView homeView;
+    QuoteView quoteView;
+    GameView gameView;
 
     Viewable currentView;
 
@@ -63,6 +66,15 @@ public class ViewManager {
 
         homeViewsList = Collections.unmodifiableList(homeViewsArray);
 
+
+
+        // quoteView
+        ArrayList<View> quoteViewsArray = new ArrayList<>();
+        homeViewsArray.add(new TextView(context));
+        homeViewsArray.add(new TextView(context));
+
+        quoteViewsList = Collections.unmodifiableList(quoteViewsArray);
+
         // game View
         ArrayList<View> gameViewsArray = new ArrayList<>();
         gameViewsArray.add(new TextView(context));
@@ -87,6 +99,9 @@ public class ViewManager {
 
         gameView = new GameView(gvn);
         gameView.initializeView(context, gameViewsList);
+
+        quoteView = new QuoteView();
+        quoteView.initializeView(context, quoteViewsList);
     }
 
     public void startGameView() {
@@ -135,6 +150,18 @@ public class ViewManager {
         bestPlayed = best;
         allPlayed = all;
     }
+
+    public void startQuoteView() {
+        quoteView.startView();
+        currentView = quoteView;
+        quoteView.setTime(7000);
+    }
+
+    public void endQuoteView() {
+        quoteView.endView();
+        currentView = null;
+    }
+
 
     public boolean inHome() {
         return currentView == homeView;

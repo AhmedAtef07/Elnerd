@@ -29,6 +29,7 @@ import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
+import io.zarda.elnerd.model.Quote;
 import io.zarda.elnerd.src.ApiManager;
 import io.zarda.elnerd.src.QuestionsManager;
 import io.zarda.elnerd.src.SharedPreferencesManager;
@@ -109,16 +110,16 @@ public class MainActivity extends FragmentActivity {
         choices.add("Choice  2");
         choices.add("Choice  3");
 
-        if (questionsManager.getQuestionsSize() == 0) {
-            System.out.println("Getting Data");
-            for (int i = 1; i <= 20; ++i)
-                questionsManager.addQuestion(
-                        new Question("Question number " + i + "?", choices, i % 4));
-            questionsManager.getRandomQuestions();
+        if (questionsManager.getQuotesSize() == 0) {
+//            System.out.println("Getting Data");
+//            for (int i = 1; i <= 20; ++i)
+//                questionsManager.addQuestion(
+//                        new Question("Question number " + i + "?", choices, i % 4));
+//            questionsManager.getRandomQuestions();
         }
 
-        int questionsSize = questionsManager.getQuestionsSize();
-        System.out.println("Size: " + questionsSize);
+//        int questionsSize = questionsManager.getQuestionsSize();
+//        System.out.println("Size: " + questionsSize);
 
         sharedPreferencesManager.setKey(SharedMemory.LAST_SYNC_TIMESTAMP, 0L);
 
@@ -219,11 +220,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void setNewQuestion() {
-        if (questionsManager.containsQuestion()) {
+        if (questionsManager.containsQuote()) {
             ++currentAllPlayed;
-            Question question = questionsManager.getRandomQuestion();
-            vm.showQuestion(question);
-            correctIndex = question.getCorrectIndex();
+            Quote quote = questionsManager.getRandomQuote();
+            vm.showQuestion(quote.getQuestion());
+            correctIndex = quote.getQuestion().getCorrectIndex();
             timer = new CountDownTimer(6000, 500) {
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -260,11 +261,11 @@ public class MainActivity extends FragmentActivity {
 //        vm.startGameView();
     }
 
-    public void loginClick(View v) {
-        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(android.R.id.content, new FragmentSimpleLoginButton());
-        transaction.commit();
-    }
+//    public void loginClick(View v) {
+//        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+//        transaction.replace(android.R.id.content, new FragmentSimpleLoginButton());
+//        transaction.commit();
+//    }
 
     public void updatePreferences() {
         if (currentLongestPlayed > lastLongestPlayed) {

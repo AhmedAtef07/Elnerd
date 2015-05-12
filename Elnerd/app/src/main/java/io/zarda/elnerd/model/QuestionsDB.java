@@ -117,6 +117,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
         contentValues.put(QUOTES_USER_NAME, quote.getUserName());
 
         int quoteId = (int) db.insert(QUOTES_TABLE_NAME, null, contentValues);
+        quote.getQuestion().setModeId(addMode(quote.getQuestion().getMode()));
         addQuestion(quote.getQuestion(), quoteId);
     }
 
