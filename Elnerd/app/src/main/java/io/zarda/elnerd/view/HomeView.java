@@ -200,23 +200,24 @@ public class HomeView implements Viewable {
         allPlayedGoAnimation();
         facebookGoAnimation();
         screenUP();
-        transitionView.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+//        transitionView.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                hvn.notifyHomeAnimationFinished();
+//                  ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
 
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        ((ViewGroup) mainLayout.getParent()).removeAllViews();
     }
 
     private void playButtonGOAnimation() {
@@ -251,6 +252,23 @@ public class HomeView implements Viewable {
         Animation alpha = new AlphaAnimation(0, 1);
         alpha.setStartOffset(1000);
         alpha.setDuration(1000);
+        alpha.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                hvn.notifyHomeAnimationFinished();
+                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         transitionView.startAnimation(alpha);
     }
 
