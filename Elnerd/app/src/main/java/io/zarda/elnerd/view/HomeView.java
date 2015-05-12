@@ -84,7 +84,8 @@ public class HomeView implements Viewable {
     public void endView() {
 
 //        ((ViewGroup) mainLayout.getParent()).removeAllViews();
-        goAway();
+//        goAway();
+        hvn.notifyHomeAnimationFinished();
 
 
     }

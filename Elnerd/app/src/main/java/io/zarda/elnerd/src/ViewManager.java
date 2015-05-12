@@ -125,6 +125,7 @@ public class ViewManager {
 
     public void startGameView() {
         gameView.startView();
+        ((MainActivity) context).setNewQuestion();
         currentView = gameView;
     }
 
@@ -153,8 +154,8 @@ public class ViewManager {
 
     public void startQuoteView() {
         System.out.println("HHHH");
-        ((MainActivity) context).setNewQuote();
         quoteView.startView();
+        ((MainActivity) context).setNewQuote();
         currentView = quoteView;
         quoteView.setTime(7000);
         CountDownTimer timer = new CountDownTimer(6000, 1000) {
@@ -178,6 +179,8 @@ public class ViewManager {
     }
 
     public void showQuote(Quote quote) {
+        ((TextView) quoteViewsList.get(0)).setText(quote.getContent());
+        ((TextView) quoteViewsList.get(1)).setText(quote.getBook());
         quoteView.showQuote();
     }
 

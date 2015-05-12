@@ -86,8 +86,10 @@ public class QuestionsManager implements Waitable {
     public void receiveResponse(Object response) {
         ArrayList<Quote> quotesDownloaded = (ArrayList<Quote>) response;
         for (Quote quote : quotesDownloaded) {
-//            addQuestion(question);
+            addQuote(quote);
+            System.out.println(quote.getContent());
             Log.e("Quote Added", quote.getQuestion().getHeader());
         }
+        getRandomQuotes();
     }
 }

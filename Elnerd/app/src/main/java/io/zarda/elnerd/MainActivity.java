@@ -1,6 +1,7 @@
 package io.zarda.elnerd;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
@@ -110,6 +111,10 @@ public class MainActivity extends FragmentActivity {
 
 //        int questionsSize = questionsManager.getQuestionsSize();
 //        System.out.println("Size: " + questionsSize);
+        questionsManager.downloadQuestions(3);
+
+//        questionsManager.getRandomQuotes();
+//        System.out.println(questionsManager.getRandomQuote().getContent());
 
         sharedPreferencesManager.setKey(SharedMemory.LAST_SYNC_TIMESTAMP, 0L);
 
@@ -123,7 +128,6 @@ public class MainActivity extends FragmentActivity {
         vm = new ViewManager(this);
         vm.startHomeView();
 
-        questionsManager.downloadQuestions(2);
     }
 
     @Override
@@ -240,6 +244,7 @@ public class MainActivity extends FragmentActivity {
 
                 @Override
                 public void onFinish() {
+                    preparedQuestion = null;
                     vm.endGameView();
                     vm.startHomeView();
                 }
@@ -252,7 +257,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void answerClick(View v) {
-        timer.cancel();
         if ((int) v.getTag() == correctIndex) {
             vm.showSuccess(correctIndex);
             ++currentLongestPlayed;
@@ -263,8 +267,11 @@ public class MainActivity extends FragmentActivity {
 
     public void playClick(View v) {
         currentLongestPlayed = 0;
-        vm.endHomeView();
+//        vm.endHomeView();
+//        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+//        startActivity(browserIntent);
 //        vm.startGameView();
+
     }
 
 //    public void loginClick(View v) {

@@ -85,7 +85,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
                 "CREATE TABLE "
                         + MODES_TABLE_NAME + " ("
                         + MODES_ID + " INTEGER PRIMARY KEY, "
-                        + MODES_TITLE + " TEXT NOT NULL)"
+                        + MODES_TITLE + " TEXT)"
         );
 
         db.execSQL(
@@ -117,7 +117,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
         contentValues.put(QUOTES_USER_NAME, quote.getUserName());
 
         int quoteId = (int) db.insert(QUOTES_TABLE_NAME, null, contentValues);
-        quote.getQuestion().setModeId(addMode(quote.getQuestion().getMode()));
+//        quote.getQuestion().setModeId(addMode(quote.getQuestion().getMode()));
         addQuestion(quote.getQuestion(), quoteId);
     }
 
@@ -172,7 +172,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor modesCursor = db.rawQuery("SELECT * FROM " + MODES_TABLE_NAME + " WHERE "
-                + MODES_TITLE + " = " + title, null);
+                + MODES_TITLE + " = '" + title + "'", null);
 
         if (modesCursor.getCount() == 0) {
             ContentValues contentValues = new ContentValues();
@@ -236,7 +236,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
 
                 questionsCursor.moveToFirst();
                 while (!questionsCursor.isAfterLast()) {
-                    int id = questionsCursor.getInt(questionsCursor.getColumnIndex(
+                    int questionId = questionsCursor.getInt(questionsCursor.getColumnIndex(
                             QUESTIONS_ID));
                     int quoteId = questionsCursor.getInt(questionsCursor.getColumnIndex(
                             QUESTIONS_QUOTE_ID));
@@ -258,7 +258,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
                     Random rand = new Random();
                     int correctIndex = rand.nextInt(4), counter = 0;
                     Cursor choicesCursor = db.rawQuery("SELECT * FROM " + CHOICES_TABLE_NAME + " WHERE "
-                                    + CHOICES_QUESTION_ID + " = " + id
+                                    + CHOICES_QUESTION_ID + " = " + questionId
                                     + " ORDER BY RANDOM() LIMIT " + 4,
                             null);
                     choicesCursor.moveToFirst();
@@ -276,23 +276,24 @@ public class QuestionsDB extends SQLiteOpenHelper {
                     choices.add(correctIndex, correctChoice);
 
                     Question question = new Question(
-                            header, choices, correctIndex, id, quoteId, modeId);
+                            header, choices, correctIndex, questionId, quoteId, modeId);
 
                     Cursor quotesCursor = db.rawQuery("SELECT * FROM " + QUOTES_TABLE_NAME + " WHERE "
                             + QUOTES_ID + " = " + quoteId, null);
-                    String content = quotesCursor.getString(questionsCursor.getColumnIndex(
-                            QUOTES_CONTENT));
-                    String book = quotesCursor.getString(questionsCursor.getColumnIndex(
-                            QUOTES_BOOK));
-                    String userName = questionsCursor.getString(questionsCursor.getColumnIndex(
-                            QUOTES_USER_NAME));
+                    quotesCursor.moveToFirst();
+                    String content = quotesCursor.getString(quotesCursor.getColumnIndex(QUOTES_CONTENT));
+                    String book = quotesCursor.getString(quotesCursor.getColumnIndex(QUOTES_BOOK));
+                    String userName = quotesCursor.getString(quotesCursor.getColumnIndex(QUOTES_USER_NAME));
 
                     Quote quote = new Quote(content, question, book, userName, quoteId, 0);
                     quotes.add(quote);
 
+                    quotesCursor.close();
+
                     questionsCursor.moveToNext();
                 }
                 limit -= questionsCursor.getCount();
+                questionsCursor.close();
                 questionsCursor.close();
             }
         }
