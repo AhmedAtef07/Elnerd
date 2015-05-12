@@ -167,7 +167,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
                 new String[]{Integer.toString(questionId)});
     }
 
-    private int addMode(String title) {
+    public int addMode(String title) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor modesCursor = db.rawQuery("SELECT * FROM " + MODES_TABLE_NAME + " WHERE "
@@ -200,7 +200,8 @@ public class QuestionsDB extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateViewCounter(Question question) {
+    public boolean updateViewCounter(Quote quote) {
+        Question question = quote.getQuestion();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -217,7 +218,7 @@ public class QuestionsDB extends SQLiteOpenHelper {
         return true;
     }
 
-    public ArrayList getRandomQuestions(int limit) {
+    public ArrayList getRandomQuotes(int limit) {
         ArrayList<Quote> quotes = new ArrayList<>();
 
         if (getNumberOfQuestions() > 0) {

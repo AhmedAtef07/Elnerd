@@ -1,10 +1,8 @@
 package io.zarda.elnerd.src;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -12,6 +10,7 @@ import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
+import io.zarda.elnerd.model.Quote;
 
 /**
  * Created by atef & emad on 4 May, 2015.
@@ -19,7 +18,7 @@ import io.zarda.elnerd.model.QuestionsDB;
 public class QuestionsManager implements Waitable {
 
     private QuestionsDB questionsDB;
-    private ArrayList<Question> questionArrayList;
+    private ArrayList<Quote> quotesArrayList;
     private ApiManager apiManager;
     private Context context;
     private int requestSize;
@@ -28,44 +27,47 @@ public class QuestionsManager implements Waitable {
         questionsDB = QuestionsDB.getInstance();
         apiManager = ApiManager.getInstance();
         this.context = context;
-        questionArrayList = new ArrayList<>();
+        quotesArrayList = new ArrayList<>();
         this.requestSize = Constants.DB_REQUEST_COUNT;
-        getRandomQuestions();
+        getRandomQuotes();
     }
 
-    public ArrayList<Question> getRandomQuestions() {
-        if (questionArrayList.size() <= requestSize / 2) {
-            questionArrayList.addAll(questionsDB.getRandomQuestions(requestSize));
+    public ArrayList<Quote> getRandomQuotes() {
+        if (quotesArrayList.size() <= requestSize / 2) {
+            quotesArrayList.addAll(questionsDB.getRandomQuotes(requestSize));
         }
-        return questionArrayList;
+        return quotesArrayList;
     }
 
-    public void addQuestion(Question question) {
-        questionsDB.addQuestion(question);
+    public void addQuote(Quote quote) {
+        questionsDB.addQuote(quote);
     }
 
-    public Question getRandomQuestion() {
-        if (questionArrayList.size() <= requestSize / 2) {
-            getRandomQuestions();
+    public int addMode(String title) {
+        return questionsDB.addMode(title);
+    }
+
+    public Quote getRandomQuote() {
+        if (quotesArrayList.size() <= requestSize / 2) {
+            getRandomQuotes();
         }
-        if (questionArrayList.size() > 0) {
+        if (quotesArrayList.size() > 0) {
             Random rand = new Random();
-            int randomIndex = rand.nextInt(questionArrayList.size());
-            Question question = questionArrayList.get(randomIndex);
-            questionsDB.updateViewCounter(question);
-            questionArrayList.remove(randomIndex);
-            return question;
+            int randomIndex = rand.nextInt(quotesArrayList.size());
+            Quote quote = quotesArrayList.get(randomIndex);
+            questionsDB.updateViewCounter(quote);
+            quotesArrayList.remove(randomIndex);
+            return quote;
         }
-
         return null;
     }
 
-    public boolean containsQuestion() {
-        return questionArrayList.size() > 0;
+    public boolean containsQuote() {
+        return quotesArrayList.size() > 0;
     }
 
-    public int getQuestionsSize() {
-        return questionArrayList.size();
+    public int getQuotesSize() {
+        return quotesArrayList.size();
     }
 
     /**
@@ -82,10 +84,10 @@ public class QuestionsManager implements Waitable {
 
     @Override
     public void receiveResponse(Object response) {
-        ArrayList<Question> questionsDownloaded = (ArrayList<Question>) response;
-        for (Question question : questionsDownloaded) {
+        ArrayList<Quote> quotesDownloaded = (ArrayList<Quote>) response;
+        for (Quote quote : quotesDownloaded) {
 //            addQuestion(question);
-            Log.e("Question Added", question.getHeader());
+            Log.e("Quote Added", quote.getQuestion().getHeader());
         }
     }
 }
