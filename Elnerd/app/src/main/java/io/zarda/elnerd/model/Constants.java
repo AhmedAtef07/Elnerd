@@ -1,34 +1,35 @@
 package io.zarda.elnerd.model;
 
+import java.lang.reflect.Type;
+
 /**
  * Created by Ahmed Atef on 11/05/15.
  */
 public class Constants {
     public static final int DB_REQUEST_COUNT = 2;
+    public static final String API_URL = "http://elnerd.zarda.io/api";
+    public static final String SHARED_MEMORY_NAME = "shared_memory";
+
 
     public enum SharedMemory {
-        NAME ("shared_memory"),
-        LAST_SYNC_TIMESTAMP ("last_sync_timestamp");
+        LAST_SYNC_TIMESTAMP("last_sync_timestamp", long.class),
+        LONGEST_PLAYED("longest_played", int.class),
+        ALL_PLAYED("all_played", int.class);
 
         private String name;
+        private Type type;
 
-        SharedMemory(String name) {
+        private SharedMemory(String name, Type type) {
             this.name = name;
+            this.type = type;
         }
 
-        @Override
-        public String toString() {
+        public String getName() {
             return name;
         }
 
-        public enum Score {
-            LONGEST_PLAYED,
-            ALL_PLAYED;
-
-            @Override
-            public String toString() {
-                return super.toString().toLowerCase();
-            }
+        public Type getType() {
+            return type;
         }
     }
 

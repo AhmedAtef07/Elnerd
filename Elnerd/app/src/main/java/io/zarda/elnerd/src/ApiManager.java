@@ -14,23 +14,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
+import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Question;
 
 /**
  * Created by Ahmed Atef on 11 May, 2015.
  */
 public class ApiManager {
+    private static final String apiUrl = Constants.API_URL;
     private static ApiManager ourInstance;
     private static Context context;
-    private static final String apiUrl = "http://elnerd.zarda.io/api";
-
-    private enum CollectionType {
-        QUESTION,
-    }
 
     public static void initialize(Context context) {
         ApiManager.context = context;
@@ -42,11 +37,10 @@ public class ApiManager {
     }
 
     public void downloadQuestions(long sinceTimeStamp, int count, final Waitable waitable) {
-        Log.e("downloadQuedstions", "ANOTHER HERE");
         RequestQueue queue = Volley.newRequestQueue(context);
 
         String requestUrl = getRequestUrl(CollectionType.QUESTION, sinceTimeStamp, count, 2);
-        Log.e("download ", requestUrl);
+        Log.e("Api Manager", "Sending request to: " + requestUrl);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, requestUrl,
                 new Response.Listener<String>() {
@@ -54,32 +48,30 @@ public class ApiManager {
                     public void onResponse(String response) {
                         try {
                             waitable.receiveResponse(parseQuestionsFromResponse(response));
-                            Log.e("downloadQuedstions", "success and sent to waitable");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            System.err.println("Error while parsing response.");
-                            Log.e("downloadQuedstions", "Error while parsing response");
+                            Log.e("Api Manager", "Response parsed successfully");
 
+                        } catch (JSONException e) {
+                            Log.e("Api Manager", "Error parsing response");
+                            e.printStackTrace();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.err.println("Error while receiving response.");
-                        Log.e("downloadQuedstions", "error receiving response");
+                        Log.e("Api Manager", "Response parsed successfully");
                     }
                 }
         );
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-        Log.e("downloadQuedstions", "sent to queue");
+        Log.e("Api Manager", "sent to queue");
     }
 
     private ArrayList<Question> parseQuestionsFromResponse(String response) throws JSONException {
         JSONArray jsonArray = new JSONArray(response);
         ArrayList<Question> questionList = new ArrayList<>();
-        for(int i = 0; i < jsonArray.length(); ++i) {
+        for (int i = 0; i < jsonArray.length(); ++i) {
             questionList.add(makeQuestion(jsonArray.getJSONObject(i)));
         }
         return questionList;
@@ -103,5 +95,9 @@ public class ApiManager {
                                  int level) {
         return String.format("%s/%s?timestamp=%d&offset=%d&level=%d", ApiManager.apiUrl,
                 collectionType.toString().toLowerCase(), sinceTimeStamp, count, level);
+    }
+
+    private enum CollectionType {
+        QUESTION,
     }
 }

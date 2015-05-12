@@ -76,7 +76,7 @@ public class QuestionsManager implements Waitable {
 
         Log.e("downloadQuestions", "HERE");
         SharedPreferences sharedpreferences = context.getSharedPreferences(
-                SharedMemory.NAME.toString(), Context.MODE_PRIVATE);
+                Constants.SHARED_MEMORY_NAME, Context.MODE_PRIVATE);
         long lastSyncTimeStamp = sharedpreferences.getLong(
                 SharedMemory.LAST_SYNC_TIMESTAMP.toString(), 0);
         apiManager.downloadQuestions(lastSyncTimeStamp, count, this);

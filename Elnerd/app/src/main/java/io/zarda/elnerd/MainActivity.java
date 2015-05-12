@@ -32,15 +32,16 @@ import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 import io.zarda.elnerd.src.ApiManager;
 import io.zarda.elnerd.src.QuestionsManager;
+import io.zarda.elnerd.src.SharedPreferencesManager;
 import io.zarda.elnerd.src.ViewManager;
 import io.zarda.elnerd.view.FragmentSimpleLoginButton;
 
 
 public class MainActivity extends FragmentActivity {
 
-    public static final String MyPreferencesKEY = Constants.SharedMemory.NAME.toString();
-    public static final String LongestPlayedKEY = Constants.SharedMemory.Score.LONGEST_PLAYED.toString();
-    public static final String AllPlayedKEY = Constants.SharedMemory.Score.ALL_PLAYED.toString();
+    public static final String MyPreferencesKEY = Constants.SHARED_MEMORY_NAME;
+    public static final String LongestPlayedKEY = Constants.SharedMemory.LONGEST_PLAYED.toString();
+    public static final String AllPlayedKEY = Constants.SharedMemory.ALL_PLAYED.toString();
     private QuestionsManager questionsManager;
     private CountDownTimer timer;
     private SharedPreferences sharedpreferences;
@@ -95,6 +96,7 @@ public class MainActivity extends FragmentActivity {
 
         ApiManager.initialize(this);
         QuestionsDB.initialize(this);
+        SharedPreferencesManager.initialize(this);
 
         questionsManager = new QuestionsManager(this);
 
