@@ -28,6 +28,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.zarda.elnerd.R;
+import io.zarda.elnerd.src.HomeViewNotifier;
 
 /**
  * Created by atef & emad on 4 May, 2015.
@@ -48,6 +49,12 @@ public class HomeView implements Viewable {
     private TextView bestScore;
     private TextView allPlayed;
     private Button facebook;
+
+    HomeViewNotifier hvn;
+
+    public HomeView(HomeViewNotifier hvn){
+        this.hvn = hvn;
+    }
 
 
     @Override
@@ -76,8 +83,8 @@ public class HomeView implements Viewable {
     @Override
     public void endView() {
 
-        ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//        goAway();
+//        ((ViewGroup) mainLayout.getParent()).removeAllViews();
+        goAway();
 
 
     }
@@ -170,7 +177,7 @@ public class HomeView implements Viewable {
                 ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
         params.width = 300;
         params.height = 300;
-        params.setMargins(0 , 520 , 0 , 50);
+        params.setMargins(0, 520, 0, 50);
         playButton.setLayoutParams(params);
         playButton.setGravity(Gravity.CENTER);
         playButton.setTypeface(Typeface.createFromAsset(context.getAssets(),
@@ -193,6 +200,22 @@ public class HomeView implements Viewable {
         allPlayedGoAnimation();
         facebookGoAnimation();
         screenUP();
+        transitionView.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                hvn.notifyHomeAnimationFinished();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         ((ViewGroup) mainLayout.getParent()).removeAllViews();
     }
 

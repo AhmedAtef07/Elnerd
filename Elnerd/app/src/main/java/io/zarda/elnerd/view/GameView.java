@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -251,6 +252,15 @@ public class GameView implements Viewable , Game{
         thirdChoice.setLayoutParams(params);
         forthChoice.setLayoutParams(params);
 
+        firstChoice.setTypeface(Typeface.createFromAsset(
+                context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
+        secondChoice.setTypeface(Typeface.createFromAsset(
+                context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
+        thirdChoice.setTypeface(Typeface.createFromAsset(
+                context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
+        forthChoice.setTypeface(Typeface.createFromAsset(
+                context.getAssets() ,"fonts/DroidKufi-Regular.ttf"));
+
         setButtonsDefaultColorAndTextColor();
 
 
@@ -324,6 +334,8 @@ public class GameView implements Viewable , Game{
         card.setHeight((int) (screenHeight * 0.5));
         card.setTranslationX(new Random().nextFloat() * 20 - 10);
         card.setTranslationY(new Random().nextFloat() * 20 - 10);
+        card.setTypeface(Typeface.createFromAsset(
+                context.getAssets(), "fonts/DroidKufi-Regular.ttf"));
 
         AnimationSet dropAnimation = new AnimationSet(false);
 
