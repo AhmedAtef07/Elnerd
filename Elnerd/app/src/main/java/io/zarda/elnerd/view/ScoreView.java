@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.zarda.elnerd.R;
 import io.zarda.elnerd.src.ScoreViewNotifier;
 
 /**
@@ -184,7 +185,9 @@ public class ScoreView implements Viewable {
         retry.setTextColor(Color.parseColor("#ecf0f1"));
         retry.setTypeface(typeface);
         retry.setLayoutParams(scoresParams);
-        retry.setBackgroundColor(Color.parseColor("#51678b"));
+        scoresParams.height = 150;
+        scoresParams.width  = 350;
+        retry.setBackground(context.getResources().getDrawable(R.drawable.retry));
 
         home.setGravity(Gravity.CENTER);
         home.setTextSize(20);
@@ -192,7 +195,7 @@ public class ScoreView implements Viewable {
         home.setTextColor(Color.parseColor("#ecf0f1"));
         home.setTypeface(typeface);
         home.setLayoutParams(scoresParams);
-        home.setBackgroundColor(Color.parseColor("#51678b"));
+        home.setBackground(context.getResources().getDrawable(R.drawable.home));
 
         horizontalButtonsLayout.addView(retry);
         horizontalButtonsLayout.addView(home);

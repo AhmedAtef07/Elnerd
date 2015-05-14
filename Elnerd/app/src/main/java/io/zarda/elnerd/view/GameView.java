@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.os.Vibrator;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -105,6 +104,7 @@ public class GameView implements Viewable, Game {
     public void endView() {
 
         Animation goDown = new TranslateAnimation(0, 0, 0, screenHeight);
+
         goDown.setDuration(500);
         frameLayout.startAnimation(goDown);
         goDown.setAnimationListener(new Animation.AnimationListener() {
@@ -165,8 +165,6 @@ public class GameView implements Viewable, Game {
             wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrong));
             Animation wait = new TranslateAnimation(0, 0, 0, 0);
             bar.getAnimation().cancel();
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(800);
             wait.setDuration(1000);
             correctButton.startAnimation(wait);
             wait.setAnimationListener(new Animation.AnimationListener() {

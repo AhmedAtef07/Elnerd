@@ -120,7 +120,7 @@ public class HomeView implements Viewable {
         mainLayout.addView(elnerd);
         //space
         Space space0 = new Space(context);
-        space0.setMinimumHeight(200);
+        space0.setMinimumHeight(150);
         mainLayout.addView(space0);
         //play button
         play.setBackground(context.getResources().getDrawable(R.drawable.pb));
@@ -208,7 +208,7 @@ public class HomeView implements Viewable {
         mainLayout.addView(statisticsLayout);
         //space
         Space space2 = new Space(context);
-        space2.setMinimumHeight(100);
+        space2.setMinimumHeight(50);
         mainLayout.addView(space2);
         //adminPanel
         RelativeLayout.LayoutParams adminPanelParams = new RelativeLayout.LayoutParams(
@@ -247,7 +247,7 @@ public class HomeView implements Viewable {
     }
 
     public void fromQuote(){
-        Animation goUp = new TranslateAnimation(0, 0, -screenHeight , 0);
+        Animation goUp = new TranslateAnimation(0, 0, screenHeight , 0);
         goUp.setDuration(500);
         mainLayout.startAnimation(goUp);
         goUp.setAnimationListener(new Animation.AnimationListener() {
