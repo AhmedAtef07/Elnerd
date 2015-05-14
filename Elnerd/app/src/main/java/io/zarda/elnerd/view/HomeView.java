@@ -2,27 +2,19 @@ package io.zarda.elnerd.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import java.util.List;
@@ -36,224 +28,57 @@ import io.zarda.elnerd.src.HomeViewNotifier;
  */
 public class HomeView implements Viewable {
 
+    Context context;
+    HomeViewNotifier hvn;
+
+    TextView elnerd;
+    Button play;
+    TextView best;
+    TextView counter;
+    Button adminPanel;
+    Button facebook;
+
     int screenWidth;
     int screenHeight;
-    TextView transitionView;
-    int bitmapWidth;
-    int bitmapHeight;
-    private Context context;
-    private FrameLayout mainLayout;
-    private TableLayout layout;
-    private Bitmap backgroundBitmap;
-    private Button playButton;
-    private TextView bestScore;
-    private TextView allPlayed;
-    private Button facebook;
 
-    HomeViewNotifier hvn;
+    LinearLayout mainLayout;
 
     public HomeView(HomeViewNotifier hvn){
         this.hvn = hvn;
     }
-
-
     @Override
-    public void initializeView(Context context , List<View> views) {
+    public void initializeView(Context context, List<View> views) {
+        //context
         this.context = context;
-        playButton = (Button) views.get(0);
-        bestScore = (TextView) views.get(1);
-        allPlayed = (TextView) views.get(2);
+        //views
+        play = (Button) views.get(0);
+        best = (TextView) views.get(1);
+        counter = (TextView) views.get(2);
         facebook = (Button) views.get(3);
+        adminPanel = (Button) views.get(4);
 
-        setScreenDimention();
-        setMainLayout();
+        Display screen = ((Activity) context).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        screen.getSize(size);
+        this.screenWidth = size.x;
+        this.screenHeight = size.y;
+
+        intializeLayout();
     }
 
     @Override
     public void startView() {
-        Animation transitionSet = new AlphaAnimation(0, 0);
-        transitionSet.setFillAfter(true);
-        transitionView.setAnimation(transitionSet);
         ((Activity)context).setContentView(mainLayout);
-        loadBitmap(R.drawable.bgim, backgroundBitmap);
-
 
     }
 
     @Override
     public void endView() {
-
-//        ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//        goAway();
+        Animation goDown = new TranslateAnimation(0, 0, 0, screenHeight);
+        goDown.setDuration(500);
+        mainLayout.startAnimation(goDown);
         hvn.notifyHomeAnimationFinished();
-
-
-    }
-
-    private void setScreenDimention(){
-        Display screen = ((Activity) context).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        screen.getSize(size);
-        screenWidth = size.x;
-        screenHeight = size.y;
-    }
-
-    private void setMainLayout(){
-        mainLayout = new FrameLayout(context);
-        bitmapHeight = screenHeight;
-        bitmapWidth = screenWidth;
-        mainLayout.addView(setLayoutComponents());
-        transitionView = new TextView(context);
-        transitionView.setWidth(screenWidth);
-        transitionView.setHeight(screenHeight / 2);
-        RelativeLayout relativeLayout1 = new RelativeLayout(context);
-        transitionView.setBackground(context.getResources().getDrawable(R.drawable.gmbg));
-        Animation transitionSet = new AlphaAnimation(0, 0);
-        transitionSet.setFillAfter(true);
-        transitionView.setAnimation(transitionSet);
-//        relativeLayout1.addView(transitionView);
-        mainLayout.addView(relativeLayout1);
-    }
-
-    private TableLayout setLayoutComponents(){
-        layout = new TableLayout(context);
-        LinearLayout firstRow = new LinearLayout(context);
-        firstRow.addView(playButtonView());
-        firstRow.setPadding(0, screenHeight / 2 - 150, 0, 0);
-        firstRow.setGravity(Gravity.CENTER);
-        layout.addView(firstRow);
-        LinearLayout forthRow = new LinearLayout(context);
-        forthRow.addView(bestScoreView());
-        forthRow.addView(allPlayedView());
-//        layout.addView(playButtonView());
-//        layout.addView(allPlayedView());
-        forthRow.setGravity(Gravity.CENTER);
-        forthRow.setPadding(0, 200, 0, 200);
-        layout.addView(forthRow);
-        layout.addView(facebookView());
-        layout.setGravity(Gravity.CENTER_HORIZONTAL);
-        return layout;
-    }
-
-    private TextView bestScoreView(){
-//        TO-DO
-        bestScore.setTypeface(Typeface.createFromAsset(context.getAssets(),
-                "fonts/Roboto-ThinItalic.ttf"));
-        bestScore.setTextColor(Color.parseColor("#e5e6c9"));
-        bestScore.setText("50");
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.width = 350;
-        params.height = 150;
-        bestScore.setLayoutParams(params);
-        bestScore.setBackground(context.getResources().getDrawable(R.drawable.bestscore));
-        bestScore.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        bestScore.setPadding(190, 20, 0, 0);
-        bestScore.setTextSize(25);
-        return bestScore;
-    }
-
-    private TextView allPlayedView(){
-//        TO-DO
-        allPlayed.setTypeface(Typeface.createFromAsset(context.getAssets(),
-                "fonts/Roboto-ThinItalic.ttf"));
-        allPlayed.setTextColor(Color.parseColor("#e5e6c9"));
-        allPlayed.setText(bestScore.getText().toString().replace("Best:" , " "));
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.width = 350;
-        params.height = 150;
-        params.setMargins(-20, 0, 0, 0);
-        allPlayed.setLayoutParams(params);
-        allPlayed.setBackground(context.getResources().getDrawable(R.drawable.allplayed));
-        allPlayed.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        allPlayed.setPadding(50, 20, 0, 0);
-        allPlayed.setTextSize(25);
-        return allPlayed;
-    }
-
-    private Button playButtonView(){
-        playButton.setBackground(context.getResources().getDrawable(R.drawable.playbutton));
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.width = 300;
-        params.height = 300;
-        params.setMargins(0, 520, 0, 50);
-        playButton.setLayoutParams(params);
-        playButton.setGravity(Gravity.CENTER);
-        playButton.setTypeface(Typeface.createFromAsset(context.getAssets(),
-                "fonts/CANDY___.otf"));
-        playButton.setTextColor(Color.parseColor("#e5e6c9"));
-        playButton.setTextSize(50);
-        return playButton;
-    }
-
-    private Button facebookView(){
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        facebook.setLayoutParams(params);
-        return facebook;
-    }
-
-    private void goAway() {
-        playButtonGOAnimation();
-        bestScoreGoAnimation();
-        allPlayedGoAnimation();
-        facebookGoAnimation();
-        screenUP();
-//        transitionView.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                hvn.notifyHomeAnimationFinished();
-//                  ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-
-    }
-
-    private void playButtonGOAnimation() {
-        Animation playGo = new TranslateAnimation(0, -2 * screenWidth - 20, 0, 0);
-        playGo.setDuration(2000);
-//        playGo.setFillAfter(true);
-        playButton.startAnimation(playGo);
-    }
-
-    private void bestScoreGoAnimation() {
-        Animation bestScoreGo = new TranslateAnimation(0, -2 * screenWidth - 20, 0, 0);
-        bestScoreGo.setDuration(2000);
-//        bestScoreGo.setFillAfter(true);
-        bestScore.startAnimation(bestScoreGo);
-    }
-
-    private void allPlayedGoAnimation() {
-        Animation allPlayedGo = new TranslateAnimation(0, -screenWidth, 0, 0);
-        allPlayedGo.setDuration(2000);
-//        allPlayedGo.setFillAfter(true);
-        allPlayed.startAnimation(allPlayedGo);
-    }
-
-    private void facebookGoAnimation() {
-        Animation facebookGo = new TranslateAnimation(0, 0, 0, 2 * screenHeight);
-        facebookGo.setDuration(2000);
-//        facebookGo.setFillAfter(true);
-        facebook.startAnimation(facebookGo);
-    }
-
-    private void screenUP() {
-        Animation alpha = new AlphaAnimation(0, 1);
-        alpha.setStartOffset(1000);
-        alpha.setDuration(1000);
-        alpha.setAnimationListener(new Animation.AnimationListener() {
+        goDown.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -261,8 +86,8 @@ public class HomeView implements Viewable {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                hvn.notifyHomeAnimationFinished();
-                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//                hvn.notifyHomeAnimationFinished();
             }
 
             @Override
@@ -270,77 +95,134 @@ public class HomeView implements Viewable {
 
             }
         });
-        transitionView.startAnimation(alpha);
     }
 
+    private void intializeLayout() {
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(),
+                "fonts/AraJozoor-Regular.ttf");
 
-    private Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                   int reqWidth, int reqHeight) {
+        mainLayout = new LinearLayout(context);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setGravity(Gravity.CENTER);
+        mainLayout.setBackgroundColor(Color.parseColor("#2c3e50"));
+        //elnerd
+        LinearLayout.LayoutParams elnerdParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        elnerd = new TextView(context);
+        elnerd.setGravity(Gravity.CENTER);
+        elnerd.setText("النّيرد");
+//        elnerd.setPadding(0 , 100 , 0 , 0);
+        elnerd.setLayoutParams(elnerdParams);
+        elnerd.setBackground(context.getResources().getDrawable(R.drawable.elnerd));
+        elnerd.setTextSize(90);
+        elnerd.setAlpha(1);
+        elnerd.setTextColor(Color.parseColor("#2c3e50"));
+        elnerd.setTypeface(typeface);
+        mainLayout.addView(elnerd);
+        //space
+        Space space0 = new Space(context);
+        space0.setMinimumHeight(200);
+        mainLayout.addView(space0);
+        //play button
+        play.setBackground(context.getResources().getDrawable(R.drawable.pb));
+        RelativeLayout.LayoutParams playParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        playParams.width = 333;
+        playParams.height = 133;
+        playParams.setMargins(0, 200, 0, 200);
+        play.setLayoutParams(playParams);
+        mainLayout.addView(play);
+        //space
+        Space space1 = new Space(context);
+        space1.setMinimumHeight(100);
+        mainLayout.addView(space1);
+        //statistics bar
+        LinearLayout statisticsLayout = new LinearLayout(context);
+        statisticsLayout.setOrientation(LinearLayout.HORIZONTAL);
+        RelativeLayout.LayoutParams statisticsParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        statisticsParams.setMargins(0, 200, 0, 200);
+        statisticsLayout.setLayoutParams(statisticsParams);
+        //textLayout
+        LinearLayout textLayout = new LinearLayout(context);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        textLayout.setGravity(Gravity.RIGHT);
+        //counterNumber
+        RelativeLayout.LayoutParams counterParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        counter.setGravity(Gravity.RIGHT);
+        counter.setLayoutParams(counterParams);
+        counter.setTextSize(50);
+        counter.setTypeface(typeface);
+        counter.setTextColor(Color.parseColor("#fcfefe"));
+        textLayout.addView(counter);
+        //bestumber
+        RelativeLayout.LayoutParams bestParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        best.setGravity(Gravity.RIGHT);
+        best.setLayoutParams(bestParams);
+        bestParams.width = screenWidth / 3 - 10;
+        best.setTextSize(50);
+        best.setTypeface(typeface);
+        best.setTextColor(Color.parseColor("#fcfefe"));
+        textLayout.addView(best);
+        //numberLayout
+        LinearLayout numberLayout = new LinearLayout(context);
+        numberLayout.setOrientation(LinearLayout.VERTICAL);
+        numberLayout.setPadding(0, 50, 0, 0);
+        //answered
+        RelativeLayout.LayoutParams answeredParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        answeredParams.setMargins(0 , 1000 , 0 , 0);
 
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
+        TextView answered = new TextView(context);
+        answered.setText("الاسئله المجابه");
+        answered.setGravity(Gravity.LEFT);
+        answered.setLayoutParams(counterParams);
+        answered.setTextSize(20);
+        answered.setTypeface(typeface);
+        answered.setTextColor(Color.parseColor("#fcfefe"));
+        numberLayout.addView(answered);
+        //best
+        TextView bestScore = new TextView(context);
+        bestScore.setText("افضل نتيجه");
+        bestScore.setGravity(Gravity.LEFT);
+        bestScore.setPadding(0, 120, 0, 0);
+        bestScore.setLayoutParams(counterParams);
+        bestScore.setTextSize(20);
+        bestScore.setTypeface(typeface);
+        bestScore.setTextColor(Color.parseColor("#fcfefe"));
+        numberLayout.addView(bestScore);
+        //seperator
+        TextView seperator = new TextView(context);
+        seperator.setBackground(context.getResources().getDrawable(R.drawable.seperator));
+        LinearLayout.LayoutParams seperatorParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        seperatorParams.width = 25;
+        seperatorParams.height = 300;
+        seperatorParams.setMargins(0, 35, 0, 0);
+        seperator.setLayoutParams(seperatorParams);
+        //
+        statisticsLayout.addView(textLayout);
+        statisticsLayout.addView(seperator);
+        statisticsLayout.addView(numberLayout);
+        //
+        mainLayout.addView(statisticsLayout);
+        //adminpanel
+        RelativeLayout.LayoutParams adminPanelParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        adminPanel.setLayoutParams(adminPanelParams);
+//        mainLayout.addView(adminPanel);
+        //space
+        Space space2 = new Space(context);
+        space2.setMinimumHeight(100);
+        mainLayout.addView(space2);
+        //facebook
+        RelativeLayout.LayoutParams facebookParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        facebook.setLayoutParams(facebookParams);
+        facebook.setBackgroundColor(Color.LTGRAY);
+        mainLayout.addView(facebook);
     }
 
-    private int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public void loadBitmap(int resId , Bitmap bitmap) {
-        BitmapWorkerTask task = new BitmapWorkerTask();
-        task.execute(resId);
-    }
-
-    class BitmapWorkerTask extends AsyncTask<Integer, Void, Bitmap> {
-        private int data = 0;
-
-        public BitmapWorkerTask() {
-        }
-
-        // Decode image in background.
-        @Override
-        protected Bitmap doInBackground(Integer... params) {
-            data = params[0];
-            return decodeSampledBitmapFromResource(context.getResources(), data, 500,
-                    500 );
-        }
-
-        // Once complete, see if ImageView is still around and set bitmap.
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (bitmap != null) {
-                Drawable drawable = new BitmapDrawable(bitmap);
-                mainLayout.setBackground(drawable);
-
-//                System.out.println("thread ! : " + backgroundBitmap);
-            }
-        }
-    }
 }

@@ -177,11 +177,19 @@ public class MainActivity extends FragmentActivity {
 
     public void backPressed() {
         System.out.println("onBackPressed Called");
+        System.out.println("in Home " + vm.inHome());
+        System.out.println("in Quote " + vm.inQuote());
         if (!vm.inHome()) {
+            vm.cancelTimer();
+            if (timer != null) {
+                timer.cancel();
+            }
             if (vm.inQuote()) {
+                System.out.println("In Quote");
                 vm.endQuoteView();
                 vm.startHomeView();
             } else {
+                System.out.println("In Game");
                 vm.endGameView();
                 vm.startHomeView();
             }
@@ -237,6 +245,11 @@ public class MainActivity extends FragmentActivity {
         } else {
             vm.showFailure(correctIndex, (int) v.getTag());
         }
+    }
+
+    public void adminClick(View v) {
+        Intent browserIntent = new Intent(this, WebViewActivity.class);
+        startActivity(browserIntent);
     }
 
     public void playClick(View v) {
