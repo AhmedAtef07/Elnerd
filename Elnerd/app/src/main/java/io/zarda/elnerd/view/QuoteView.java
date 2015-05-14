@@ -26,7 +26,7 @@ import io.zarda.elnerd.R;
 /**
  * Created by ahmed on 5/12/2015.
  */
-public class QuoteView implements Viewable , Game{
+public class QuoteView implements Viewable, Game {
 
     Context context;
 
@@ -66,25 +66,7 @@ public class QuoteView implements Viewable , Game{
         Animation goDown = new TranslateAnimation(0, 0, -screenHeight, 0);
         goDown.setDuration(500);
         mainLayout.startAnimation(goDown);
-        goDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
-
 
 
     @Override
@@ -92,23 +74,6 @@ public class QuoteView implements Viewable , Game{
         Animation goDown = new TranslateAnimation(0, 0, 0, -screenHeight);
         goDown.setDuration(500);
         mainLayout.startAnimation(goDown);
-        goDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
     @Override
@@ -146,7 +111,6 @@ public class QuoteView implements Viewable , Game{
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.RIGHT);
-        //
         //time bar
         RelativeLayout.LayoutParams barParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -175,7 +139,7 @@ public class QuoteView implements Viewable , Game{
         //bookName
         bookName.setBackground(context.getResources().getDrawable(R.drawable.display3));
         RelativeLayout.LayoutParams bookNameParam = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT , ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         bookName.setLayoutParams(bookNameParam);
         bookName.setTextDirection(View.TEXT_DIRECTION_RTL);
         bookName.setTextSize(22);

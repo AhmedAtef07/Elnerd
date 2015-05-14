@@ -42,9 +42,10 @@ public class HomeView implements Viewable {
 
     LinearLayout mainLayout;
 
-    public HomeView(HomeViewNotifier hvn){
+    public HomeView(HomeViewNotifier hvn) {
         this.hvn = hvn;
     }
+
     @Override
     public void initializeView(Context context, List<View> views) {
         //context
@@ -66,9 +67,8 @@ public class HomeView implements Viewable {
 
     @Override
     public void startView() {
-        ((Activity)context).setContentView(mainLayout);
+        ((Activity) context).setContentView(mainLayout);
     }
-
 
 
     @Override
@@ -77,23 +77,7 @@ public class HomeView implements Viewable {
         goDown.setDuration(500);
         mainLayout.startAnimation(goDown);
         hvn.notifyHomeAnimationFinished();
-        goDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
 
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
     private void intializeLayout() {
@@ -110,7 +94,6 @@ public class HomeView implements Viewable {
         elnerd = new TextView(context);
         elnerd.setGravity(Gravity.CENTER);
         elnerd.setText("النّيرد");
-//        elnerd.setPadding(0 , 100 , 0 , 0);
         elnerd.setLayoutParams(elnerdParams);
         elnerd.setBackground(context.getResources().getDrawable(R.drawable.elnerd));
         elnerd.setTextSize(90);
@@ -170,9 +153,6 @@ public class HomeView implements Viewable {
         numberLayout.setOrientation(LinearLayout.VERTICAL);
         numberLayout.setPadding(0, 50, 0, 0);
         //answered
-        RelativeLayout.LayoutParams answeredParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        answeredParams.setMargins(0 , 1000 , 0 , 0);
         TextView answered = new TextView(context);
         answered.setText("الأسئلة المجابة");
         answered.setGravity(Gravity.LEFT);
@@ -223,49 +203,15 @@ public class HomeView implements Viewable {
         mainLayout.addView(adminPanel);
     }
 
-    public void fromQuestion(){
+    public void fromQuestion() {
         Animation goUp = new TranslateAnimation(0, 0, -screenHeight, 0);
         goUp.setDuration(500);
         mainLayout.startAnimation(goUp);
-        goUp.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
-    public void fromQuote(){
-        Animation goUp = new TranslateAnimation(0, 0, screenHeight , 0);
+    public void fromQuote() {
+        Animation goUp = new TranslateAnimation(0, 0, screenHeight, 0);
         goUp.setDuration(500);
         mainLayout.startAnimation(goUp);
-        goUp.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 }
