@@ -1,26 +1,15 @@
 package io.zarda.elnerd;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-
-import java.util.ArrayList;
-
+import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
@@ -31,13 +20,12 @@ import io.zarda.elnerd.src.SharedPreferencesManager;
 import io.zarda.elnerd.src.ViewManager;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends Activity {
 
     Question preparedQuestion;
     private QuestionsManager questionsManager;
     private SharedPreferencesManager sharedPreferencesManager;
     private CountDownTimer timer;
-    private CallbackManager mCallbackManager;
     private ViewManager vm;
     private int correctIndex;
     private int lastLongestPlayed;
@@ -45,38 +33,9 @@ public class MainActivity extends FragmentActivity {
     private int currentLongestPlayed;
     private int currentAllPlayed;
 
-    private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
-        @Override
-        public void onSuccess(LoginResult loginResult) {
-            System.out.println("onSuccess");
-            AccessToken accessToken = loginResult.getAccessToken();
-            Profile profile = Profile.getCurrentProfile();
-            String msg = "Welcome ";
-            if (profile != null) {
-                msg += profile.getName();
-            }
-            System.out.println(msg);
-        }
-
-        @Override
-        public void onCancel() {
-            System.out.println("onCancel");
-            Toast.makeText(getApplicationContext(), "No Internet Connection",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError(FacebookException e) {
-            System.out.println("onError");
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        mCallbackManager = CallbackManager.Factory.create();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -89,30 +48,9 @@ public class MainActivity extends FragmentActivity {
         questionsManager = new QuestionsManager(this);
         sharedPreferencesManager = sharedPreferencesManager.getInstance();
 
-        ArrayList<String> choices = new ArrayList<>();
-        choices.add("Choice  0");
-        choices.add("Choice  1");
-        choices.add("Choice  2");
-        choices.add("Choice  3");
-
-//        if (questionsManager.getQuotesSize() == 0) {
-//            System.out.println("Getting Data");
-//            for (int i = 1; i <= 20; ++i)
-//                questionsManager.addQuestion(
-//                        new Question("Question number " + i + "?", choices, i % 4));
-//            questionsManager.getRandomQuestions();
-//        }
-
-//        int questionsSize = questionsManager.getQuestionsSize();
-//        System.out.println("Size: " + questionsSize);
-
-        questionsManager.downloadQuestions(3);
-
-//        questionsManager.getRandomQuotes();
-//        System.out.println(questionsManager.getRandomQuote().getContent());
+        questionsManager.downloadQuestions(5);
 
         sharedPreferencesManager.setKey(SharedMemory.LAST_SYNC_TIMESTAMP, 0L);
-
 
         lastAllPlayed = (int) sharedPreferencesManager.getKey(SharedMemory.ALL_PLAYED, 0);
         lastLongestPlayed = (int) sharedPreferencesManager.getKey(SharedMemory.LONGEST_PLAYED, 0);
@@ -122,7 +60,6 @@ public class MainActivity extends FragmentActivity {
 
         vm = new ViewManager(this);
         vm.startHomeView();
-
     }
 
     @Override
@@ -140,25 +77,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("OnResume");
-        if (vm.inHome()) {
-            LoginButton mButtonLogin = (LoginButton) findViewById(R.id.login_button);
-            mButtonLogin.setReadPermissions("user_friends");
-            mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            if (accessToken == null) {
-                System.out.println(">>>" + "Signed Out");
-//                mButtonLogin.callOnClick();
-            } else {
-                System.out.println(">>>" + "Signed In");
-                Profile profile = Profile.getCurrentProfile();
-                String msg = "Welcome ";
-                if (profile != null) {
-                    msg += profile.getName();
-                }
-                System.out.println(msg);
-            }
-        }
     }
 
     @Override
@@ -176,25 +94,19 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void backPressed() {
-        System.out.println("onBackPressed Called");
-        System.out.println("in Home " + vm.inHome());
-        System.out.println("in Quote " + vm.inQuote());
         if (!vm.inHome()) {
             vm.cancelTimer();
             if (timer != null) {
                 timer.cancel();
             }
             if (vm.inQuote()) {
-                System.out.println("In Quote");
                 vm.endQuoteView();
                 vm.startHomeView();
             } else {
-                System.out.println("In Game");
                 vm.endGameView();
                 vm.startHomeView();
             }
         } else {
-//            Toast.makeText(this, "You are currently in home :)", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -209,7 +121,6 @@ public class MainActivity extends FragmentActivity {
             vm.endQuoteView();
             vm.startHomeView();
         }
-
     }
 
     public void setNewQuestion() {
@@ -217,7 +128,7 @@ public class MainActivity extends FragmentActivity {
             vm.showQuestion(preparedQuestion);
             correctIndex = preparedQuestion.getCorrectIndex();
 
-            timer = new CountDownTimer(6000, 500) {
+            timer = new CountDownTimer(Constants.QUESTION_TIME, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);
@@ -255,17 +166,7 @@ public class MainActivity extends FragmentActivity {
     public void playClick(View v) {
         currentLongestPlayed = 0;
         vm.endHomeView();
-//        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-//        startActivity(browserIntent);
-//        Intent browserIntent = new Intent(this, WebViewActivity.class);
-//        startActivity(browserIntent);
     }
-
-//    public void loginClick(View v) {
-//        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-//        transaction.replace(android.R.id.content, new FragmentSimpleLoginButton());
-//        transaction.commit();
-//    }
 
     public void updatePreferences() {
         if (currentLongestPlayed > lastLongestPlayed) {
@@ -284,12 +185,6 @@ public class MainActivity extends FragmentActivity {
         lastAllPlayed += currentAllPlayed;
         currentAllPlayed = 0;
         currentLongestPlayed = 0;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
 }
