@@ -80,7 +80,7 @@ public class GameView implements Viewable, Game {
         ((Activity) context).setContentView(frameLayout);
         Animation goDown = new TranslateAnimation(0, 0, screenHeight, 0);
         goDown.setDuration(500);
-        mainLayout.startAnimation(goDown);
+        frameLayout.startAnimation(goDown);
         goDown.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -102,7 +102,7 @@ public class GameView implements Viewable, Game {
 
     @Override
     public void endView() {
-        ((ViewGroup) mainLayout.getParent()).removeAllViews();
+        ((ViewGroup) frameLayout.getParent()).removeAllViews();
     }
 
     @Override
@@ -259,6 +259,10 @@ public class GameView implements Viewable, Game {
 
         frameLayout = new FrameLayout(context);
         frameLayout.addView(mainLayout);
+    }
+
+    public void addInFrameLayout(View view){
+        frameLayout.addView(view);
     }
 
     private Button setChoicePro(Button choice) {
