@@ -19,7 +19,6 @@ import io.zarda.elnerd.src.QuestionsManager;
 import io.zarda.elnerd.src.SharedPreferencesManager;
 import io.zarda.elnerd.src.ViewManager;
 
-
 public class MainActivity extends Activity {
 
     Question preparedQuestion;
@@ -137,8 +136,9 @@ public class MainActivity extends Activity {
                 @Override
                 public void onFinish() {
                     preparedQuestion = null;
-                    vm.endGameView();
-                    vm.startHomeView();
+//                    vm.endGameView();
+//                    vm.startHomeView();
+                    vm.startScoreView();
                 }
             };
             timer.start();
@@ -167,6 +167,27 @@ public class MainActivity extends Activity {
         currentLongestPlayed = 0;
         vm.endHomeView();
     }
+
+    public void goHome(View v) {
+        vm.endScoreView();
+        vm.endGameView();
+        vm.startHomeView();
+    }
+
+    public void retry(View v) {
+        vm.endScoreView();
+        vm.endGameView();
+        vm.startGameView();
+    }
+
+    public int getCurrentPlayed() {
+        return currentLongestPlayed;
+    }
+
+    public int getBestPlayed() {
+        return lastLongestPlayed;
+    }
+
 
     public void updatePreferences() {
         if (currentLongestPlayed > lastLongestPlayed) {

@@ -17,8 +17,9 @@ public class GameViewNotifier {
     }
 
     public void notifyShowFailureFinished() {
-        vm.endGameView();
-        vm.startHomeView();
+//        vm.endGameView();
+//        vm.startHomeView();
+        vm.startScoreView();
     }
 
 }

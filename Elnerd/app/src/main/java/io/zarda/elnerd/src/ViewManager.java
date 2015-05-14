@@ -1,9 +1,14 @@
 package io.zarda.elnerd.src;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.CountDownTimer;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,6 +22,7 @@ import io.zarda.elnerd.model.Quote;
 import io.zarda.elnerd.view.GameView;
 import io.zarda.elnerd.view.HomeView;
 import io.zarda.elnerd.view.QuoteView;
+import io.zarda.elnerd.view.ScoreView;
 
 /**
  * Created by atef & emad on 4 May, 2015.
@@ -24,29 +30,37 @@ import io.zarda.elnerd.view.QuoteView;
 
 public class ViewManager {
 
-    private final List<View> gameViewsList;
     private final List<View> homeViewsList;
     private final List<View> quoteViewsList;
+    private final List<View> gameViewsList;
+    private final List<View> scoreViewsList;
 
-    GameViewNotifier gvn;
     HomeViewNotifier hvn;
+    GameViewNotifier gvn;
+    ScoreViewNotifier svn;
 
     CountDownTimer timer;
 
     HomeView homeView;
     QuoteView quoteView;
     GameView gameView;
+    ScoreView scoreView;
 
     boolean inHome;
     boolean inQuote;
+    boolean inGame;
 
     int bestPlayed;
     int allPlayed;
 
     private Context context;
+    Typeface typeface;
 
     public ViewManager(final Context context) {
         this.context = context;
+
+        typeface = Typeface.createFromAsset(context.getAssets(),
+                "fonts/AraJozoor-Regular.ttf");
 
         // homeView
         ArrayList<View> homeViewsArray = new ArrayList<>();
@@ -97,8 +111,99 @@ public class ViewManager {
 
         gameViewsList = Collections.unmodifiableList(gameViewsArray);
 
+        // score View
+        ArrayList<View> scoreViewsArray = new ArrayList<>();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView endGame = new TextView(context);
+        endGame.setGravity(Gravity.CENTER);
+        endGame.setText("انتهت اللعبة");
+        endGame.setTextSize(40);
+        endGame.setAlpha(1);
+        endGame.setLayoutParams(params);
+        endGame.setTextColor(Color.parseColor("#ecf0f1"));
+        endGame.setTypeface(typeface);
+        scoreViewsArray.add(endGame);
+
+        TextView bestText = new TextView(context);
+        bestText.setGravity(Gravity.CENTER);
+        bestText.setText("أفضل نتيجة:");
+        bestText.setTextSize(25);
+        bestText.setAlpha(1);
+        bestText.setLayoutParams(params);
+        bestText.setTextColor(Color.parseColor("#ecf0f1"));
+        bestText.setTypeface(typeface);
+        scoreViewsArray.add(bestText);
+
+        TextView bestScore = new TextView(context);
+        bestScore.setGravity(Gravity.CENTER);
+        bestScore.setTextSize(25);
+        bestScore.setAlpha(1);
+        bestScore.setLayoutParams(params);
+        bestScore.setTextColor(Color.parseColor("#ecf0f1"));
+        bestScore.setTypeface(typeface);
+        scoreViewsArray.add(bestScore);
+
+        TextView currentText = new TextView(context);
+        currentText.setGravity(Gravity.CENTER);
+        currentText.setText("النتيجة:");
+        currentText.setTextSize(25);
+        currentText.setAlpha(1);
+        currentText.setLayoutParams(params);
+        currentText.setTextColor(Color.parseColor("#ecf0f1"));
+        currentText.setTypeface(typeface);
+        scoreViewsArray.add(currentText);
+
+        TextView currentScore = new TextView(context);
+        currentScore.setGravity(Gravity.CENTER);
+        currentScore.setTextSize(25);
+        currentScore.setAlpha(1);
+        currentScore.setLayoutParams(params);
+        currentScore.setTextColor(Color.parseColor("#ecf0f1"));
+        currentScore.setTypeface(typeface);
+        scoreViewsArray.add(currentScore);
+
+        Button retry = new Button(context);
+        retry.setGravity(Gravity.CENTER);
+        retry.setText("اعادة");
+        retry.setTextSize(20);
+        retry.setAlpha(1);
+        retry.setLayoutParams(params);
+        retry.setTextColor(Color.parseColor("#ecf0f1"));
+        retry.setTypeface(typeface);
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).retry(v);
+            }
+        });
+        retry.setBackgroundColor(Color.parseColor("#51678b"));
+        scoreViewsArray.add(retry);
+
+        Button home = new Button(context);
+        home.setGravity(Gravity.CENTER);
+        home.setText("المنزل");
+        home.setTextSize(20);
+        home.setAlpha(1);
+        home.setLayoutParams(params);
+        home.setTextColor(Color.parseColor("#ecf0f1"));
+        home.setTypeface(typeface);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).goHome(v);
+            }
+        });
+        home.setBackgroundColor(Color.parseColor("#51678b"));
+        scoreViewsArray.add(home);
+
+        scoreViewsList = Collections.unmodifiableList(scoreViewsArray);
+
+
         gvn = new GameViewNotifier(this);
         hvn = new HomeViewNotifier(this);
+        svn = new ScoreViewNotifier(this);
 
         homeView = new HomeView(hvn);
         homeView.initializeView(context, homeViewsList);
@@ -109,8 +214,12 @@ public class ViewManager {
         quoteView = new QuoteView();
         quoteView.initializeView(context, quoteViewsList);
 
+        scoreView = new ScoreView(svn);
+        scoreView.initializeView(context, scoreViewsList);
+
         inHome = false;
         inQuote = false;
+        inHome = false;
     }
 
     public void startHomeView() {
@@ -134,10 +243,12 @@ public class ViewManager {
     public void startGameView() {
         gameView.startView();
         ((MainActivity) context).setNewQuestion();
+        inGame = true;
     }
 
     public void endGameView() {
         gameView.endView();
+        inGame = false;
     }
 
     public void showQuestion(Question question) {
@@ -188,6 +299,25 @@ public class ViewManager {
     public void endQuoteView() {
         quoteView.endView();
         inQuote = false;
+    }
+
+    public void startScoreView() {
+        scoreView.startView();
+        inQuote = true;
+    }
+
+    public void endScoreView() {
+        scoreView.endView();
+        inQuote = false;
+    }
+
+    public void setScoreView(View scoreView) {
+        gameView.addInFrameLayout(scoreView);
+        ((TextView) scoreViewsList.get(2)).setText("" + ((MainActivity) context).getBestPlayed());
+        ((TextView) scoreViewsList.get(4)).setText("" + ((MainActivity) context).getCurrentPlayed());
+        for (int i = 1; i < 5; i++) {
+            ((Button) gameViewsList.get(i)).setEnabled(false);
+        }
     }
 
     public void showQuote(Quote quote) {
