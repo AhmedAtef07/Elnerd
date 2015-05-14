@@ -1,7 +1,5 @@
 package io.zarda.elnerd.src;
 
-import io.zarda.elnerd.MainActivity;
-
 /**
  * Created by atef & emad on 4 May, 2015.
  */

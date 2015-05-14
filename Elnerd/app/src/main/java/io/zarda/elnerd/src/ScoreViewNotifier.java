@@ -2,8 +2,6 @@ package io.zarda.elnerd.src;
 
 import android.view.View;
 
-import io.zarda.elnerd.src.ViewManager;
-
 /**
  * Created by atef & emad on 4 May, 2015.
  */

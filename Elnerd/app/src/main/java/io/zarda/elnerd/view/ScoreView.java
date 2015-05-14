@@ -186,7 +186,7 @@ public class ScoreView implements Viewable {
         retry.setTypeface(typeface);
         retry.setLayoutParams(scoresParams);
         scoresParams.height = 150;
-        scoresParams.width  = 350;
+        scoresParams.width = 350;
         retry.setBackground(context.getResources().getDrawable(R.drawable.retry));
 
         home.setGravity(Gravity.CENTER);

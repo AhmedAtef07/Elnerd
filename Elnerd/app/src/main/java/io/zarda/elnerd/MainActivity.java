@@ -3,6 +3,8 @@ package io.zarda.elnerd;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -10,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
@@ -60,7 +63,11 @@ public class MainActivity extends Activity {
         currentAllPlayed = 0;
 
         vm = new ViewManager(this);
-        vm.startHomeView();
+        vm.startHomeView(true);
+
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No Internet Connection\nConnect to the Internet, Please", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -102,10 +109,10 @@ public class MainActivity extends Activity {
             }
             if (vm.inQuote()) {
                 vm.endQuoteView();
-                vm.startHomeView();
+                vm.startHomeView(true);
             } else {
                 vm.endGameView();
-                vm.startHomeView();
+                vm.startHomeView(false);
             }
         } else {
             finish();
@@ -120,7 +127,7 @@ public class MainActivity extends Activity {
             preparedQuestion = quote.getQuestion();
         } else {
             vm.endQuoteView();
-            vm.startHomeView();
+            vm.startHomeView(false);
         }
     }
 
@@ -146,7 +153,7 @@ public class MainActivity extends Activity {
             timer.start();
         } else {
             vm.endGameView();
-            vm.startHomeView();
+            vm.startHomeView(false);
         }
     }
 
@@ -166,6 +173,9 @@ public class MainActivity extends Activity {
     }
 
     public void playClick(View v) {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No Internet Connection\nConnect to the Internet, Please", Toast.LENGTH_LONG).show();
+        }
         currentLongestPlayed = 0;
         vm.endHomeView();
     }
@@ -173,7 +183,7 @@ public class MainActivity extends Activity {
     public void goHome(View v) {
         vm.endScoreView();
         vm.endGameView();
-        vm.startHomeView();
+        vm.startHomeView(false);
     }
 
     public void retry(View v) {
@@ -209,6 +219,13 @@ public class MainActivity extends Activity {
         lastAllPlayed += currentAllPlayed;
         currentAllPlayed = 0;
         currentLongestPlayed = 0;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

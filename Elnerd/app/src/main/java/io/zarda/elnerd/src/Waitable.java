@@ -7,6 +7,7 @@ public interface Waitable {
     /**
      * This method will be called anytime, so its content should be independent of any current
      * state.
+     *
      * @param response
      */
     void receiveResponse(Object response);

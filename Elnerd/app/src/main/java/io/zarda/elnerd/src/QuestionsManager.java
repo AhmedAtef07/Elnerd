@@ -8,7 +8,6 @@ import java.util.Random;
 
 import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
-import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.QuestionsDB;
 import io.zarda.elnerd.model.Quote;
 
