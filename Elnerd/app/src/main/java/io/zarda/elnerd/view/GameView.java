@@ -78,26 +78,9 @@ public class GameView implements Viewable, Game {
     @Override
     public void startView() {
         ((Activity) context).setContentView(frameLayout);
-        Animation goDown = new TranslateAnimation(0, 0, screenHeight , 0);
+        Animation goDown = new TranslateAnimation(0, 0, screenHeight, 0);
         goDown.setDuration(500);
         frameLayout.startAnimation(goDown);
-        goDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
-//                hvn.notifyHomeAnimationFinished();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
     @Override
@@ -125,7 +108,6 @@ public class GameView implements Viewable, Game {
             }
         });
     }
-
 
 
     @Override
