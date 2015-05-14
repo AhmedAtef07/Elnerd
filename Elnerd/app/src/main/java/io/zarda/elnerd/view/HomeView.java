@@ -146,9 +146,9 @@ public class HomeView implements Viewable {
         play.setBackground(context.getResources().getDrawable(R.drawable.pb));
         RelativeLayout.LayoutParams playParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        playParams.width = 333;
-        playParams.height = 133;
-        playParams.setMargins(0, 200, 0, 200);
+        playParams.width = 375;
+        playParams.height = 150;
+        playParams.setMargins(0, 190, 0, 190);
         play.setLayoutParams(playParams);
         mainLayout.addView(play);
         //space
@@ -237,8 +237,55 @@ public class HomeView implements Viewable {
         adminPanelParams.width = 500;
         adminPanelParams.height = 190;
         adminPanel.setTypeface(typeface);
+        adminPanel.setTextSize(20);
         adminPanel.setLayoutParams(adminPanelParams);
         adminPanel.setBackground(context.getResources().getDrawable(R.drawable.btn));
         mainLayout.addView(adminPanel);
+    }
+
+    public void fromQuestion(){
+        Animation goUp = new TranslateAnimation(0, 0, -screenHeight, 0);
+        goUp.setDuration(500);
+        mainLayout.startAnimation(goUp);
+        goUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//                hvn.notifyHomeAnimationFinished();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    public void fromQuote(){
+        Animation goUp = new TranslateAnimation(0, 0, -screenHeight , 0);
+        goUp.setDuration(500);
+        mainLayout.startAnimation(goUp);
+        goUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//                hvn.notifyHomeAnimationFinished();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }
