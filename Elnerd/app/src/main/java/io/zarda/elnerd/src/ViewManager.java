@@ -1,10 +1,7 @@
 package io.zarda.elnerd.src;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.CountDownTimer;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -48,7 +45,6 @@ public class ViewManager {
 
     boolean inHome;
     boolean inQuote;
-    boolean inGame;
 
     int bestPlayed;
     int allPlayed;
@@ -131,7 +127,7 @@ public class ViewManager {
         scoreViewsArray.add(currentScore);
 
         Button retry = new Button(context);
-        retry.setText("اعادة");
+//        retry.setText("إعادة");
         retry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +137,7 @@ public class ViewManager {
         scoreViewsArray.add(retry);
 
         Button home = new Button(context);
-        home.setText("المنزل");
+//        home.setText("الرئيسية");
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,10 +167,14 @@ public class ViewManager {
 
         inHome = false;
         inQuote = false;
-        inHome = false;
     }
 
-    public void startHomeView() {
+    public void startHomeView(boolean fromQuote) {
+        if (fromQuote) {
+            homeView.fromQuote();
+        } else {
+            homeView.fromQuestion();
+        }
         ((MainActivity) context).updatePreferences();
         ((TextView) homeViewsList.get(1)).setText("" + bestPlayed);
         ((TextView) homeViewsList.get(2)).setText("" + allPlayed);
@@ -195,12 +195,10 @@ public class ViewManager {
     public void startGameView() {
         gameView.startView();
         ((MainActivity) context).setNewQuestion();
-        inGame = true;
     }
 
     public void endGameView() {
         gameView.endView();
-        inGame = false;
     }
 
     public void showQuestion(Question question) {
@@ -278,7 +276,6 @@ public class ViewManager {
         ((TextView) quoteViewsList.get(1)).setText(quote.getBook());
         quoteView.showQuote();
     }
-
 
     public boolean inHome() {
         return inHome;
