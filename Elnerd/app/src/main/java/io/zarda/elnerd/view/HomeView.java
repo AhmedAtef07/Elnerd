@@ -36,7 +36,6 @@ public class HomeView implements Viewable {
     TextView best;
     TextView counter;
     Button adminPanel;
-    Button facebook;
 
     int screenWidth;
     int screenHeight;
@@ -54,8 +53,7 @@ public class HomeView implements Viewable {
         play = (Button) views.get(0);
         best = (TextView) views.get(1);
         counter = (TextView) views.get(2);
-        facebook = (Button) views.get(3);
-        adminPanel = (Button) views.get(4);
+        adminPanel = (Button) views.get(3);
 
         Display screen = ((Activity) context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -174,7 +172,6 @@ public class HomeView implements Viewable {
         RelativeLayout.LayoutParams answeredParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        answeredParams.setMargins(0 , 1000 , 0 , 0);
-
         TextView answered = new TextView(context);
         answered.setText("الاسئله المجابه");
         answered.setGravity(Gravity.LEFT);
@@ -208,21 +205,15 @@ public class HomeView implements Viewable {
         statisticsLayout.addView(numberLayout);
         //
         mainLayout.addView(statisticsLayout);
-        //adminpanel
-        RelativeLayout.LayoutParams adminPanelParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        adminPanel.setLayoutParams(adminPanelParams);
-//        mainLayout.addView(adminPanel);
         //space
         Space space2 = new Space(context);
         space2.setMinimumHeight(100);
         mainLayout.addView(space2);
-        //facebook
-        RelativeLayout.LayoutParams facebookParams = new RelativeLayout.LayoutParams(
+        //adminPanel
+        RelativeLayout.LayoutParams adminPanelParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        facebook.setLayoutParams(facebookParams);
-        facebook.setBackgroundColor(Color.LTGRAY);
-        mainLayout.addView(facebook);
+        adminPanel.setLayoutParams(adminPanelParams);
+        adminPanel.setBackgroundColor(Color.LTGRAY);
+        mainLayout.addView(adminPanel);
     }
-
 }

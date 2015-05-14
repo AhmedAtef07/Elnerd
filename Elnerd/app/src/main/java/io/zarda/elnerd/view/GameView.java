@@ -141,7 +141,7 @@ public class GameView implements Viewable , Game{
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                gvn.notifyShowSuccessFinished();
+                gvn.notifyShowFailureFinished();
                 correctButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
                 wrongButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
             }

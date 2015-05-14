@@ -14,6 +14,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -120,6 +121,11 @@ public class QuoteView implements Viewable , Game{
         mainLayout.setOrientation(LinearLayout.VERTICAL);
         mainLayout.setGravity(Gravity.RIGHT);
         mainLayout.setBackgroundColor(Color.parseColor(colors[new Random().nextInt(7)]));
+        //scrollView
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.RIGHT);
+        //
         //time bar
         RelativeLayout.LayoutParams barParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -132,11 +138,11 @@ public class QuoteView implements Viewable , Game{
         bar.setBackgroundColor(Color.parseColor("#ffffff"));
         bar.setPadding(0, 0, 0, 400);
         bar.setLayoutParams(barParam);
-        mainLayout.addView(bar);
+        linearLayout.addView(bar);
         //space
         Space space0 = new Space(context);
         space0.setMinimumHeight(200);
-        mainLayout.addView(space0);
+        linearLayout.addView(space0);
         //quote
         quote.setBackground(context.getResources().getDrawable(R.drawable.display3));
         quote.setTextDirection(View.TEXT_DIRECTION_RTL);
@@ -144,7 +150,7 @@ public class QuoteView implements Viewable , Game{
         quote.setTypeface(typeface);
         quote.setGravity(Gravity.CENTER);
         quote.setTextColor(Color.parseColor("#ecf0f1"));
-        mainLayout.addView(quote);
+        linearLayout.addView(quote);
         //bookName
         bookName.setBackground(context.getResources().getDrawable(R.drawable.display3));
         RelativeLayout.LayoutParams bookNameParam = new RelativeLayout.LayoutParams(
@@ -154,7 +160,10 @@ public class QuoteView implements Viewable , Game{
         bookName.setTextSize(22);
         bookName.setTextColor(Color.parseColor("#ecf0f1"));
         bookName.setTypeface(typeface);
-        mainLayout.addView(bookName);
+        linearLayout.addView(bookName);
+        ScrollView scrollView = new ScrollView(context);
+        scrollView.addView(linearLayout);
+        mainLayout.addView(scrollView);
     }
 
     public void showQuote() {
