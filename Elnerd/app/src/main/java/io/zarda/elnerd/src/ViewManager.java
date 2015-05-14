@@ -6,14 +6,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.login.widget.LoginButton;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.zarda.elnerd.MainActivity;
-import io.zarda.elnerd.R;
+import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Question;
 import io.zarda.elnerd.model.Quote;
 import io.zarda.elnerd.view.GameView;
@@ -63,10 +61,6 @@ public class ViewManager {
         homeViewsArray.add(new TextView(context));
         homeViewsArray.add(new TextView(context));
 
-        LoginButton mButtonLogin = new LoginButton(context);
-        mButtonLogin.setId(R.id.login_button);
-        homeViewsArray.add(mButtonLogin);
-
         Button btn = new Button(context);
         btn.setText("Admin Panel");
         btn.setOnClickListener(new View.OnClickListener() {
@@ -77,15 +71,12 @@ public class ViewManager {
         });
         homeViewsArray.add(btn);
 
-
         homeViewsList = Collections.unmodifiableList(homeViewsArray);
-
 
         // quoteView
         ArrayList<View> quoteViewsArray = new ArrayList<>();
         quoteViewsArray.add(new TextView(context));
         quoteViewsArray.add(new TextView(context));
-
 
         quoteViewsList = Collections.unmodifiableList(quoteViewsArray);
 
@@ -105,7 +96,8 @@ public class ViewManager {
         }
 
         gameViewsList = Collections.unmodifiableList(gameViewsArray);
-        gvn = new GameViewNotifier(this, (MainActivity) context);
+
+        gvn = new GameViewNotifier(this);
         hvn = new HomeViewNotifier(this);
 
         homeView = new HomeView(hvn);
@@ -142,7 +134,6 @@ public class ViewManager {
     public void startGameView() {
         gameView.startView();
         ((MainActivity) context).setNewQuestion();
-        System.out.println("Current Game");
     }
 
     public void endGameView() {
@@ -155,8 +146,7 @@ public class ViewManager {
             ((Button) gameViewsList.get(i)).setText(question.getChoices().get(i - 1));
         }
 
-        gameView.setTime(6000);
-
+        gameView.setTime(Constants.QUESTION_TIME);
         gameView.showNextQuestion();
     }
 
@@ -170,11 +160,11 @@ public class ViewManager {
     }
 
     public void startQuoteView() {
-        quoteView.startView();
-        quoteView.setTime(9000);
         inQuote = true;
+        quoteView.startView();
+        quoteView.setTime(Constants.QUOTE_TIME);
         ((MainActivity) context).setNewQuote();
-        timer = new CountDownTimer(9000, 1000) {
+        timer = new CountDownTimer(Constants.QUOTE_TIME, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);

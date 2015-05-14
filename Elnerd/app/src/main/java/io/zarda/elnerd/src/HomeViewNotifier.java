@@ -5,6 +5,7 @@ import io.zarda.elnerd.MainActivity;
 /**
  * Created by atef & emad on 4 May, 2015.
  */
+
 public class HomeViewNotifier {
 
     private ViewManager vm;
@@ -14,7 +15,6 @@ public class HomeViewNotifier {
     }
 
     public void notifyHomeAnimationFinished() {
-        System.out.println("AAAAAAAA");
         vm.startQuoteView();
     }
 

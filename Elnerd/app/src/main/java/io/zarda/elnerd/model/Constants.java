@@ -5,10 +5,13 @@ import java.lang.reflect.Type;
 /**
  * Created by Ahmed Atef on 11/05/15.
  */
+
 public class Constants {
     public static final int DB_REQUEST_COUNT = 2;
     public static final String API_URL = "http://elnerd.zarda.io:2017/api";
     public static final String SHARED_MEMORY_NAME = "shared_memory";
+    public static final int QUOTE_TIME = 9000;
+    public static final int QUESTION_TIME = 6000;
 
 
     public enum SharedMemory {
