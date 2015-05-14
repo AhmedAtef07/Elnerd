@@ -67,8 +67,29 @@ public class HomeView implements Viewable {
     @Override
     public void startView() {
         ((Activity)context).setContentView(mainLayout);
+        Animation goUp = new TranslateAnimation(0, 0, -screenHeight, 0);
+        goUp.setDuration(500);
+        mainLayout.startAnimation(goUp);
+        goUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//                hvn.notifyHomeAnimationFinished();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
+
+
 
     @Override
     public void endView() {
@@ -213,7 +234,11 @@ public class HomeView implements Viewable {
         RelativeLayout.LayoutParams adminPanelParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         adminPanel.setLayoutParams(adminPanelParams);
-        adminPanel.setBackgroundColor(Color.LTGRAY);
+        adminPanelParams.width = 500;
+        adminPanelParams.height = 190;
+        adminPanel.setTypeface(typeface);
+        adminPanel.setLayoutParams(adminPanelParams);
+        adminPanel.setBackground(context.getResources().getDrawable(R.drawable.btn));
         mainLayout.addView(adminPanel);
     }
 }
