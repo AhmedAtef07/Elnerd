@@ -1,9 +1,11 @@
 package io.zarda.elnerd;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -136,8 +138,8 @@ public class MainActivity extends Activity {
                 @Override
                 public void onFinish() {
                     preparedQuestion = null;
-//                    vm.endGameView();
-//                    vm.startHomeView();
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(500);
                     vm.startScoreView();
                 }
             };
@@ -175,9 +177,10 @@ public class MainActivity extends Activity {
     }
 
     public void retry(View v) {
+        updatePreferences();
         vm.endScoreView();
         vm.endGameView();
-        vm.startGameView();
+        vm.startQuoteView();
     }
 
     public int getCurrentPlayed() {

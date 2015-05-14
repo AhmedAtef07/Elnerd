@@ -54,13 +54,9 @@ public class ViewManager {
     int allPlayed;
 
     private Context context;
-    Typeface typeface;
 
     public ViewManager(final Context context) {
         this.context = context;
-
-        typeface = Typeface.createFromAsset(context.getAssets(),
-                "fonts/AraJozoor-Regular.ttf");
 
         // homeView
         ArrayList<View> homeViewsArray = new ArrayList<>();
@@ -76,7 +72,7 @@ public class ViewManager {
         homeViewsArray.add(new TextView(context));
 
         Button btn = new Button(context);
-        btn.setText("Admin Panel");
+        btn.setText("صفحة الإدارة");
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,91 +113,47 @@ public class ViewManager {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         TextView endGame = new TextView(context);
-        endGame.setGravity(Gravity.CENTER);
         endGame.setText("انتهت اللعبة");
-        endGame.setTextSize(40);
-        endGame.setAlpha(1);
-        endGame.setLayoutParams(params);
-        endGame.setTextColor(Color.parseColor("#ecf0f1"));
-        endGame.setTypeface(typeface);
         scoreViewsArray.add(endGame);
 
         TextView bestText = new TextView(context);
-        bestText.setGravity(Gravity.CENTER);
         bestText.setText("أفضل نتيجة:");
-        bestText.setTextSize(25);
-        bestText.setAlpha(1);
-        bestText.setLayoutParams(params);
-        bestText.setTextColor(Color.parseColor("#ecf0f1"));
-        bestText.setTypeface(typeface);
         scoreViewsArray.add(bestText);
 
         TextView bestScore = new TextView(context);
-        bestScore.setGravity(Gravity.CENTER);
-        bestScore.setTextSize(25);
-        bestScore.setAlpha(1);
-        bestScore.setLayoutParams(params);
-        bestScore.setTextColor(Color.parseColor("#ecf0f1"));
-        bestScore.setTypeface(typeface);
         scoreViewsArray.add(bestScore);
 
         TextView currentText = new TextView(context);
-        currentText.setGravity(Gravity.CENTER);
         currentText.setText("النتيجة:");
-        currentText.setTextSize(25);
-        currentText.setAlpha(1);
-        currentText.setLayoutParams(params);
-        currentText.setTextColor(Color.parseColor("#ecf0f1"));
-        currentText.setTypeface(typeface);
         scoreViewsArray.add(currentText);
 
         TextView currentScore = new TextView(context);
-        currentScore.setGravity(Gravity.CENTER);
-        currentScore.setTextSize(25);
-        currentScore.setAlpha(1);
-        currentScore.setLayoutParams(params);
-        currentScore.setTextColor(Color.parseColor("#ecf0f1"));
-        currentScore.setTypeface(typeface);
         scoreViewsArray.add(currentScore);
 
         Button retry = new Button(context);
-        retry.setGravity(Gravity.CENTER);
         retry.setText("اعادة");
-        retry.setTextSize(20);
-        retry.setAlpha(1);
-        retry.setLayoutParams(params);
-        retry.setTextColor(Color.parseColor("#ecf0f1"));
-        retry.setTypeface(typeface);
         retry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity) context).retry(v);
             }
         });
-        retry.setBackgroundColor(Color.parseColor("#51678b"));
         scoreViewsArray.add(retry);
 
         Button home = new Button(context);
-        home.setGravity(Gravity.CENTER);
         home.setText("المنزل");
-        home.setTextSize(20);
-        home.setAlpha(1);
-        home.setLayoutParams(params);
-        home.setTextColor(Color.parseColor("#ecf0f1"));
-        home.setTypeface(typeface);
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity) context).goHome(v);
             }
         });
-        home.setBackgroundColor(Color.parseColor("#51678b"));
         scoreViewsArray.add(home);
 
         scoreViewsList = Collections.unmodifiableList(scoreViewsArray);
 
 
-        gvn = new GameViewNotifier(this);
+        gvn = new GameViewNotifier(this, context);
         hvn = new HomeViewNotifier(this);
         svn = new ScoreViewNotifier(this);
 
@@ -255,6 +207,7 @@ public class ViewManager {
         ((TextView) gameViewsList.get(0)).setText(question.getHeader());
         for (int i = 1; i < gameViewsList.size(); ++i) {
             ((Button) gameViewsList.get(i)).setText(question.getChoices().get(i - 1));
+            ((Button) gameViewsList.get(i)).setEnabled(true);
         }
 
         gameView.setTime(Constants.QUESTION_TIME);

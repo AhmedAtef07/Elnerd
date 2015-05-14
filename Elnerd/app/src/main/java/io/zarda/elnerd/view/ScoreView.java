@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -83,10 +84,14 @@ public class ScoreView implements Viewable {
 
     @Override
     public void endView() {
-        ((ViewGroup) mainLayout.getParent()).removeAllViews();
+
+        ((ViewGroup) mainLayout.getParent()).removeView(mainLayout);
     }
 
     private void intializeLayout() {
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(),
+                "fonts/AraJozoor-Regular.ttf");
+
         mainLayout = new LinearLayout(context);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
         mainLayout.setGravity(Gravity.CENTER);
@@ -103,6 +108,11 @@ public class ScoreView implements Viewable {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         endGameParams.setMargins(10, 50, 10, 150);
         endGame.setLayoutParams(endGameParams);
+        endGame.setGravity(Gravity.CENTER);
+        endGame.setTextSize(40);
+        endGame.setAlpha(1);
+        endGame.setTextColor(Color.parseColor("#ecf0f1"));
+        endGame.setTypeface(typeface);
         verticalScoresLayout.addView(endGame);
 
         LinearLayout horizontalScoresLayout1 = new LinearLayout(context);
@@ -116,8 +126,19 @@ public class ScoreView implements Viewable {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         scoresParams.setMargins(20, 20, 30, 20);
 
+        currentScore.setGravity(Gravity.CENTER);
+        currentScore.setTextSize(25);
+        currentScore.setAlpha(1);
+        currentScore.setTextColor(Color.parseColor("#ecf0f1"));
+        currentScore.setTypeface(typeface);
         currentScore.setLayoutParams(scoresParams);
-        currentScore.setLayoutParams(scoresParams);
+
+        currentText.setGravity(Gravity.CENTER);
+        currentText.setTextSize(25);
+        currentText.setAlpha(1);
+        currentText.setTextColor(Color.parseColor("#ecf0f1"));
+        currentText.setTypeface(typeface);
+        currentText.setLayoutParams(scoresParams);
 
         horizontalScoresLayout1.addView(currentScore);
         horizontalScoresLayout1.addView(currentText);
@@ -129,7 +150,18 @@ public class ScoreView implements Viewable {
         horizontalScoresLayout2.setGravity(Gravity.CENTER);
         horizontalScoresLayout2.setLayoutParams(horizontalScoresParams);
 
+        bestScore.setGravity(Gravity.CENTER);
+        bestScore.setTextSize(25);
+        bestScore.setAlpha(1);
+        bestScore.setTextColor(Color.parseColor("#ecf0f1"));
+        bestScore.setTypeface(typeface);
         bestScore.setLayoutParams(scoresParams);
+
+        bestText.setGravity(Gravity.CENTER);
+        bestText.setTextSize(25);
+        bestText.setAlpha(1);
+        bestText.setTextColor(Color.parseColor("#ecf0f1"));
+        bestText.setTypeface(typeface);
         bestText.setLayoutParams(scoresParams);
 
         horizontalScoresLayout2.addView(bestScore);
@@ -146,8 +178,21 @@ public class ScoreView implements Viewable {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         horizontalButtonsLayout.setLayoutParams(horizontalButtonsParams);
 
+        retry.setGravity(Gravity.CENTER);
+        retry.setTextSize(20);
+        retry.setAlpha(1);
+        retry.setTextColor(Color.parseColor("#ecf0f1"));
+        retry.setTypeface(typeface);
         retry.setLayoutParams(scoresParams);
+        retry.setBackgroundColor(Color.parseColor("#51678b"));
+
+        home.setGravity(Gravity.CENTER);
+        home.setTextSize(20);
+        home.setAlpha(1);
+        home.setTextColor(Color.parseColor("#ecf0f1"));
+        home.setTypeface(typeface);
         home.setLayoutParams(scoresParams);
+        home.setBackgroundColor(Color.parseColor("#51678b"));
 
         horizontalButtonsLayout.addView(retry);
         horizontalButtonsLayout.addView(home);
