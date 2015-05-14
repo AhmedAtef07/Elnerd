@@ -63,8 +63,29 @@ public class QuoteView implements Viewable , Game{
     @Override
     public void startView() {
         ((Activity) context).setContentView(mainLayout);
+        Animation goDown = new TranslateAnimation(0, 0, -screenHeight, 0);
+        goDown.setDuration(500);
+        mainLayout.startAnimation(goDown);
+        goDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                ((ViewGroup) mainLayout.getParent()).removeAllViews();
+//                hvn.notifyHomeAnimationFinished();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
+
+
 
     @Override
     public void endView() {
