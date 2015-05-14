@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:state_pressed="false" >
+    <item android:state_pressed="false">
         <shape android:shape="rectangle">
-            <solid android:color="#3498db" />
-            <padding android:bottom="10dip" android:left="10dip"
-                android:right="10dip" android:top="10dip"/>
-            <corners android:radius="15dp"/>
-            <stroke android:width="5dp" android:color="#2c3e50"/>
+            <padding android:bottom="5dip" android:left="5dip" android:right="5dip" android:top="5dip" />
+            <corners android:topLeftRadius="0dp" />
+            <stroke android:width="3dp" android:color="#000000" />
         </shape>
     </item>
 </selector>

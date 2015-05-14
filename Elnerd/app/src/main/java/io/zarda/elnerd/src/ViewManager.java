@@ -19,7 +19,6 @@ import io.zarda.elnerd.model.Quote;
 import io.zarda.elnerd.view.GameView;
 import io.zarda.elnerd.view.HomeView;
 import io.zarda.elnerd.view.QuoteView;
-import io.zarda.elnerd.view.Viewable;
 
 /**
  * Created by atef & emad on 4 May, 2015.
@@ -34,11 +33,14 @@ public class ViewManager {
     GameViewNotifier gvn;
     HomeViewNotifier hvn;
 
+    CountDownTimer timer;
+
     HomeView homeView;
     QuoteView quoteView;
     GameView gameView;
 
-    Viewable currentView;
+    boolean inHome;
+    boolean inQuote;
 
     int bestPlayed;
     int allPlayed;
@@ -65,6 +67,16 @@ public class ViewManager {
         mButtonLogin.setId(R.id.login_button);
         homeViewsArray.add(mButtonLogin);
 
+        Button btn = new Button(context);
+        btn.setText("Admin Panel");
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) context).adminClick(v);
+            }
+        });
+        homeViewsArray.add(btn);
+
 
         homeViewsList = Collections.unmodifiableList(homeViewsArray);
 
@@ -74,21 +86,22 @@ public class ViewManager {
         quoteViewsArray.add(new TextView(context));
         quoteViewsArray.add(new TextView(context));
 
+
         quoteViewsList = Collections.unmodifiableList(quoteViewsArray);
 
         // game View
         ArrayList<View> gameViewsArray = new ArrayList<>();
         gameViewsArray.add(new TextView(context));
         for (int i = 0; i < 4; ++i) {
-            Button btn = new Button(context);
-            btn.setOnClickListener(new View.OnClickListener() {
+            Button btn2 = new Button(context);
+            btn2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ((MainActivity) context).answerClick(v);
                 }
             });
-            btn.setTag(i);
-            gameViewsArray.add(btn);
+            btn2.setTag(i);
+            gameViewsArray.add(btn2);
         }
 
         gameViewsList = Collections.unmodifiableList(gameViewsArray);
@@ -103,6 +116,9 @@ public class ViewManager {
 
         quoteView = new QuoteView();
         quoteView.initializeView(context, quoteViewsList);
+
+        inHome = false;
+        inQuote = false;
     }
 
     public void startHomeView() {
@@ -110,12 +126,12 @@ public class ViewManager {
         ((TextView) homeViewsList.get(1)).setText("" + bestPlayed);
         ((TextView) homeViewsList.get(2)).setText("" + allPlayed);
         homeView.startView();
-        currentView = homeView;
+        inHome = true;
     }
 
     public void endHomeView() {
         homeView.endView();
-        currentView = null;
+        inHome = false;
     }
 
     public void setScores(int best, int all) {
@@ -126,12 +142,11 @@ public class ViewManager {
     public void startGameView() {
         gameView.startView();
         ((MainActivity) context).setNewQuestion();
-        currentView = gameView;
+        System.out.println("Current Game");
     }
 
     public void endGameView() {
         gameView.endView();
-        currentView = null;
     }
 
     public void showQuestion(Question question) {
@@ -157,9 +172,9 @@ public class ViewManager {
     public void startQuoteView() {
         quoteView.startView();
         quoteView.setTime(9000);
+        inQuote = true;
         ((MainActivity) context).setNewQuote();
-        currentView = quoteView;
-        CountDownTimer timer = new CountDownTimer(9000, 1000) {
+        timer = new CountDownTimer(9000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 System.out.println("seconds remaining: " + (double) millisUntilFinished / 1000);
@@ -174,9 +189,15 @@ public class ViewManager {
         timer.start();
     }
 
+    public void cancelTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+    }
+
     public void endQuoteView() {
         quoteView.endView();
-        currentView = null;
+        inQuote = false;
     }
 
     public void showQuote(Quote quote) {
@@ -187,11 +208,11 @@ public class ViewManager {
 
 
     public boolean inHome() {
-        return currentView == homeView;
+        return inHome;
     }
 
     public boolean inQuote() {
-        return currentView == quoteView;
+        return inQuote;
     }
 
 }
