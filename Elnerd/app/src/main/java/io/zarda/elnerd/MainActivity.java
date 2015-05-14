@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import io.zarda.elnerd.model.Constants;
 import io.zarda.elnerd.model.Constants.SharedMemory;
 import io.zarda.elnerd.model.Question;
@@ -61,6 +63,37 @@ public class MainActivity extends Activity {
 
         currentLongestPlayed = 0;
         currentAllPlayed = 0;
+
+        if (questionsManager.getNumberOfQuestions() == 0) {
+            ArrayList<String> choices = new ArrayList<>();
+            choices.add("الألم");
+            choices.add("السعادة");
+            choices.add("الخبرة");
+            choices.add("العلم");
+
+            Question question = new Question("إن الحقيقة تأتي فقط مع ؟", choices, 0);
+            Quote quote = new Quote("أن تعيش مع المجهول شئ سئ للغاية، و أن تموت من أجل الح" +
+                    "قيقة فهذه هي الحياة نفسهافأن الحقيقة لا تأتي إلا من خلال اﻷل" +
+                    "م، فكلما كان اﻷلم عميقا، كانت الحقيقة أكثر وضوحا", question, "رواية ٣١٣",
+                    "Admin");
+            questionsManager.addQuote(quote);
+
+            choices = new ArrayList<>();
+            choices.add("بتحريكك حطبك في موقد اﻵخر");
+            choices.add("بعدم الإقتراب إليه كثيرا");
+            choices.add("بالإقتراب منه كثيرا");
+            choices.add("بالبعد عنه");
+
+            question = new Question("كيف تبقى الحب مشتعلا مع اﻵخر ؟", choices, 0);
+            quote = new Quote("الحب هو ذكاء المسافة. ألّا تقترب كثيراً فتُلغي اللهفة، ولا تبت" +
+                    "عد طويلًا فتُنسى. ألّا تضع حطبك دفعةً واحدةً في موقد من تُحب. أن تُبقيه مشتعل" +
+                    "ًا بتحريكك الحطب ليس أكثر، دون أن يلمح الآخر يدك المحرّكة لمشاعره ومسار قدره"
+                    , question, "اﻷسود يليق بك",
+                    "Admin");
+            questionsManager.addQuote(quote);
+
+            questionsManager.getRandomQuotes();
+        }
 
         vm = new ViewManager(this);
         vm.startHomeView(true);

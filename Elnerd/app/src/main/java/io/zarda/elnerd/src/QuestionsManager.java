@@ -61,6 +61,10 @@ public class QuestionsManager implements Waitable {
         return null;
     }
 
+    public int getNumberOfQuestions() {
+        return questionsDB.getNumberOfQuestions();
+    }
+
     public boolean containsQuote() {
         return quotesArrayList.size() > 0;
     }
