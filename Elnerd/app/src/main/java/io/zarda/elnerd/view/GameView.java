@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
@@ -28,12 +29,16 @@ import io.zarda.elnerd.src.GameViewNotifier;
  * Created by atef & emad on 4 May, 2015.
  * Implementing by magdy.
  */
-public class GameView implements Viewable , Game{
+public class GameView implements Viewable, Game {
 
     Context context;
     GameViewNotifier gvn;
 
     TextView questions;
+
+    boolean clicked = false;
+
+    FrameLayout frameLayout;
 
     TextView bar;
 
@@ -51,14 +56,13 @@ public class GameView implements Viewable , Game{
     String[] colors = {"#e74c3c", "#2ecc71", "#3498db", "#1abc9c", "#9b59b6",
             "#e67e22"};
 
-    public GameView(GameViewNotifier gvn){
+    public GameView(GameViewNotifier gvn) {
         this.gvn = gvn;
     }
 
     @Override
     public void initializeView(Context context, List<View> views) {
         this.context = context;
-
         this.questions = (TextView) views.get(0);
         for (int i = 1; i < 5; ++i) {
             choices.add((Button) views.get(i));
@@ -73,7 +77,7 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void startView() {
-        ((Activity) context).setContentView(mainLayout);
+        ((Activity) context).setContentView(frameLayout);
         Animation goDown = new TranslateAnimation(0, 0, screenHeight, 0);
         goDown.setDuration(500);
         mainLayout.startAnimation(goDown);
@@ -103,54 +107,62 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void showSuccess(final Button correctButton) {
-        correctButton.setBackground(context.getResources().getDrawable(R.drawable.correct));
-        Animation wait = new TranslateAnimation(0, 0, 0, 0);
-        wait.setDuration(1000);
-        correctButton.startAnimation(wait);
-        wait.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        if(!clicked) {
+            clicked = true;
+            correctButton.setBackground(context.getResources().getDrawable(R.drawable.correct));
+            Animation wait = new TranslateAnimation(0, 0, 0, 0);
+            wait.setDuration(1000);
+            bar.getAnimation().cancel();
+            correctButton.startAnimation(wait);
+            wait.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                gvn.notifyShowSuccessFinished();
-                correctButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    gvn.notifyShowSuccessFinished();
+                    correctButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override
     public void showFailure(final Button correctButton, final Button wrongButton) {
-        correctButton.setBackground(context.getResources().getDrawable(R.drawable.correct));
-        wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrong));
-        Animation wait = new TranslateAnimation(0, 0, 0, 0);
-        wait.setDuration(1000);
-        correctButton.startAnimation(wait);
-        wait.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        if(!clicked) {
+            clicked = true;
+            correctButton.setBackground(context.getResources().getDrawable(R.drawable.correct));
+            wrongButton.setBackground(context.getResources().getDrawable(R.drawable.wrong));
+            Animation wait = new TranslateAnimation(0, 0, 0, 0);
+            bar.getAnimation().cancel();
+            wait.setDuration(1000);
+            correctButton.startAnimation(wait);
+            wait.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                gvn.notifyShowFailureFinished();
-                correctButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
-                wrongButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    gvn.notifyShowFailureFinished();
+                    correctButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
+                    wrongButton.setBackground(context.getResources().getDrawable(R.drawable.btn));
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override
@@ -160,9 +172,30 @@ public class GameView implements Viewable , Game{
 
     @Override
     public void setTime(int msTime) {
+        clicked = false;
         this.time = msTime;
-        Animation timeAnimation = new TranslateAnimation(0, -screenWidth, 0, 0);
+        TranslateAnimation timeAnimation = new TranslateAnimation(0, -screenWidth, 0, 0);
         timeAnimation.setDuration(time);
+        timeAnimation.setFillAfter(true);
+
+        timeAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Animation disappeare = new TranslateAnimation(0 , 0 , 0 , -50);
+                disappeare.setFillAfter(true);
+                bar.startAnimation(disappeare);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         bar.startAnimation(timeAnimation);
     }
 
@@ -223,6 +256,9 @@ public class GameView implements Viewable , Game{
         choicesLayout.addView(setChoicePro(choices.get(3)));
 
         mainLayout.addView(choicesLayout);
+
+        frameLayout = new FrameLayout(context);
+        frameLayout.addView(mainLayout);
     }
 
     private Button setChoicePro(Button choice) {

@@ -173,7 +173,7 @@ public class HomeView implements Viewable {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        answeredParams.setMargins(0 , 1000 , 0 , 0);
         TextView answered = new TextView(context);
-        answered.setText("الاسئله المجابه");
+        answered.setText("الأسئلة المجابة");
         answered.setGravity(Gravity.LEFT);
         answered.setLayoutParams(counterParams);
         answered.setTextSize(20);
@@ -182,7 +182,7 @@ public class HomeView implements Viewable {
         numberLayout.addView(answered);
         //best
         TextView bestScore = new TextView(context);
-        bestScore.setText("افضل نتيجه");
+        bestScore.setText("أفضل نتيجة");
         bestScore.setGravity(Gravity.LEFT);
         bestScore.setPadding(0, 120, 0, 0);
         bestScore.setLayoutParams(counterParams);
