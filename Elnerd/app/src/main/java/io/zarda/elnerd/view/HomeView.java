@@ -96,34 +96,36 @@ public class HomeView implements Viewable {
         elnerd.setText("النّيرد");
         elnerd.setLayoutParams(elnerdParams);
         elnerd.setBackground(context.getResources().getDrawable(R.drawable.elnerd));
-        elnerd.setTextSize(90);
+        elnerd.setTextSize(150 * screenWidth / screenHeight);
         elnerd.setAlpha(1);
         elnerd.setTextColor(Color.parseColor("#2c3e50"));
         elnerd.setTypeface(typeface);
         mainLayout.addView(elnerd);
         //space
         Space space0 = new Space(context);
-        space0.setMinimumHeight(150);
+        space0.setMinimumHeight((int) (0.084459 * screenHeight));
         mainLayout.addView(space0);
         //play button
         play.setBackground(context.getResources().getDrawable(R.drawable.pb));
         RelativeLayout.LayoutParams playParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        playParams.width = 375;
-        playParams.height = 150;
-        playParams.setMargins(0, 190, 0, 190);
+        playParams.width = (int) (0.347222 * screenWidth);
+        playParams.height = (int) (0.0844594 * screenHeight);
+        playParams.setMargins(0, (int) (0.106981 * screenHeight), 0,
+                (int) (0.106981 * screenHeight));
         play.setLayoutParams(playParams);
         mainLayout.addView(play);
         //space
         Space space1 = new Space(context);
-        space1.setMinimumHeight(100);
+        space1.setMinimumHeight((int) (0.05630 * screenHeight));
         mainLayout.addView(space1);
         //statistics bar
         LinearLayout statisticsLayout = new LinearLayout(context);
         statisticsLayout.setOrientation(LinearLayout.HORIZONTAL);
         RelativeLayout.LayoutParams statisticsParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        statisticsParams.setMargins(0, 200, 0, 200);
+        statisticsParams.setMargins(0, (int) (0.1126126 * screenHeight), 0,
+                (int) (0.1126126 * screenHeight));
         statisticsLayout.setLayoutParams(statisticsParams);
         //textLayout
         LinearLayout textLayout = new LinearLayout(context);
@@ -134,7 +136,7 @@ public class HomeView implements Viewable {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         counter.setGravity(Gravity.RIGHT);
         counter.setLayoutParams(counterParams);
-        counter.setTextSize(50);
+        counter.setTextSize((float) ((83.333 * screenWidth) / screenHeight));
         counter.setTypeface(typeface);
         counter.setTextColor(Color.parseColor("#fcfefe"));
         textLayout.addView(counter);
@@ -143,21 +145,21 @@ public class HomeView implements Viewable {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         best.setGravity(Gravity.RIGHT);
         best.setLayoutParams(bestParams);
-        bestParams.width = screenWidth / 3 - 10;
-        best.setTextSize(50);
+        bestParams.width = (int) (screenWidth / 3 - 0.009259 * screenWidth);
+        best.setTextSize((float) ((83.333 * screenWidth) / screenHeight));
         best.setTypeface(typeface);
         best.setTextColor(Color.parseColor("#fcfefe"));
         textLayout.addView(best);
         //numberLayout
         LinearLayout numberLayout = new LinearLayout(context);
         numberLayout.setOrientation(LinearLayout.VERTICAL);
-        numberLayout.setPadding(0, 50, 0, 0);
+        numberLayout.setPadding(0, (int) (0.0281531 * screenHeight), 0, 0);
         //answered
         TextView answered = new TextView(context);
         answered.setText("الأسئلة المجابة");
         answered.setGravity(Gravity.LEFT);
         answered.setLayoutParams(counterParams);
-        answered.setTextSize(20);
+        answered.setTextSize((float) (33.333 * screenWidth / screenHeight));
         answered.setTypeface(typeface);
         answered.setTextColor(Color.parseColor("#fcfefe"));
         numberLayout.addView(answered);
@@ -165,9 +167,9 @@ public class HomeView implements Viewable {
         TextView bestScore = new TextView(context);
         bestScore.setText("أفضل نتيجة");
         bestScore.setGravity(Gravity.LEFT);
-        bestScore.setPadding(0, 120, 0, 0);
+        bestScore.setPadding(0, (int) (0.0675675 * screenHeight), 0, 0);
         bestScore.setLayoutParams(counterParams);
-        bestScore.setTextSize(20);
+        bestScore.setTextSize((float) (33.333 * screenWidth / screenHeight));
         bestScore.setTypeface(typeface);
         bestScore.setTextColor(Color.parseColor("#fcfefe"));
         numberLayout.addView(bestScore);
@@ -176,9 +178,9 @@ public class HomeView implements Viewable {
         seperator.setBackground(context.getResources().getDrawable(R.drawable.seperator));
         LinearLayout.LayoutParams seperatorParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        seperatorParams.width = 25;
-        seperatorParams.height = 300;
-        seperatorParams.setMargins(0, 35, 0, 0);
+        seperatorParams.width = (int) (0.018515 * screenWidth);
+        seperatorParams.height = (int) (0.16891 * screenHeight);
+        seperatorParams.setMargins(0, (int) (0.01970 * screenHeight), 0, 0);
         seperator.setLayoutParams(seperatorParams);
         //
         statisticsLayout.addView(textLayout);
@@ -188,16 +190,16 @@ public class HomeView implements Viewable {
         mainLayout.addView(statisticsLayout);
         //space
         Space space2 = new Space(context);
-        space2.setMinimumHeight(50);
+        space2.setMinimumHeight((int) (0.0281513 * screenHeight));
         mainLayout.addView(space2);
         //adminPanel
         RelativeLayout.LayoutParams adminPanelParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         adminPanel.setLayoutParams(adminPanelParams);
-        adminPanelParams.width = 500;
-        adminPanelParams.height = 190;
+        adminPanelParams.width = (int) (0.4629629 * screenWidth);
+        adminPanelParams.height = (int) (0.106981 * screenHeight);
         adminPanel.setTypeface(typeface);
-        adminPanel.setTextSize(20);
+        adminPanel.setTextSize((float) ((33.333 * screenWidth) / screenHeight));
         adminPanel.setLayoutParams(adminPanelParams);
         adminPanel.setBackground(context.getResources().getDrawable(R.drawable.btn));
         mainLayout.addView(adminPanel);

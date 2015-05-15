@@ -107,10 +107,11 @@ public class ScoreView implements Viewable {
 
         LinearLayout.LayoutParams endGameParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        endGameParams.setMargins(10, 50, 10, 130);
+        endGameParams.setMargins((int) (0.01851 * screenWidth), (int) (0.028153 * screenHeight),
+                (int) (0.01851 * screenWidth), (int) (0.0731981 * screenHeight));
         endGame.setLayoutParams(endGameParams);
         endGame.setGravity(Gravity.CENTER);
-        endGame.setTextSize(40);
+        endGame.setTextSize((float) ((66.6667 * screenWidth) / screenHeight));
         endGame.setAlpha(1);
         endGame.setTextColor(Color.parseColor("#ecf0f1"));
         endGame.setTypeface(typeface);
@@ -125,17 +126,18 @@ public class ScoreView implements Viewable {
 
         LinearLayout.LayoutParams scoresParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        scoresParams.setMargins(20, 20, 30, 20);
+        scoresParams.setMargins((int) (0.01851 * screenWidth), (int) (0.0112612 * screenHeight),
+                (int) (0.027778 * screenWidth), (int) (0.0112612 * screenHeight));
 
         currentScore.setGravity(Gravity.CENTER);
-        currentScore.setTextSize(20);
+        currentScore.setTextSize((float) (33.333 * screenWidth / screenHeight));
         currentScore.setAlpha(1);
         currentScore.setTextColor(Color.parseColor("#ecf0f1"));
         currentScore.setTypeface(typeface);
         currentScore.setLayoutParams(scoresParams);
 
         currentText.setGravity(Gravity.CENTER);
-        currentText.setTextSize(20);
+        currentText.setTextSize((float) (33.333 * screenWidth / screenHeight));
         currentText.setAlpha(1);
         currentText.setTextColor(Color.parseColor("#ecf0f1"));
         currentText.setTypeface(typeface);
@@ -152,14 +154,14 @@ public class ScoreView implements Viewable {
         horizontalScoresLayout2.setLayoutParams(horizontalScoresParams);
 
         bestScore.setGravity(Gravity.CENTER);
-        bestScore.setTextSize(20);
+        bestScore.setTextSize((float) (33.333 * screenWidth / screenHeight));
         bestScore.setAlpha(1);
         bestScore.setTextColor(Color.parseColor("#ecf0f1"));
         bestScore.setTypeface(typeface);
         bestScore.setLayoutParams(scoresParams);
 
         bestText.setGravity(Gravity.CENTER);
-        bestText.setTextSize(20);
+        bestText.setTextSize((float) (33.333 * screenWidth / screenHeight));
         bestText.setAlpha(1);
         bestText.setTextColor(Color.parseColor("#ecf0f1"));
         bestText.setTypeface(typeface);
@@ -180,17 +182,15 @@ public class ScoreView implements Viewable {
         horizontalButtonsLayout.setLayoutParams(horizontalButtonsParams);
 
         retry.setGravity(Gravity.CENTER);
-        retry.setTextSize(20);
         retry.setAlpha(1);
         retry.setTextColor(Color.parseColor("#ecf0f1"));
         retry.setTypeface(typeface);
         retry.setLayoutParams(scoresParams);
-        scoresParams.height = 150;
-        scoresParams.width = 350;
+        scoresParams.height = (int) (0.084459 * screenHeight);
+        scoresParams.width = (int) (0.3240740 * screenWidth);
         retry.setBackground(context.getResources().getDrawable(R.drawable.retry));
 
         home.setGravity(Gravity.CENTER);
-        home.setTextSize(20);
         home.setAlpha(1);
         home.setTextColor(Color.parseColor("#ecf0f1"));
         home.setTypeface(typeface);

@@ -118,20 +118,20 @@ public class QuoteView implements Viewable, Game {
         barParam.setLayoutDirection(Gravity.TOP);
         bar.setLayoutParams(barParam);
         barParam.width = screenWidth;
-        barParam.height = 50;
-        barParam.setMargins(0, 0, 0, 200);
+        barParam.height = (int) (0.028153 * screenHeight);
+        barParam.setMargins(0, 0, 0, (int) (0.185185 * screenWidth));
         bar.setBackgroundColor(Color.parseColor("#ffffff"));
-        bar.setPadding(0, 0, 0, 400);
+        bar.setPadding(0, 0, 0, (int) (0.370370 * screenWidth));
         bar.setLayoutParams(barParam);
-        linearLayout.addView(bar);
+        mainLayout.addView(bar);
         //space
         Space space0 = new Space(context);
-        space0.setMinimumHeight(200);
+        space0.setMinimumHeight((int) (0.11261 * screenHeight));
         linearLayout.addView(space0);
         //quote
         quote.setBackground(context.getResources().getDrawable(R.drawable.display3));
         quote.setTextDirection(View.TEXT_DIRECTION_RTL);
-        quote.setTextSize(32);
+        quote.setTextSize((float) (53.333 * screenWidth / screenHeight));
         quote.setTypeface(typeface);
         quote.setGravity(Gravity.CENTER);
         quote.setTextColor(Color.parseColor("#ecf0f1"));
@@ -142,7 +142,7 @@ public class QuoteView implements Viewable, Game {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         bookName.setLayoutParams(bookNameParam);
         bookName.setTextDirection(View.TEXT_DIRECTION_RTL);
-        bookName.setTextSize(22);
+        bookName.setTextSize((float) (36.6667 * screenWidth / screenHeight));
         bookName.setTextColor(Color.parseColor("#ecf0f1"));
         bookName.setTypeface(typeface);
         linearLayout.addView(bookName);

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -191,7 +192,8 @@ public class GameView implements Viewable, Game {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Animation disappeare = new TranslateAnimation(0, 0, 0, -50);
+                Animation disappeare = new TranslateAnimation(0, 0, 0,
+                        -((int) (0.028153 * screenHeight)));
                 disappeare.setFillAfter(true);
                 bar.startAnimation(disappeare);
             }
@@ -211,34 +213,39 @@ public class GameView implements Viewable, Game {
         mainLayout.setOrientation(LinearLayout.VERTICAL);
         mainLayout.setGravity(Gravity.RIGHT);
         mainLayout.setBackgroundColor(Color.parseColor(colors[new Random().nextInt(6)]));
+        //scrollLayout linear
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.RIGHT);
+        //time bar
         RelativeLayout.LayoutParams barParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         bar = new TextView(context);
         barParam.setLayoutDirection(Gravity.TOP);
         bar.setLayoutParams(barParam);
         barParam.width = screenWidth;
-        barParam.height = 50;
-        barParam.setMargins(0, 0, 0, 200);
+        barParam.height = (int) (0.028153 * screenHeight);
+        barParam.setMargins(0, 0, 0, (int) (0.1851851 * screenWidth));
         bar.setBackgroundColor(Color.parseColor("#ffffff"));
-        bar.setPadding(0, 0, 0, 400);
+        bar.setPadding(0, 0, 0, (int) (0.370370 * screenWidth));
         bar.setLayoutParams(barParam);
         mainLayout.addView(bar);
         //space
         Space space0 = new Space(context);
-        space0.setMinimumHeight(200);
-        mainLayout.addView(space0);
+        space0.setMinimumHeight((int) (0.11261261 * screenHeight));
+        linearLayout.addView(space0);
         //question
         questions.setTextDirection(View.TEXT_DIRECTION_RTL);
-        questions.setTextSize(32);
+        questions.setTextSize((float) (53.333 * screenWidth / screenHeight));
         questions.setAlpha(1);
         questions.setTextColor(Color.parseColor("#ecf0f1"));
         questions.setGravity(Gravity.CENTER);
         questions.setTypeface(typeface);
-        mainLayout.addView(questions);
+        linearLayout.addView(questions);
         //space
         Space space1 = new Space(context);
-        space1.setMinimumHeight(100);
-        mainLayout.addView(space1);
+        space1.setMinimumHeight((int) (0.05630 * screenHeight));
+        linearLayout.addView(space1);
         //choices
         LinearLayout choicesLayout = new LinearLayout(context);
         choicesLayout.setOrientation(LinearLayout.VERTICAL);
@@ -246,21 +253,25 @@ public class GameView implements Viewable, Game {
 
         choicesLayout.addView(setChoicePro(choices.get(0)));
         Space space2 = new Space(context);
-        space2.setMinimumHeight(20);
+        space2.setMinimumHeight((int) (0.011261  * screenHeight));
         choicesLayout.addView(space2);
 
         choicesLayout.addView(setChoicePro(choices.get(1)));
         Space space3 = new Space(context);
-        space3.setMinimumHeight(20);
+        space3.setMinimumHeight((int) (0.011261  * screenHeight));
         choicesLayout.addView(space3);
 
         choicesLayout.addView(setChoicePro(choices.get(2)));
         Space space4 = new Space(context);
-        space4.setMinimumHeight(20);
+        space4.setMinimumHeight((int) (0.011261  * screenHeight));
         choicesLayout.addView(space4);
         choicesLayout.addView(setChoicePro(choices.get(3)));
 
-        mainLayout.addView(choicesLayout);
+        linearLayout.addView(choicesLayout);
+        //add scroll view
+        ScrollView scrollView = new ScrollView(context);
+        scrollView.addView(linearLayout);
+        mainLayout.addView(scrollView);
 
         frameLayout = new FrameLayout(context);
         frameLayout.addView(mainLayout);
@@ -273,8 +284,8 @@ public class GameView implements Viewable, Game {
     private Button setChoicePro(Button choice) {
         RelativeLayout.LayoutParams choiceParam = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        choiceParam.width = 900;
-        choiceParam.height = 190;
+        choiceParam.width = (int) (0.83333 * screenWidth);
+        choiceParam.height = (int) (0.106981 * screenHeight);
         choice.setTypeface(typeface);
         choice.setLayoutParams(choiceParam);
         choice.setBackground(context.getResources().getDrawable(R.drawable.btn));
