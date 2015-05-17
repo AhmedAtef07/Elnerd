@@ -85,7 +85,6 @@ public class ScoreView implements Viewable {
 
     @Override
     public void endView() {
-
         ((ViewGroup) mainLayout.getParent()).removeView(mainLayout);
     }
 

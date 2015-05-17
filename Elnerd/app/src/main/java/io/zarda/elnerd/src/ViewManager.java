@@ -45,6 +45,7 @@ public class ViewManager {
 
     boolean inHome;
     boolean inQuote;
+    boolean inScore;
 
     int bestPlayed;
     int allPlayed;
@@ -167,6 +168,7 @@ public class ViewManager {
 
         inHome = false;
         inQuote = false;
+        inScore = false;
     }
 
     public void startHomeView(boolean fromQuote) {
@@ -198,6 +200,9 @@ public class ViewManager {
     }
 
     public void endGameView() {
+        if (inScore) {
+            endScoreView();
+        }
         gameView.endView();
     }
 
@@ -254,12 +259,12 @@ public class ViewManager {
 
     public void startScoreView() {
         scoreView.startView();
-        inQuote = true;
+        inScore = true;
     }
 
     public void endScoreView() {
         scoreView.endView();
-        inQuote = false;
+        inScore = false;
     }
 
     public void setScoreView(View scoreView) {
