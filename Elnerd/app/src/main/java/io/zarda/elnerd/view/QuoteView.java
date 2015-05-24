@@ -62,6 +62,9 @@ public class QuoteView implements Viewable, Game {
 
     @Override
     public void startView() {
+        if (mainLayout != null) {
+            mainLayout.setBackgroundColor(Color.parseColor(colors[new Random().nextInt(7)]));
+        }
         ((Activity) context).setContentView(mainLayout);
         Animation goDown = new TranslateAnimation(0, 0, -screenHeight, 0);
         goDown.setDuration(500);

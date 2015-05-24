@@ -78,6 +78,9 @@ public class GameView implements Viewable, Game {
 
     @Override
     public void startView() {
+        if (mainLayout != null) {
+            mainLayout.setBackgroundColor(Color.parseColor(colors[new Random().nextInt(6)]));
+        }
         ((Activity) context).setContentView(frameLayout);
         Animation goDown = new TranslateAnimation(0, 0, screenHeight, 0);
         goDown.setDuration(500);
